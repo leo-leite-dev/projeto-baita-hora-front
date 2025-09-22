@@ -1,0 +1,95 @@
+/* ===== layout base ===== */
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #0f1115;
+}
+
+.card {
+  width: 100%;
+  max-width: 920px;
+  background: #1a1d24;
+  border: 1px solid #2a2f3a;
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+}
+
+/* head (usa .card_head, não .card__head) */
+.card_head {
+  padding: 20px 24px 0;
+}
+
+.subtitle {
+  margin-top: 4px;
+  color: #9aa3b2;
+  font-size: 13px;
+}
+
+/* form grid */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 20px 24px 24px;
+}
+
+.field--full { grid-column: 1 / -1; }
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ===== inputs ===== */
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field.full { grid-column: 1 / -1; }
+
+input, select, textarea {
+  background: #12141a;
+  border: 1px solid #303645;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #e8ecf3;
+  outline: none;
+}
+input:focus { border-color: #6c8cff; box-shadow: 0 0 0 3px rgba(108,140,255,.15); }
+
+.is-invalid {
+  border-color: #ff6b6b !important;
+  box-shadow: 0 0 0 3px rgba(255,107,107,.15);
+}
+small { color: #ff8e8e; font-size: 12px; }
+
+/* ===== botões ===== */
+.btn {
+  border: 1px solid #2f3442;
+  background: #181b22;
+  color: #e8ecf3;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.btn--primary { background: #4b63ff; border-color: #4b63ff; }
+.btn--ghost:hover { background: #20232b; }
+
+/* ===== banner de erro global ===== */
+.alert {
+  margin-top: 12px;
+  background: #2a1c1c;
+  border: 1px solid #a83f3f;
+  color: #ffd6d6;
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+/* ===== toastr no topo/centro (força no escopo do componente) ===== */
+:host ::ng-deep .toast-top-center {
+  top: 16px;
+  right: 0;
+  left: 0;
+  margin: 0 auto;
+}

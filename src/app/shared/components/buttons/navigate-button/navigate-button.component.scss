@@ -1,0 +1,33 @@
+@use 'colors' as *;
+
+.btn-primary,
+.btn-secondary {
+  padding: 15px 40px;
+  border-radius: 30px;
+  margin: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, $pure-purple, $pure-blue-strong);
+  color: $pure-white;
+  border: none;
+  transition: transform 0.2s ease; 
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.btn-secondary {
+  background: transparent;
+  color: $pure-white;
+  border: 2px solid $pure-white;
+
+  &:hover {
+    background: $pure-white;
+    color: $pure-black;
+  }
+}

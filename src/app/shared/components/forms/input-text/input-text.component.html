@@ -1,0 +1,12 @@
+<div class="input-group">
+    <label *ngIf="label" [attr.for]="inputId">{{ label }}</label>
+
+    <input *ngIf="!mask; else masked" #inputEl [id]="inputId" [name]="inputId" [type]="type" [placeholder]="placeholder"
+        [disabled]="disabled" [value]="value" (input)="handleInput($event)" (blur)="handleBlur()" />
+
+    <ng-template #masked>
+        <input #inputEl [id]="inputId" [name]="inputId" [type]="type" [placeholder]="placeholder" [disabled]="disabled"
+            [mask]="mask!" [dropSpecialCharacters]="dropSpecialCharacters" [(ngModel)]="value"
+            (ngModelChange)="onChange($event)" (blur)="handleBlur()" />
+    </ng-template>
+</div>

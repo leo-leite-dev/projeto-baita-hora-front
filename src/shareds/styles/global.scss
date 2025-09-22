@@ -1,0 +1,16 @@
+@use 'colors' as *;
+@use 'layouts' as *;
+@use 'typography' as *;
+@use 'form' as *;
+@use 'input' as *;
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: $pure-white;
+}
+
+body {
+  background-color: #0f1115; 
+}

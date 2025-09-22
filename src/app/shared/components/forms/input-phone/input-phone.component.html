@@ -1,0 +1,8 @@
+<div class="input-group phone-input" [class.has-error]="showError">
+    <label *ngIf="label" [attr.for]="inputId">{{ label }}</label>
+
+    <input #telInput type="tel" [id]="inputId" [name]="inputId" autocomplete="tel" inputmode="tel" [mask]="currentMask"
+        [dropSpecialCharacters]="true" />
+
+    <small class="error" *ngIf="showError">Número inválido</small>
+</div>

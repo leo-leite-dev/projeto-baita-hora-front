@@ -1,0 +1,15 @@
+:host::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: url('/assets/baitahora_animado.gif?v=6') center center / contain no-repeat fixed;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.home-container {
+    height: 100%;
+    backdrop-filter: blur(6px);
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 16px;
+}

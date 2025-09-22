@@ -1,0 +1,28 @@
+:host ::ng-deep .bh-input-phone .iti__country-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 10000;
+  width: 100% !important;
+  min-width: 100% !important;
+  box-sizing: border-box;
+  max-height: 280px;
+  overflow: auto;
+  margin: 0;
+  padding: 6px 0;
+  border: 1px solid var(--field-border) !important;
+  border-radius: var(--field-radius);
+  background: #2a2a2a !important;
+}
+
+:host ::ng-deep .bh-input-phone .iti__error,
+:host ::ng-deep .bh-input-phone .iti__error-msg,
+:host ::ng-deep .bh-input-phone .iti__tooltip {
+  display: none !important;
+}
+
+.input-group {
+  input {
+    width: 100%;
+  }
+}

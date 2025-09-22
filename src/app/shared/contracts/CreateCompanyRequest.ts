@@ -1,0 +1,10 @@
+import { CreateAddressRequest } from "./CreateAddressRequest";
+
+export interface CreateCompanyRequest {
+    companyName: string;
+    tradeName?: string | null;
+    cnpj: string;
+    companyPhone?: string;
+    companyEmail?: string;
+    address: CreateAddressRequest;
+}

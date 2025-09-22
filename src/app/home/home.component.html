@@ -1,0 +1,14 @@
+<div class="home-container d-flex column jc-center text-center">
+    <h1>Bem-vindo ao <span>BaitaHora</span></h1>
+    <p>Organize seu tempo do seu jeito, fácil e rápido.</p>
+
+    <div class="button-group">
+        <app-navigate-button (click)="goToCreateUserCompany()" type="primary">
+            Criar Conta
+        </app-navigate-button>
+
+        <app-navigate-button routerLink="/login" type="secondary">
+            Entrar
+        </app-navigate-button>
+    </div>
+</div>

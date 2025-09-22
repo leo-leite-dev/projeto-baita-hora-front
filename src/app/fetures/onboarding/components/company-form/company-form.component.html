@@ -1,0 +1,31 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-input-text class="field" label="Razão Social" formControlName="companyName" />
+        <app-field-errors [control]="group.controls.companyName" />
+    </div>
+
+    <div class="field">
+        <app-input-text class="field" label="Nome Fantasia" formControlName="tradeName" />
+        <app-field-errors [control]="group.controls.tradeName" />
+    </div>
+
+    <div class="grid grid-3 field--full">
+        <div class="field">
+            <app-input-text class="field" label="CNPJ" formControlName="cnpj" mask="00.000.000/0000-00"
+                [dropSpecialCharacters]="true" />
+            <app-field-errors label="CNPJ" [control]="group.controls.cnpj" />
+        </div>
+
+        <div class="field">
+            <app-input-phone label="Telefone" formControlName="companyPhone" mask="(00)00000-0000" />
+            <app-field-errors label="Telefone" [control]="group.get('profile.companyPhone')" />
+        </div>
+
+        <div class="field">
+            <app-input-text class="field" label="E-mail" formControlName="companyEmail" />
+            <app-field-errors [control]="group.controls.companyEmail" />
+        </div>
+    </div>
+
+    <app-address-form class="field--full" [group]="group.controls.address" />
+</div>
