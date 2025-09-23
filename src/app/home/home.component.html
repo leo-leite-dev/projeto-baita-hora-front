@@ -7,8 +7,13 @@
             Criar Conta
         </app-navigate-button>
 
-        <app-navigate-button routerLink="/login" type="secondary">
+        <app-navigate-button (click)="openLoginModal()" type="secondary">
             Entrar
         </app-navigate-button>
     </div>
 </div>
+
+<app-login-modal *ngIf="showLogin" (close)="showLogin = false" (companiesDetected)="onCompaniesDetected($event)" />
+
+<app-companies-modal *ngIf="showCompanies" [companies]="companies" (select)="onCompanySelected($event)"
+    (close)="showCompanies = false" />

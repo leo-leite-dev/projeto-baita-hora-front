@@ -1,0 +1,14 @@
+<div class="dashboard-cards" [style.--cols]="columns">
+    <article class="card metric" *ngFor="let m of items; trackBy: trackByIdx">
+        <div class="icon" [attr.aria-label]="m.ariaLabel || null" [attr.aria-hidden]="m.ariaLabel ? null : true">
+            <app-fa-icon *ngIf="m.faIcon; else textIcon" [icon]="m.faIcon"></app-fa-icon>
+            <ng-template #textIcon>{{ m.icon || '•' }}</ng-template>
+        </div>
+
+        <div>
+            <div class="label">{{ m.label }}</div>
+            <div class="value">{{ m.value }}</div>
+            <div class="help" *ngIf="m.help">{{ m.help }}</div>
+        </div>
+    </article>
+</div>

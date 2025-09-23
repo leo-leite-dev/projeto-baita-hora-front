@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { InputTextComponent } from '../../../../shared/components/forms/input-text/input-text.component';
-import { AddressFormComponent, AddressForm } from '../address-form/address-form.component'; // reusa o tipo!
+import { AddressFormComponent, AddressForm } from '../address-form/address-form.component';
 import { FieldErrorsComponent } from '../../../../shared/components/field-errors/field-errors.component';
+import { CommonModule } from '@angular/common';
 import { InputPhoneComponent } from '../../../../shared/components/forms/input-phone/input-phone.component';
 
 export type ProfileForm = {
@@ -26,11 +27,12 @@ export type OwnerForm = {
   selector: 'app-owner-form',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
+    InputPhoneComponent, 
     InputTextComponent,
-    InputPhoneComponent,
-    AddressFormComponent,
-    FieldErrorsComponent
+    FieldErrorsComponent,
+    AddressFormComponent
   ],
   templateUrl: './owner-form.component.html'
 })

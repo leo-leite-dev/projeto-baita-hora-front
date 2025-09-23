@@ -17,8 +17,8 @@
         </div>
 
         <div class="field">
-            <app-input-phone label="Telefone" formControlName="companyPhone" mask="(00)00000-0000" />
-            <app-field-errors label="Telefone" [control]="group.get('profile.companyPhone')" />
+            <app-input-phone label="Telefone" formControlName="companyPhone" />
+            <app-field-errors label="Telefone" [control]="group.controls.companyPhone" />
         </div>
 
         <div class="field">

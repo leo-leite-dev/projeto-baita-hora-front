@@ -1,0 +1,10 @@
+<div class="modal">
+  <h3>Selecione a empresa</h3>
+  <ul>
+    <li *ngFor="let c of companies">
+      <button (click)="onSelect(c.companyId)">
+        {{ c.name }}
+      </button>
+    </li>
+  </ul>
+</div>

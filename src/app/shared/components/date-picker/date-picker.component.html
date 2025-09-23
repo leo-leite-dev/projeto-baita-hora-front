@@ -1,0 +1,11 @@
+<label class="dashboard-date-picker">
+    <span class="label fs-12">{{ label }}</span>
+
+    <div class="date-input d-flex center gap-10" [class.disabled]="disabled">
+        <app-fa-icon icon="times" />
+
+        <input type="date" [value]="_value" [min]="min" [max]="max" [disabled]="disabled"
+            (input)="handleInput($any($event.target).value)" (change)="handleInput($any($event.target).value)"
+            (blur)="handleBlur()" [attr.aria-label]="'Selecionar ' + label" />
+    </div>
+</label>

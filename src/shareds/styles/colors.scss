@@ -11,3 +11,84 @@ $pure-cyan: #00ffc3;
 $pure-purple: #8000ff;
 $pure-blue-strong: #0047AB;
 $pure-blue-light: #87CEFA;
+
+// =============================================
+// Cores do Tema Visual Gamer
+// =============================================
+$rare-deep-blue: #1c0b32; // fundo principal
+$overlay-bg: #25104a; // fundo secundário sobreposto
+$highlight-purple: #9e78f1; // destaque roxo moderno
+$highlight-blue: #3fa9f5; // destaque azul moderno
+$neon-blue: #00e0ff; // efeitos glow azul ciano
+$cyber-glow: 0 0 20px rgba(0, 255, 200, 0.15);
+$deep-violet: #6a00f4;
+$mage-purple: #6E33A4;
+
+// =============================================
+// Escala de Cinza
+// =============================================
+$void-black: #1b1b1b;
+$Dark-matter: #252525;
+$charcoal: #333333;
+$dark-gray: #2c2c2c;
+$light-gray: #999999;
+$cloud-gray: #888888;
+$neutral-gray: #bbbbbb;
+$mist-gray: #67686952;
+$light-gray-transparent: #eeeeee2c;
+
+// =============================================
+// Overlays / Transparências
+// =============================================
+$black-overlay-light: rgba(0, 0, 0, 0.16);
+$overlay-h-bg: rgba(0, 0, 0, 0.9);
+$overlay-light: rgba(255, 255, 255, 0.1);
+$white-overlay-02: rgba(255, 255, 255, 0.2);
+$white-overlay-03: rgba(255, 255, 255, 0.3);
+$white-overlay-05: rgba(255, 255, 255, 0.05);
+$white-overlay-08: rgba(255, 255, 255, 0.08);
+
+// =============================================
+// Paleta de Plataformas
+// =============================================
+$xbox-green: #107c10;
+$playstation-blue: #00439c;
+$steam-gray: #9e9e9e;
+$nintendo-red: #e60012;
+$soft-pink: #ffb3b3;
+
+// =============================================
+// Feedback / Sucesso
+// =============================================
+$success-green: #28a745;
+$success-green-dark: #218838;
+$orange-overlay: rgba(255, 94, 0, 0.53);
+
+// =============================================
+// Cores dos Tiers
+// =============================================
+$tier-colors: (
+  sss: #ffa500,
+  ss: #e83e8c,
+  s: #6f42c1,
+  a: #007bff,
+  c: #28a745,
+  d: #6c757d,
+  f: #dc3545
+);
+
+// =============================================
+// Cores Steam
+// =============================================
+$steam-blue: #1b2838;
+
+$bg: #0c0d10;
+$panel: #101218;
+$panel-elev: #11131b;
+$border: rgba(255, 255, 255, 0.08);
+$text: #e9ecf1;
+$muted: #a7afbe;
+$primary: #6ea8ff;
+$success: #6dd3a6;
+$warning: #ffd36e;
+$danger: #ff8b8b;
