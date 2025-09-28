@@ -1,0 +1,48 @@
+<div class="side-menu" [class.collapsed]="!menuExpanded" [class.menu-open]="menuExpandedOnMobile">
+  <button class="menu-toggle" (click)="toggleMenu()">
+    <mat-icon>{{ menuExpanded ? 'chevron_left' : 'chevron_right' }}</mat-icon>
+  </button>
+
+  <div class="menu-header">
+    <h2 *ngIf="menuExpanded; else logoCollapsed">BaitaHora</h2>
+    <ng-template #logoCollapsed>
+      <h2 class="collapsed-logo">BH</h2>
+    </ng-template>
+  </div>
+
+  <ul class="menu-list">
+    <li *ngFor="let item of menuItems" class="menu-item" [class.open]="selectedMenuTitle === item.label">
+
+      <div class="main-item" (click)="item.submenu ? toggleSubmenu(item) : navigateTo(item)"
+        [title]="!menuExpanded ? item.label : ''">
+
+        <mat-icon *ngIf="item.icon">{{ item.icon }}</mat-icon>
+        <span *ngIf="menuExpanded">{{ item.label }}</span>
+
+        <mat-icon class="arrow" *ngIf="item.submenu && menuExpanded">
+          {{ selectedMenuTitle === item.label ? 'expand_less' : 'expand_more' }}
+        </mat-icon>
+      </div>
+
+      <ul class="submenu" *ngIf="item.submenu && selectedMenuTitle === item.label && menuExpanded">
+        <li class="submenu-item" *ngFor="let subItem of item.submenu"
+          [class.open]="isOpenL2(item.label, subItem.label)">
+
+          <div class="sub-item" (click)="subItem.submenu ? toggleSubmenu2(item.label, subItem) : navigateTo(subItem)">
+            <span>{{ subItem.label }}</span>
+
+            <mat-icon class="arrow" *ngIf="subItem.submenu">
+              {{ isOpenL2(item.label, subItem.label) ? 'expand_less' : 'expand_more' }}
+            </mat-icon>
+          </div>
+
+          <ul class="submenu level-2" *ngIf="subItem.submenu && isOpenL2(item.label, subItem.label)">
+            <li *ngFor="let sub2 of subItem.submenu" (click)="navigateTo(sub2); $event.stopPropagation()">
+              {{ sub2.label }}
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

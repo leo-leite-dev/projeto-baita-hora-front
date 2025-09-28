@@ -1,0 +1,17 @@
+$menu-width: 280px;
+
+.shell-sidemenu {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: $menu-width;
+  height: 100dvh;
+  z-index: 1000;
+}
+
+.shell-content {
+  margin-left: $menu-width;
+  min-height: 100dvh;
+  padding: 16px;
+  box-sizing: border-box;
+  overflow: auto;
+}

@@ -1,0 +1,8 @@
+<button class="btn" [ngClass]="['btn--' + variant, loading ? 'is-loading' : '', isDisabled ? 'is-disabled' : '']"
+  [attr.type]="htmlType" [disabled]="isDisabled" (click)="onClick($event)">
+
+  <span class="btn__content gap-10 d-flex">
+    <ng-content select="[btnPrefix]" />
+    <span>{{ label }}</span>
+  </span>
+</button>

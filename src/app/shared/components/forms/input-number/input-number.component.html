@@ -1,0 +1,10 @@
+<div class="input-group">
+    <label *ngIf="label">{{ label }}</label>
+
+    <input type="text" [placeholder]="placeholder" [disabled]="disabled" currencyMask [options]="{
+      prefix: 'R$ ',
+      thousands: '.',
+      decimal: ',',
+      precision: fractionDigits
+    }" [(ngModel)]="value" (ngModelChange)="onChange($event)" (blur)="handleBlur()" />
+</div>

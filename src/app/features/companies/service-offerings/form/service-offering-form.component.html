@@ -1,0 +1,16 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-input-text label="Serviço" formControlName="serviceOfferingName" />
+        <app-field-errors [control]="group.controls.serviceOfferingName" />
+    </div>
+
+    <div class="field">
+        <app-input-number label="Preço" formControlName="price" />
+        <app-field-errors [control]="group.controls.price" />
+    </div>
+
+    <div class="field">
+        <app-input-text label="Moeda" formControlName="currency" />
+        <app-field-errors [control]="group.controls.currency" />
+    </div>
+</div>

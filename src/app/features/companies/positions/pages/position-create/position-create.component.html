@@ -1,0 +1,23 @@
+<div class="page">
+    <div class="card">
+        <app-back-button [to]="['/app/position/list']" variant="ghost" label="Voltar" aria-label="Voltar" />
+
+        <div class="card_head mt-20">
+            <h2>Criar Cargo</h2>
+            <p class="subtitle">Defina o cargo com seus serviços e nivel de acesso</p>
+
+            <div *ngIf="form.hasError('server')" class="alert" role="alert" aria-live="assertive">
+                {{ form.getError('server') }}
+            </div>
+        </div>
+
+        <form class="grid" [formGroup]="form" (ngSubmit)="submit()">
+            <app-position-form class="field--full" [group]="form" [serviceOfferingOptions$]="serviceOfferingOptions$" />
+            <div class="actions field--full">
+                <app-button variant="clean" htmlType="button" label="Limpar" (clicked)="reset()" />
+                <app-button variant="primary" htmlType="submit" label="Salvar"
+                    [disabled]="form.invalid || submitting" />
+            </div>
+        </form>
+    </div>
+</div>

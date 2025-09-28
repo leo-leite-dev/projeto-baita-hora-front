@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Remover serviço</h2>
+
+<mat-dialog-content>
+    @if (data.name) {
+    <p>Tem certeza que deseja excluir <strong>{{ data.name }}</strong> de forma permanente?</p>
+    } @else {
+    <p>Tem certeza que deseja excluir este item de forma permanente?</p>
+    }
+    <p class="muted">Esta ação não poderá ser desfeita.</p>
+</mat-dialog-content>
+
+<mat-dialog-actions class="gap-10">
+    <app-button label="Cancelar" (click)="cancel()" />
+    <app-button label="Excluir" variant="danger" (click)="confirm()" />
+</mat-dialog-actions>

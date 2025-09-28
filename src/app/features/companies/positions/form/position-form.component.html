@@ -1,0 +1,19 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-input-text label="Cargo" formControlName="positionName" />
+        <app-field-errors [control]="group.controls.positionName" />
+    </div>
+
+    <div class="field">
+        <app-select label="Nível de acesso" formControlName="accessLevel" [options]="roleOptions" />
+        <app-field-errors [control]="group.controls.accessLevel" />
+    </div>
+
+    <div class="field">
+        <app-auto-chips-auto-complete formControlName="serviceOfferings" [options$]="serviceOfferingOptions$"
+            [displayWith]="soDisplay" [trackBy]="soTrack" placeholder="Serviços vinculados"
+            inputPlaceholder="Digite para buscar">
+        </app-auto-chips-auto-complete>
+        <app-field-errors [control]="group.controls.serviceOfferings" />
+    </div>
+</div>

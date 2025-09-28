@@ -3,11 +3,11 @@
 @use 'typography' as *;
 @use 'form' as *;
 @use 'input' as *;
+@use 'table' as *;
 
 html, body {
   height: 100%;
   margin: 0;
-  padding: 0;
   color: $pure-white;
 }
 

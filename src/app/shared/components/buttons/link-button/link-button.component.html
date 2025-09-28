@@ -1,0 +1,4 @@
+<app-button [variant]="variant" [htmlType]="'button'" [disabled]="disabled" [loading]="loading" [label]="label"
+    (clicked)="go()">
+    <app-fa-icon *ngIf="iconForFa" btnPrefix [prefix]="'fas'" [icon]="iconForFa!" [className]="iconClass" />
+</app-button>

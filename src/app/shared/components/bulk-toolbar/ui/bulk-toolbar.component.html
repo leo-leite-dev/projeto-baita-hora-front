@@ -1,0 +1,48 @@
+<ng-container *ngIf="active; else idle">
+    <div class="bulk-toolbar-active">
+        <span class="selection-chip"
+            [matTooltip]="selectionCount === 0 ? 'Nenhum item selecionado' : selectionCount + ' selecionado(s)'">
+            <mat-icon>checklist</mat-icon>
+            <strong>{{ selectionCount }}</strong>
+            <span class="muted">&nbsp;selecionado{{ selectionCount === 1 ? '' : 's' }}</span>
+        </span>
+
+        <div class="actions-group">
+            <button *ngIf="!hideDisableAction" mat-stroked-button color="warn" (click)="disable.emit()"
+                [disabled]="busy || selectionCount === 0 || disableDisableAction"
+                aria-label="Desativar itens selecionados">
+                <mat-icon>block</mat-icon>
+                {{ disableLabel }}
+            </button>
+
+            <button *ngIf="!hideActivateAction" mat-stroked-button color="primary" (click)="activate.emit()"
+                [disabled]="busy || selectionCount === 0 || disableActivateAction"
+                aria-label="Ativar itens selecionados">
+                <mat-icon>check_circle</mat-icon>
+                {{ activateLabel }}
+            </button>
+        </div>
+
+        <button mat-button (click)="cancel.emit()" [disabled]="busy">
+            <mat-icon>close</mat-icon>
+            {{ cancelLabel }}
+        </button>
+
+        <span class="extra-slot">
+            <ng-content></ng-content>
+        </span>
+    </div>
+</ng-container>
+
+<ng-template #idle>
+    <div class="bulk-toolbar-idle">
+        <button mat-stroked-button (click)="enter.emit()" [disabled]="busy">
+            <mat-icon>select_all</mat-icon>
+            {{ enterLabel }}
+        </button>
+
+        <span class="extra-slot">
+            <ng-content></ng-content>
+        </span>
+    </div>
+</ng-template>

@@ -17,11 +17,33 @@ export class AuthService {
     private readonly baseUrl = `${environment.apiBaseUrl}/auth`;
     private readonly errorHandler = inject(ErrorHandlingService);
 
+    private readonly ACTIVE_COMPANY_KEY = 'activeCompanyId';
+
+    setActiveCompany(companyId: string): void {
+        localStorage.setItem(this.ACTIVE_COMPANY_KEY, companyId);
+    }
+
+    getActiveCompany(): string | null {
+        return localStorage.getItem(this.ACTIVE_COMPANY_KEY);
+    }
+
+    clearActiveCompany(): void {
+        localStorage.removeItem(this.ACTIVE_COMPANY_KEY);
+    }
+
     login(payload: AuthenticateRequest): Observable<AuthResponse> {
         return this.http
             .post<AuthResponse>(`${this.baseUrl}/login`, payload, { observe: 'response' })
             .pipe(
-                map(res => res.body as AuthResponse),
+                map(res => {
+                    const auth = res.body as AuthResponse;
+
+                    if (auth?.companies?.length === 1) {
+                        this.setActiveCompany(auth.companies[0].companyId);
+                    }
+
+                    return auth;
+                }),
                 this.errorHandler.rxThrow('auth.login')
             );
     }
@@ -39,7 +61,10 @@ export class AuthService {
         return this.http
             .post<void>(`${this.baseUrl}/logout`, {}, { observe: 'response' })
             .pipe(
-                map(() => void 0),
+                map(() => {
+                    this.clearActiveCompany(); 
+                    return void 0;
+                }),
                 this.errorHandler.rxThrow('auth.logout')
             );
     }
@@ -48,7 +73,11 @@ export class AuthService {
         return this.http
             .post<AuthResponse>(`${this.baseUrl}/select-company`, payload, { observe: 'response' })
             .pipe(
-                map(res => res.body as AuthResponse),
+                map(res => {
+                    const auth = res.body as AuthResponse;
+                    this.setActiveCompany(payload.companyId);
+                    return auth;
+                }),
                 this.errorHandler.rxThrow('auth.selectCompany')
             );
     }

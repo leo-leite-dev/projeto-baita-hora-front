@@ -1,0 +1,121 @@
+.table-wrapper {
+  max-width: 1400px;   
+  margin: 0 auto;     
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px auto; 
+  max-width: 1400px;    
+  width: 100%;
+
+    .w-64 {
+        width: 16rem;
+    }
+
+    .toolbar-spacer {
+        flex: 1;
+    }
+
+    @media (max-width: 640px) {
+        flex-wrap: wrap;
+
+        .w-64 {
+            flex: 1 1 100%;
+        }
+
+        .toolbar-spacer {
+            display: none;
+        }
+
+        button {
+            align-self: flex-end;
+        }
+    }
+}
+
+.pretty-table {
+    --row-h: 40px;
+    --cell-px: 10px;
+    --cell-py: 8px;
+
+    th[mat-header-cell],
+    td[mat-cell] {
+        padding: var(--cell-py) var(--cell-px);
+        height: var(--row-h);
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    th[mat-header-cell] {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background: #979595;
+        font-weight: 600;
+        letter-spacing: .2px;
+        box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .1);
+        color: #333;
+    }
+
+    td[mat-cell] {
+        background: #ffffff;
+        color: #222;
+    }
+
+    .mat-column-name {
+        width: 20%;
+    }
+
+    .mat-column-price {
+        width: 10%;
+        text-align: left;
+    }
+
+    .mat-column-currency {
+        width: 10%;
+    }
+
+    .mat-column-isActive {
+        width: 8%;
+        text-align: center;
+    }
+
+    .mat-column-createdAtUtc {
+        width: 5%;
+    }
+
+    .mat-column-updatedAtUtc {
+        width: 5%;
+    }
+
+    .mat-column-actions {
+        width: 1%;
+        text-align: center;
+    }
+
+    .cell-main {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .muted {
+        opacity: .8;
+    }
+
+    td[mat-cell] mat-icon.ok {
+        color: #2e7d32;
+    }
+
+    td[mat-cell] mat-icon.no {
+        color: #d32f2f;
+    }
+
+    .actions {
+        gap: 4px;
+    }
+}

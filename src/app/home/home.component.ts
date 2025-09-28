@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigateButtonComponent } from '../shared/components/buttons/navigate-button/navigate-button.component';
-import { LoginModalComponent } from '../fetures/auth/login-modal/login-modal.component';
 import { AuthService } from '../core/auth/services/auth.service';
 import { AuthResponse } from '../core/auth/models/auth-response.model';
-import { CompaniesModalComponent } from '../fetures/auth/companies-modal/companies-modal.component';
 import { Router } from '@angular/router';
+import { ButtonComponent } from '../shared/components/buttons/button/button.component';
+import { LoginModalComponent } from '../features/auth/login-modal/login-modal.component';
+import { CompaniesModalComponent } from '../features/auth/companies-modal/companies-modal.component';
+import { LinkButtonComponent } from '../shared/components/buttons/link-button/link-button.component';
 
 @Component({
   selector: 'app-home',
@@ -13,9 +14,10 @@ import { Router } from '@angular/router';
   imports:
     [
       CommonModule,
-      NavigateButtonComponent,
       LoginModalComponent,
-      CompaniesModalComponent
+      CompaniesModalComponent,
+      ButtonComponent,
+      LinkButtonComponent
     ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
@@ -41,7 +43,6 @@ export class HomeComponent {
 
   onCompanySelected(companyId: string) {
     this.authService.selectCompany({ companyId }).subscribe(resp => {
-      // salvar auth no state/global store
       console.log('Empresa selecionada', resp);
       this.showCompanies = false;
     });

@@ -6,7 +6,11 @@ import { NgxMaskDirective } from 'ngx-mask';
 @Component({
   selector: 'app-input-text',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxMaskDirective],
+  imports: [
+    CommonModule,
+    FormsModule,
+    NgxMaskDirective
+  ],
   templateUrl: './input-text.component.html',
   styleUrls: ['./input-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +28,7 @@ export class InputTextComponent implements ControlValueAccessor {
   @Input() type: 'text' | 'password' | 'email' | 'date' = 'text';
   @Input() disabled = false;
   @Input() mask?: string | null = null;
+  @Input() currency = false;
 
   @Input() dropSpecialCharacters = false;
   @Output() blurred = new EventEmitter<void>();
@@ -32,7 +37,7 @@ export class InputTextComponent implements ControlValueAccessor {
 
   @ViewChild('inputEl', { static: true }) inputEl!: ElementRef<HTMLInputElement>;
 
-  value = '';
+  value: any = '';
 
   onChange: (val: any) => void = () => { };
   onTouched: () => void = () => { };

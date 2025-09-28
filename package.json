@@ -36,6 +36,7 @@
     "@fortawesome/free-solid-svg-icons": "^7.0.1",
     "cpf-cnpj-validator": "^1.0.3",
     "libphonenumber-js": "^1.12.18",
+    "ngx-currency": "^19.0.0",
     "ngx-mask": "^20.0.3",
     "ngx-mat-input-tel": "^20.7.0",
     "ngx-toastr": "^19.1.0",

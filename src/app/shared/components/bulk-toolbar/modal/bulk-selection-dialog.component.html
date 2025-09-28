@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Seleção mista</h2>
+
+<mat-dialog-content>
+    <p>Você selecionou serviços <strong>ativos e inativos</strong>.</p>
+    <p>Como deseja refinar a seleção?</p>
+    <ul>
+        <li><strong>Manter apenas ativos</strong>: desmarca inativos e mantém ativos.</li>
+        <li><strong>Manter apenas inativos</strong>: desmarca ativos e mantém inativos.</li>
+    </ul>
+</mat-dialog-content>
+
+<mat-dialog-actions class="gap-10">
+    <app-button variant="clean" label="Cancelar" (clicked)="close('cancel')" />
+    <app-button variant="primary" label="Manter inativos" (clicked)="close('keep-inactives')" />
+    <app-button variant="primary" label="Manter ativos" (clicked)="close('keep-actives')" />
+</mat-dialog-actions>

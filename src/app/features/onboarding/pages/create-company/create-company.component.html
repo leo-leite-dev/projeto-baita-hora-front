@@ -1,0 +1,22 @@
+<div class="page">
+    <div class="card">
+        <div class="card_head">
+            <h2>Cadastro da Empresa</h2>
+            <p class="subtitle">Informe os dados da sua empresa</p>
+
+            <div *ngIf="form.hasError('server')" class="alert" role="alert" aria-live="assertive">
+                {{ form.getError('server') }}
+            </div>
+        </div>
+
+        <form class="grid" [formGroup]="form" (ngSubmit)="finish()">
+            <app-company-form class="field--full" [group]="form"></app-company-form>
+
+            <div class="actions field--full">
+                <app-button type="navigate" label="Voltar" (clicked)="back()" [disabled]="loading" />
+                <app-button type="submit" label="Salvar" [disabled]="form.invalid || loading" />
+            </div>
+
+        </form>
+    </div>
+</div>

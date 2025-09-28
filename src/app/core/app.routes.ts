@@ -1,30 +1,107 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from '../home/home.component';
-import { CreateOwnerComponent } from '../fetures/onboarding/pages/create-owner/create-owner.component';
-import { CreateCompanyComponent } from '../fetures/onboarding/pages/create-company/create-company.component';
-import { DashboardResolver } from '../fetures/dashboard/resolver/dashboard.resolver';
-import { DashboardComponent } from '../fetures/dashboard/pages/dashboard.component';
 import { authGuard } from './auth/guards/auth.guard';
-
+import { guestGuard } from './auth/guards/guest.guard';
+import { ShellComponent } from '../layout/shell.component';
+import { ServiceOfferingResolver } from '../features/companies/service-offerings/resolver/service-offering.resolver';
 
 export const routes: Routes = [
-    {
-        path: '',
-        component: HomeComponent,
-        pathMatch: 'full'
-    },
-    {
-        path: 'onboarding',
-        children: [
-            { path: 'create-owner', component: CreateOwnerComponent },
-            { path: 'create-company', component: CreateCompanyComponent }
-        ]
-    },
-    {
+  {
+    path: '',
+    pathMatch: 'full',
+    canMatch: [guestGuard],
+    loadComponent: () =>
+      import('../home/home.component').then(m => m.HomeComponent),
+  },
+
+  {
+    path: 'onboarding',
+    canMatch: [guestGuard],
+    children: [
+      {
+        path: 'create-owner',
+        loadComponent: () =>
+          import('../features/onboarding/pages/create-owner/create-owner.component')
+            .then(m => m.CreateOwnerComponent),
+      },
+      {
+        path: 'create-company',
+        loadComponent: () =>
+          import('../features/onboarding/pages/create-company/create-company.component')
+            .then(m => m.CreateCompanyComponent),
+      },
+    ],
+  },
+  {
+    path: 'app',
+    component: ShellComponent,
+    canMatch: [authGuard],
+    children: [
+      {
         path: 'dashboard/:companyId',
-        canMatch: [authGuard],
-        component: DashboardComponent,
-        resolve: { appointments: DashboardResolver }
-    },
-    { path: '**', redirectTo: '' }
+        loadComponent: () =>
+          import('../features/dashboard/pages/dashboard.component')
+            .then(m => m.DashboardComponent),
+        resolve: {
+          appointments: () =>
+            import('../features/dashboard/resolver/dashboard.resolver')
+              .then(m => m.DashboardResolver),
+        },
+      },
+      {
+        path: 'service-offering',
+        children: [
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('../features/companies/service-offerings/pages/service-offering-create/service-offering-create.component')
+                .then(m => m.ServiceOfferingCreateComponent),
+          },
+          {
+            path: ':id/edit',
+            resolve: { item: ServiceOfferingResolver },
+            loadComponent: () =>
+              import('../features/companies/service-offerings/pages/service-offering-edit/service-offering-edit.component')
+                .then(m => m.ServiceOfferingEditComponent),
+          },
+          {
+            path: 'list',
+            loadComponent: () =>
+              import('../features/companies/service-offerings/pages/service-offerings-list/service-offering-list.component')
+                .then(m => m.ServiceOfferingListComponent),
+          },
+          { path: '', pathMatch: 'full', redirectTo: 'list' },
+        ],
+      },
+      {
+        path: 'position',
+        children: [
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('../features/companies/positions/pages/position-create/position-create.component')
+                .then(m => m.PositionCreateComponent),
+          },
+          // {
+          //   path: ':id/edit',
+          //   resolve: { position: PositionResolver },
+          //   canDeactivate: [PendingChangesGuard], // opcional mas recomendado
+          //   loadComponent: () =>
+          //     import('../features/companies/positions/pages/position-edit/position-edit.component')
+          //       .then(m => m.PositionEditComponent),
+          // },
+          {
+            path: 'list',
+            loadComponent: () =>
+              import('../features/companies/positions/pages/positions-list/position-list.component')
+                .then(m => m.PositionListComponent),
+          },
+          { path: '', pathMatch: 'full', redirectTo: 'list' },
+        ],
+      },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard/placeholder' },
+      { path: '**', redirectTo: 'dashboard/placeholder' },
+    ],
+  },
+
+  { path: '**', redirectTo: '' },
 ];

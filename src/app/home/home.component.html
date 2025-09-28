@@ -3,13 +3,8 @@
     <p>Organize seu tempo do seu jeito, fácil e rápido.</p>
 
     <div class="button-group">
-        <app-navigate-button (click)="goToCreateUserCompany()" type="primary">
-            Criar Conta
-        </app-navigate-button>
-
-        <app-navigate-button (click)="openLoginModal()" type="secondary">
-            Entrar
-        </app-navigate-button>
+        <app-link-button [to]="['/onboarding/create-owner']" label="Criar Conta" variant="primary" />
+        <app-button type="navigate" label="Entrar" (clicked)="openLoginModal()" />
     </div>
 </div>
 
