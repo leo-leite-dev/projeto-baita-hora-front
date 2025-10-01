@@ -1,6 +1,12 @@
+export type Id = string | number;
+
 export interface HasIdActive {
-    id: string | number;
+    id: Id;
     isActive: boolean;
+}
+
+export interface HasIdActiveName extends HasIdActive {
+    name: string;
 }
 
 export type ActionLock = 'enable' | 'disable' | null;

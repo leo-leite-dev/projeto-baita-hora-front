@@ -1,7 +1,9 @@
-<div class="input-group">
-    <label *ngIf="label" [attr.for]="inputId">{{ label }}</label>
+<div class="field">
+    <mat-form-field appearance="outline" class="mat-field">
+        <mat-label *ngIf="label">{{ label }}</mat-label>
 
-    <ngx-mat-input-tel [id]="inputId" [disabled]="disabled" [(ngModel)]="value" (blur)="handleBlur()"
-        (ngModelChange)="handleChange($event)">
-    </ngx-mat-input-tel>
+        <ngx-mat-input-tel class="tel-field" matInput [id]="inputId" [disabled]="disabled" [(ngModel)]="value"
+            (ngModelChange)="handleChange($event)" (blur)="handleBlur()">
+        </ngx-mat-input-tel>
+    </mat-form-field>
 </div>

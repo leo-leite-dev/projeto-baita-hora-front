@@ -1,6 +1,6 @@
 <ng-container *ngIf="active; else idle">
     <div class="bulk-toolbar-active">
-        <span class="selection-chip"
+        <span class="selection-chip fs-14 center gap-10"
             [matTooltip]="selectionCount === 0 ? 'Nenhum item selecionado' : selectionCount + ' selecionado(s)'">
             <mat-icon>checklist</mat-icon>
             <strong>{{ selectionCount }}</strong>

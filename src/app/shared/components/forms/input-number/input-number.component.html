@@ -1,7 +1,7 @@
 <div class="input-group">
-    <label *ngIf="label">{{ label }}</label>
+  <label *ngIf="label">{{ label }}</label>
 
-    <input type="text" [placeholder]="placeholder" [disabled]="disabled" currencyMask [options]="{
+  <input type="text" [placeholder]="placeholder" [disabled]="disabled" currencyMask [options]="{
       prefix: 'R$ ',
       thousands: '.',
       decimal: ',',

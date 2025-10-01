@@ -1,34 +1,36 @@
-:host {
-    display: block;
+:host ::ng-deep ngx-mat-input-tel.tel-field .ngx-mat-input-tel-container {
+    display: flex;
+    align-items: center;
 }
 
-::ng-deep .mat-mdc-form-field {
+:host ::ng-deep ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input {
     width: 100%;
+    box-sizing: border-box;
+    display: block;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #1e1e1e;
+    color: #fff;
+}
 
-    .mdc-text-field {
-        background-color: #1e1e1e;
-        border-radius: 6px;
-        border: 1px solid #555;
-        color: #fff;
+:host ::ng-deep ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input:focus {
+    outline: none;
+    border-color: #6a5acd;
+    box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.3);
+}
 
-        input {
-            padding: 10px 30px;
-            font-size: 16px;
-        }
+:host ::ng-deep ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input[disabled] {
+    background-color: #333;
+    cursor: not-allowed;
+}
 
-        &:focus-within {
-            border-color: #6a5acd;
-            box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.3);
-        }
-    }
-
-    .mat-mdc-form-field-subscript-wrapper {
-        display: none;
-    }
-
-    .mat-mdc-form-field-label {
-        color: #ddd;
-        font-size: 14px;
-        font-weight: 500;
-    }
+:host ::ng-deep ngx-mat-input-tel.tel-field .country-selector {
+    background: #1e1e1e;
+    border: 1px solid #555;
+    border-right: 0;
+    border-radius: 6px 0 0 6px;
+    height: 100%;
+    padding: 0 8px;
 }

@@ -1,15 +1,5 @@
+@use 'colors' as *;
+
 ::ng-deep .mat-mdc-autocomplete-panel {
-    background: #1f1f1f !important;
-    border: 1px solid #3a3a3a;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-}
-
-::ng-deep .mat-mdc-option {
-    background: transparent;
-    color: #f3f3f3;
-}
-
-::ng-deep .mat-mdc-option.mat-mdc-option-active {
-    background: #3b82f6 !important;
-    color: #fff !important;
+    background: $iron-gray !important;
 }

@@ -5,5 +5,7 @@ import { ServiceOfferingsService } from '../services/service-offerings.service';
 
 @Injectable({ providedIn: 'root' })
 export class ServiceOfferingsFacade extends BaseActivableFacade<ServiceOffering> {
-    constructor(api: ServiceOfferingsService) { super(api); }
+    constructor(api: ServiceOfferingsService) {
+        super(api);
+    }
 }

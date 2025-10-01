@@ -1,86 +1,68 @@
+@use 'colors' as *;
+
 :host {
   display: block;
 }
 
-/* layout base (modo ativo e inativo) */
 .bulk-toolbar-active,
 .bulk-toolbar-idle {
   display: flex;
-  align-items: center;          /* alinha verticalmente */
-  gap: 12px;                    /* respiro entre itens */
-  flex-wrap: wrap;              /* quebra bonito no mobile */
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-/* “chip” da contagem: ícone + número alinhados */
 .selection-chip {
   display: inline-flex;
-  align-items: center;
-  gap: 8px;
   padding: 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.14);
-  background: rgba(255,255,255,0.04);
-  font-size: 0.875rem;
-  line-height: 1;
-  white-space: nowrap;
+  border: 1px solid $border-mid;
+  background: $bg-light;
 
-  .muted { opacity: .7; }
+  .muted {
+    opacity: .7;
+  }
 
   mat-icon {
     font-size: 18px;
-    height: 18px; width: 18px;  /* impede “pulos” de linha */
+    height: 18px;
+    width: 18px;
   }
 }
 
-/* grupo de ações: parecer um botão só (sem borda dupla) */
 .actions-group {
   display: inline-flex;
   align-items: stretch;
   border-radius: 10px;
-  overflow: hidden;             /* “cola” as bordas */
-  border: 1px solid rgba(255,255,255,0.14);
+  overflow: hidden;
+  border: 1px solid $border-mid;
 
-  /* tira a borda interna entre os botões */
-  > .mat-mdc-stroked-button {
-    border: 0 !important;       /* remove as bordas nativas */
-    border-right: 1px solid rgba(255,255,255,0.14) !important;
-    border-radius: 0 !important; /* quina reta no meio */
+  >.mat-mdc-stroked-button {
+    border: 0 !important;
+    border-right: 1px solid $border-mid !important;
+    border-radius: 0 !important;
   }
 
-  > .mat-mdc-stroked-button:last-child {
-    border-right: 0 !important; /* última sem borda */
+  >.mat-mdc-stroked-button:last-child {
+    border-right: 0 !important;
   }
 }
 
-/* altura e alinhamento consistentes dos botões */
 :host ::ng-deep .mat-mdc-button-base {
-  height: 36px;                 /* compensa diferenças de fonte/tema */
+  height: 36px;
   display: inline-flex;
   align-items: center;
-  gap: 8px;                     /* espaço ícone/texto */
+  gap: 8px;
   padding: 0 14px;
 }
 
 :host ::ng-deep .mat-mdc-button-base mat-icon {
   font-size: 18px;
-  height: 18px; width: 18px;
-  /* centraliza visualmente o ícone com o texto */
+  height: 18px;
+  width: 18px;
   transform: translateY(-1px);
 }
 
-/* espaçamento do conteúdo inserido via ng-content (ex: "Novo cargo") */
 :host ::ng-deep .extra-slot {
-  margin-left: auto;            /* empurra p/ direita se quiser */
-}
-
-/* responsivo: compacta no mobile */
-@media (max-width: 640px) {
-  .bulk-toolbar-active,
-  .bulk-toolbar-idle {
-    gap: 8px;
-  }
-  :host ::ng-deep .mat-mdc-button-base {
-    height: 34px;
-    padding: 0 12px;
-  }
+  margin-left: auto;
 }

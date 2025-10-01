@@ -5,5 +5,7 @@ import { PositionsService } from '../services/positions.service';
 
 @Injectable({ providedIn: 'root' })
 export class PositionsFacade extends BaseActivableFacade<Position> {
-    constructor(api: PositionsService) { super(api); }
+    constructor(api: PositionsService) {
+        super(api);
+    }
 }

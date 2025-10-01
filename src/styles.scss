@@ -77,3 +77,46 @@
       inset 0 0 0 1px rgba(255, 255, 255, 0.02);
   }
 }
+
+
+/* styles.scss (global) */
+ngx-mat-input-tel.tel-field .ngx-mat-input-tel-container {
+  display: flex;
+  align-items: center;
+}
+
+ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  padding: 10px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input:focus {
+  outline: none;
+  border-color: #6a5acd;
+  box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.3);
+}
+
+ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input[disabled] {
+  background-color: #333;
+  cursor: not-allowed;
+}
+
+ngx-mat-input-tel.tel-field .country-selector {
+  background: #1e1e1e;
+  border: 1px solid #555;
+  border-right: 0;
+  border-radius: 6px 0 0 6px;
+  height: 100%;
+  padding: 0 8px;
+}
+
+ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input {
+  border-radius: 0 6px 6px 0;
+}

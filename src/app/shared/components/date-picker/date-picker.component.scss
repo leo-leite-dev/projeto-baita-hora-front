@@ -1,23 +1,23 @@
-@use 'colors' as *;
+// @use 'colors' as *;
 
-.date-input {
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: $panel;
-    border: 1px solid $border;
+// .date-input {
+//     padding: 8px 10px;
+//     border-radius: 10px;
+//     background: $panel;
+//     border: 1px solid $border;
 
-    input[type="date"] {
-        appearance: none;
-        border: 0;
-        background: transparent;
-        color: $text;
-        font: 600 13px/1 "Segoe UI", Roboto, sans-serif;
-        outline: none;
-        padding: 2px 0;
-    }
+//     input[type="date"] {
+//         appearance: none;
+//         border: 0;
+//         background: transparent;
+//         color: $text;
+//         font: 600 13px/1 "Segoe UI", Roboto, sans-serif;
+//         outline: none;
+//         padding: 2px 0;
+//     }
 
-    &:focus-within {
-        outline: 2px solid rgba(110, 168, 255, 0.35);
-        outline-offset: 2px;
-    }
-}
+//     &:focus-within {
+//         outline: 2px solid rgba(110, 168, 255, 0.35);
+//         outline-offset: 2px;
+//     }
+// }

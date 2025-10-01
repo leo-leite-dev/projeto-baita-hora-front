@@ -60,7 +60,7 @@
                     <th mat-header-cell *matHeaderCellDef>Serviços</th>
                     <td mat-cell *matCellDef="let row">
                         <ng-container *ngIf="row.serviceOfferings?.length; else noServices">
-                            <div class="chips">
+                            <div class="chips d-flex gap-10 fs-12 bold">
                                 <span *ngFor="let s of firstServices(row); let i = index; trackBy: trackByServiceId"
                                     [ngClass]="chipClassForService(s, i)" [matTooltip]="s.name">
                                     {{ s.name }}
