@@ -1,0 +1,32 @@
+<ng-container [ngSwitch]="type">
+
+    <app-input-number *ngSwitchCase="'number'" [id]="id" [label]="label" [placeholder]="placeholder"
+        [disabled]="disabled" [required]="required" [value]="valueNumber" (valueChange)="handleValueChange($event)"
+        (blur)="markTouched()">
+    </app-input-number>
+
+    <app-input-phone *ngSwitchCase="'phone'" [id]="id" [label]="label" [placeholder]="placeholder" [disabled]="disabled"
+        [required]="required" [value]="valueText" (valueChange)="handleValueChange($event)" (blur)="markTouched()">
+    </app-input-phone>
+
+    <app-input-currency *ngSwitchCase="'currency'" [id]="id" [label]="label" [placeholder]="placeholder"
+        [disabled]="disabled" [required]="required" [fractionDigits]="fractionDigits" [value]="valueNumber"
+        (valueChange)="handleValueChange($event)" (blur)="markTouched()">
+    </app-input-currency>
+
+    <app-input-masked *ngSwitchCase="'masked'" [id]="id" [label]="label" [placeholder]="placeholder"
+        [disabled]="disabled" [required]="required" [mask]="mask ?? ''" [dropSpecialCharacters]="dropSpecialCharacters"
+        [value]="valueText" (valueChange)="handleValueChange($event)" (blur)="markTouched()">
+    </app-input-masked>
+
+    <app-input-date *ngSwitchCase="'date'" [id]="id" [label]="label" [placeholder]="placeholder" [disabled]="disabled"
+        [required]="required" [minDate]="minDate" [maxDate]="maxDate" [startView]="startView" [value]="valueDate"
+        (valueChange)="handleValueChange($event)" (blur)="markTouched()">
+    </app-input-date>
+
+    <app-input-text *ngSwitchDefault [id]="id" [label]="label" [placeholder]="placeholder" [disabled]="disabled"
+        [required]="required" [type]="inputType" [value]="valueText" (valueChange)="handleValueChange($event)"
+        (blur)="markTouched()">
+    </app-input-text>
+
+</ng-container>

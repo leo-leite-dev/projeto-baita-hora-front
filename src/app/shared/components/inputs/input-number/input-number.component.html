@@ -1,0 +1,9 @@
+<div class="input-group">
+  <label *ngIf="label" [attr.for]="controlId">
+    {{ label }} <span *ngIf="required" aria-hidden="true">*</span>
+  </label>
+
+  <input [id]="controlId" [name]="controlId" type="text" inputmode="numeric" [placeholder]="placeholder"
+    [disabled]="disabled" [required]="required" [attr.aria-required]="required" [value]="value === null ? '' : value"
+    (input)="onInput($event.target.value)" (blur)="onBlur()" appOnlyDigits />
+</div>

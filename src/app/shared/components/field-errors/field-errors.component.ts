@@ -26,7 +26,8 @@ export class FieldErrorsComponent {
   };
 
   get visible(): boolean {
-    return !!this.control && this.control.invalid && this.control.touched;
+    const c = this.control;
+    return !!c && c.invalid && c.touched && !c.pending;
   }
 
   get errorList(): string[] {
@@ -52,17 +53,26 @@ export class FieldErrorsComponent {
 
       if (key === 'passwordStrength' && err) {
         const missing: string[] = [];
-        if (!err.hasMinLen) missing.push(`mínimo de ${err.minLen} caracteres`);
-        if (!err.hasUpper) missing.push('letra maiúscula');
-        if (!err.hasLower) missing.push('letra minúscula');
-        if (!err.hasDigit) missing.push('número');
-        if (!err.hasSpecial) missing.push('símbolo');
+        if (!err.hasMinLen)
+          missing.push(`mínimo de ${err.minLen} caracteres`);
 
-        if (missing.length) {
+        if (!err.hasUpper)
+          missing.push('letra maiúscula');
+
+        if (!err.hasLower)
+          missing.push('letra minúscula');
+
+        if (!err.hasDigit)
+          missing.push('número');
+
+        if (!err.hasSpecial)
+          missing.push('símbolo');
+
+        if (missing.length)
           list.push(`A senha precisa de: ${missing.join(', ')}.`);
-        } else {
+        else
           list.push(this.messages[key] ?? 'Senha fraca.');
-        }
+
         continue;
       }
 

@@ -1,67 +1,77 @@
 import { Observable } from "rxjs";
-import { ActivatePositionsRequest, DisablePositionsRequest, PatchPositionRequest, RemoveServicesFromPositionRequest } from "../contracts/PatchPositionRequest";
-import { CreatePositionResponse } from "../contracts/CreatePositionResponse";
-import { CreatePositionRequest } from "../contracts/CreatePositionRequest";
+import { CreatePositionRequest } from "../contracts/create-position-request.contract";
 import { Position } from "../models/position.model";
 import { HttpClient } from "@angular/common/http";
 import { ErrorHandlingService } from "../../../../shared/services/error-handling.service";
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
+import { environment } from "../../../../environments/environments";
+import { PatchPositionRequest } from "../contracts/patch-position-request.contract";
+import { ActivatePositionsRequest } from "../contracts/activate-positions.contract";
+import { DisablePositionsRequest } from "../contracts/disable-positions.contract";
+import { PositionEditView } from "../models/position-edit-view.model";
 
 @Injectable({ providedIn: "root" })
 export class PositionsService {
-  private readonly API = "/api/companies/positions";
+  private readonly api = `${environment.apiBaseUrl}/companies/positions`;
 
-  constructor(
-    private http: HttpClient,
-    private errors: ErrorHandlingService
-  ) { }
+  private http = inject(HttpClient);
+  private errors = inject(ErrorHandlingService);
 
   listAll(): Observable<Position[]> {
     return this.http
-      .get<Position[]>(this.API)
+      .get<Position[]>(this.api)
       .pipe(this.errors.rxThrow<Position[]>("PositionsService.list"));
   }
 
-  create(payload: CreatePositionRequest): Observable<CreatePositionResponse> {
+  getById(id: string): Observable<PositionEditView> {
     return this.http
-      .post<CreatePositionResponse>(this.API, payload)
-      .pipe(this.errors.rxThrow<CreatePositionResponse>("PositionsService.create"));
+      .get<Position>(`${this.api}/${id}`)
+      .pipe(this.errors.rxThrow<Position>("PositionsService.getById"));
   }
 
-  patch(positionId: string, payload: PatchPositionRequest): Observable<{ positionId: string; positionName: string }> {
+  create(payload: CreatePositionRequest): Observable<void> {
     return this.http
-      .patch<{ positionId: string; positionName: string }>(`${this.API}/${positionId}`, payload)
-      .pipe(this.errors.rxThrow("PositionsService.patch"));
+      .post<void>(this.api, payload)
+      .pipe(this.errors.rxThrow<void>("PositionsService.create"));
+  }
+
+  patch(positionId: string, payload: PatchPositionRequest): Observable<void> {
+    return this.http
+      .patch<void>(`${this.api}/${positionId}`, payload)
+      .pipe(this.errors.rxThrow<void>("PositionsService.patch"));
   }
 
   delete(positionId: string): Observable<void> {
     return this.http
-      .delete<void>(`${this.API}/${positionId}`)
+      .delete<void>(`${this.api}/${positionId}`)
       .pipe(this.errors.rxThrow<void>("PositionsService.remove"));
-  }
-
-  removeServices(positionId: string, serviceOfferingIds: string[]): Observable<void> {
-    const body: RemoveServicesFromPositionRequest = { serviceOfferingIds };
-    return this.http
-      .delete<void>(`${this.API}/${positionId}/services`, { body })
-      .pipe(this.errors.rxThrow<void>("PositionsService.removeServices"));
   }
 
   activateMany(positionIds: string[]): Observable<void> {
     const body: ActivatePositionsRequest = { positionIds };
     return this.http
-      .patch<void>(`${this.API}/activate`, body)
+      .patch<void>(`${this.api}/activate`, body)
       .pipe(this.errors.rxThrow<void>("PositionsService.activateMany"));
   }
 
   disableMany(positionIds: string[]): Observable<void> {
     const body: DisablePositionsRequest = { positionIds };
     return this.http
-      .patch<void>(`${this.API}/disable`, body)
+      .patch<void>(`${this.api}/disable`, body)
       .pipe(this.errors.rxThrow<void>("PositionsService.disableMany"));
   }
 
-  removeService(positionId: string, serviceOfferingId: string): Observable<void> {
-    return this.removeServices(positionId, [serviceOfferingId]);
+  listPositionActiveOptions(search: string = "", take: number = 20): Observable<PositionOptions[]> {
+    const params: Record<string, string> = {};
+
+    if (search)
+      params["search"] = search;
+
+    if (take)
+      params["take"] = String(take);
+
+    return this.http
+      .get<PositionOptions[]>(`${this.api}/options`, { params })
+      .pipe(this.errors.rxThrow<PositionOptions[]>("PositionsService.listActiveOptions"));
   }
 }

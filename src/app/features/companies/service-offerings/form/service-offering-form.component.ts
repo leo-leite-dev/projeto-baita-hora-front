@@ -3,11 +3,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { InputGenericModule } from '../../../../../shareds/common/InputGenericModule';
 
 export type ServiceOfferingForm = {
-  serviceOfferingName: FormControl<string>;
-  price: FormControl<number>;
+  name: FormControl<string>;
+  price: FormControl<number>;           
   currency: FormControl<string>;
 };
-
 @Component({
   selector: 'app-service-offering-form',
   imports: [InputGenericModule],

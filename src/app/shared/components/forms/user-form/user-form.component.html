@@ -1,0 +1,24 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-input type="email" label="E-mail" formControlName="email" />
+        <app-field-errors [control]="group.controls.email" />
+    </div>
+
+    <div class="field">
+        <app-input type="text" label="Usuário" formControlName="username" />
+        <app-field-errors [control]="group.controls.username" />
+    </div>
+
+    <div class="field">
+        <app-input type="password" label="Senha" formControlName="rawPassword" />
+        <app-field-errors label="Senha" [control]="group.controls.rawPassword" />
+    </div>
+
+    <div class="field">
+        <app-input type="password" label="Confirmar senha" formControlName="confirmPassword" />
+        <app-field-errors label="Confirmar senha" [control]="group.controls.confirmPassword"
+            [messages]="{ mustMatch: 'As senhas não conferem.' }" />
+    </div>
+
+    <app-profile-form class="field--full" [group]="group.controls.profile" />
+</div>

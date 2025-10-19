@@ -3,8 +3,7 @@
         <app-back-button [to]="['/app/service-offering/list']" variant="ghost" label="Voltar" aria-label="Voltar" />
 
         <div class="card_head mt-20">
-            <h2>Criar oferta de serviço</h2>
-            <p class="subtitle">Defina o serviço e o valor</p>
+            <app-form-header title="Cadastro de serviços" subtitle="Informe os dados do serviço" />
 
             <div *ngIf="form.hasError('server')" class="alert" role="alert" aria-live="assertive">
                 {{ form.getError('server') }}
@@ -15,7 +14,8 @@
             <app-service-offering-form class="field--full" [group]="form" />
 
             <div class="actions field--full">
-                <app-button variant="clean" htmlType="button" label="Limpar" (clicked)="reset()" />
+                <app-button variant="clean" htmlType="button" label="Limpar" (clicked)="reset()"
+                    [disabled]="submitting || !form.dirty" />
                 <app-button variant="primary" htmlType="submit" label="Salvar"
                     [disabled]="form.invalid || submitting" />
             </div>

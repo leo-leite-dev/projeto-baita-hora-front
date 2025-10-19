@@ -3,6 +3,9 @@ import { authGuard } from './auth/guards/auth.guard';
 import { guestGuard } from './auth/guards/guest.guard';
 import { ShellComponent } from '../layout/shell.component';
 import { ServiceOfferingResolver } from '../features/companies/service-offerings/resolver/service-offering.resolver';
+import { PositionResolver } from '../features/companies/positions/resolver/position.resolver';
+import { MemberResolver } from '../features/companies/members/resolver/member.resolver';
+import { MemberEditFacade } from '../features/companies/members/data/member-edit.facade';
 
 export const routes: Routes = [
   {
@@ -66,7 +69,7 @@ export const routes: Routes = [
           {
             path: 'list',
             loadComponent: () =>
-              import('../features/companies/service-offerings/pages/service-offerings-list/service-offering-list.component')
+              import('../features/companies/service-offerings/pages/service-offerings-list/service-offerings-list.component')
                 .then(m => m.ServiceOfferingListComponent),
           },
           { path: '', pathMatch: 'full', redirectTo: 'list' },
@@ -81,19 +84,43 @@ export const routes: Routes = [
               import('../features/companies/positions/pages/position-create/position-create.component')
                 .then(m => m.PositionCreateComponent),
           },
-          // {
-          //   path: ':id/edit',
-          //   resolve: { position: PositionResolver },
-          //   canDeactivate: [PendingChangesGuard], // opcional mas recomendado
-          //   loadComponent: () =>
-          //     import('../features/companies/positions/pages/position-edit/position-edit.component')
-          //       .then(m => m.PositionEditComponent),
-          // },
+          {
+            path: ':id/edit',
+            resolve: { item: PositionResolver },
+            loadComponent: () =>
+              import('../features/companies/positions/pages/position-edit/position-edit.component')
+                .then(m => m.PositionEditComponent),
+          },
           {
             path: 'list',
             loadComponent: () =>
               import('../features/companies/positions/pages/positions-list/position-list.component')
                 .then(m => m.PositionListComponent),
+          },
+          { path: '', pathMatch: 'full', redirectTo: 'list' },
+        ],
+      },
+      {
+        path: 'member',
+        children: [
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('../features/companies/members/pages/member-create/member-create.component')
+                .then(m => m.MemberCreateComponent),
+          },
+          {
+            path: ':id/edit',
+            resolve: { member: MemberResolver },
+            loadComponent: () =>
+              import('../features/companies/members/pages/member-edit/member-edit.component')
+                .then(m => m.MemberEditComponent),
+          },
+          {
+            path: 'list',
+            loadComponent: () =>
+              import('../features/companies/members/pages/members-list/member-list.component')
+                .then(m => m.MemberListComponent),
           },
           { path: '', pathMatch: 'full', redirectTo: 'list' },
         ],

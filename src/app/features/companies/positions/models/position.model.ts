@@ -1,18 +1,11 @@
 import { CompanyRole } from "../../../../shared/enums/company-role.enum";
+import { ServiceOfferingOption } from "../../service-offerings/models/service-oferring-option.model";
+import { PositionBase } from "./position-base.model";
 
-type Uuid = string;
-
-export interface ServiceDto {
-    id: Uuid;
-    name: string;
-}
-
-export interface Position {
-    id: Uuid;
-    name: string;
+export interface Position extends PositionBase {
     accessLevel: CompanyRole;
     isActive: boolean;
     createdAtUtc: string;
     updatedAtUtc?: string;
-    serviceOfferings: ServiceDto[];
+    serviceOfferings: ServiceOfferingOption[];
 }

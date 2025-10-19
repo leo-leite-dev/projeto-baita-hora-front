@@ -1,0 +1,39 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-input type="masked" label="CEP" [mask]="'00000-000'" [dropSpecialCharacters]="true"
+            formControlName="zipCode" />
+        <app-field-errors label="CEP" [control]="group.controls.zipCode" />
+    </div>
+
+    <div class="field">
+        <app-input type="text" label="Rua" formControlName="street" />
+        <app-field-errors label="Rua" [control]="group.controls.street" />
+    </div>
+
+    <div class="field">
+        <app-input type="text" label="Cidade" formControlName="city" />
+        <app-field-errors label="Cidade" [control]="group.controls.city" />
+    </div>
+
+    <div class="field">
+        <app-input type="text" label="Bairro" formControlName="neighborhood" />
+        <app-field-errors label="Bairro" [control]="group.controls.neighborhood" />
+    </div>
+
+    <div class="grid grid-3 field--full">
+        <div class="field">
+            <app-input type="number" label="Número" formControlName="number" />
+            <app-field-errors label="Número" [control]="group.controls.number" />
+        </div>
+
+        <div class="field">
+            <app-input type="text" label="Estado" formControlName="state" />
+            <app-field-errors label="Estado" [control]="group.controls.state" />
+        </div>
+
+        <div class="field">
+            <app-input type="text" label="Complemento" formControlName="complement" />
+            <app-field-errors label="Complemento" [control]="group.controls.complement" />
+        </div>
+    </div>
+</div>

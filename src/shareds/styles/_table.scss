@@ -1,15 +1,50 @@
+@use 'colors' as *;
+
+.pretty-table .mat-mdc-no-data-row td {
+    padding: 0;
+    border: 0;
+}
+
+.empty-state {
+    gap: 1rem;
+    padding: 2rem 1rem;
+    margin: .5rem 0;
+    border-radius: .75rem;
+    background: $bg-light;
+    border: 1px dashed $border-mid;
+    color: $text;
+}
+
+.empty-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    opacity: .6;
+    margin-bottom: .25rem;
+}
+
+.empty-title {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.empty-hint {
+    opacity: .8;
+    font-size: .875rem;
+}
+
 .table-wrapper {
-  max-width: 1400px;   
-  margin: 0 auto;     
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .toolbar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px auto; 
-  max-width: 1400px;    
-  width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px auto;
+    max-width: 1400px;
+    width: 100%;
 
     .w-64 {
         width: 16rem;
@@ -36,10 +71,15 @@
     }
 }
 
+
 .pretty-table {
     --row-h: 40px;
     --cell-px: 10px;
     --cell-py: 8px;
+
+    .mat-column-updatedAtUtc {
+        text-align: center;
+    }
 
     th[mat-header-cell],
     td[mat-cell] {
@@ -69,26 +109,17 @@
         width: 20%;
     }
 
-    .mat-column-price {
-        width: 10%;
-        text-align: left;
-    }
-
-    .mat-column-currency {
-        width: 10%;
-    }
-
     .mat-column-isActive {
         width: 8%;
         text-align: center;
     }
 
     .mat-column-createdAtUtc {
-        width: 5%;
+        width: 2%;
     }
 
     .mat-column-updatedAtUtc {
-        width: 5%;
+        width: 2%;
     }
 
     .mat-column-actions {

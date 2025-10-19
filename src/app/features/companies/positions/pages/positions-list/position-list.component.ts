@@ -6,13 +6,14 @@ import { BulkToolbarComponent } from "../../../../../shared/components/bulk-tool
 import { LinkButtonComponent } from "../../../../../shared/components/buttons/link-button/link-button.component";
 import { BULK_MESSAGES } from "../../../../../shared/components/bulk-toolbar/tokens/bulk-messages.token";
 import { BulkMessages } from "../../../../../shared/components/bulk-toolbar/models/bulk-messages";
-import { BaseListComponent } from "../../../../../shared/components/table/components/base-list.component";
-import { Position, ServiceDto } from "../../models/position.model";
+import { BaseListComponent } from "../../../../../shared/components/table/base-list.component";
+import { Position } from "../../models/position.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import { PositionsFacade } from "../../data/position.facade";
 import { PositionsService } from "../../services/positions.service";
 import { EntityFacade } from "../../../../../shared/components/table/contracts/entity-facade";
 import { EntityDeleteService } from "../../../../../shared/components/table/contracts/entity-delete-service";
+import { ServiceOfferingOption } from "../../../service-offerings/models/service-oferring-option.model";
 
 @Component({
   selector: 'app-position-list',
@@ -41,7 +42,7 @@ import { EntityDeleteService } from "../../../../../shared/components/table/cont
   ],
 })
 export class PositionListComponent extends BaseListComponent<Position> implements OnInit {
-  override baseColumns: string[] = ['name', 'serviceOfferings', 'isActive', 'createdAtUtc', 'actions'];
+  override baseColumns: string[] = ['name', 'serviceOfferings', 'isActive', 'createdAtUtc', 'updatedAtUtc', 'actions'];
 
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -56,7 +57,7 @@ export class PositionListComponent extends BaseListComponent<Position> implement
     );
   }
 
-  chipClassForService(_: ServiceDto, index: number): string {
+  chipClassForService(_: ServiceOfferingOption, index: number): string {
     const colorIndex = (index % 5) + 1;
     return `chip chip-color-${colorIndex}`;
   }
@@ -69,8 +70,12 @@ export class PositionListComponent extends BaseListComponent<Position> implement
     return Math.max(0, (row.serviceOfferings?.length ?? 0) - n);
   }
 
-  firstServices(row: Position, n = 3): ServiceDto[] {
+  firstServices(row: Position, n = 3): ServiceOfferingOption[] {
     return row.serviceOfferings?.slice(0, n) ?? [];
+  }
+
+  isFounder(row: Position): boolean {
+    return (row.name ?? '').trim().toLowerCase() === 'fundador';
   }
 
   edit(row: Position) {
@@ -82,5 +87,5 @@ export class PositionListComponent extends BaseListComponent<Position> implement
   }
 
   trackById = (_: number, item: Position) => item.id;
-  trackByServiceId = (_: number, item: ServiceDto) => item.id;
+  trackByServiceId = (_: number, item: ServiceOfferingOption) => item.id;
 }

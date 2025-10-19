@@ -1,23 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { InputTextComponent } from '../../app/shared/components/forms/input-text/input-text.component';
 import { FieldErrorsComponent } from '../../app/shared/components/field-errors/field-errors.component';
-import { InputNumberComponent } from '../../app/shared/components/forms/input-number/input-number.component';
+import { InputComponent } from '../../app/shared/components/inputs/input/input.component';
 
 @NgModule({
   imports: [
     CommonModule,
+    InputComponent,
     ReactiveFormsModule,
-    InputTextComponent,
-    InputNumberComponent,
-    FieldErrorsComponent,
+    FieldErrorsComponent
   ],
   exports: [
     CommonModule,
+    InputComponent,
     ReactiveFormsModule,
-    InputTextComponent,
-    InputNumberComponent,
     FieldErrorsComponent
   ],
 })

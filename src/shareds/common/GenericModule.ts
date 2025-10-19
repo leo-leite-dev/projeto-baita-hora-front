@@ -1,13 +1,25 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BackButtonComponent } from '../../app/shared/components/buttons/back-button/back-button.component';
+import { ButtonComponent } from '../../app/shared/components/buttons/button/button.component';
+import { FormHeaderComponent } from '../../app/shared/components/forms/form-header/form-header.component';
+import { InputGenericModule } from './InputGenericModule';
 
 @NgModule({
   imports: [
-    CommonModule, 
-    FormsModule,
+    CommonModule,
     ReactiveFormsModule,
+    ButtonComponent,
+    BackButtonComponent,
+    FormHeaderComponent,
   ],
-  exports: [CommonModule, FormsModule, ReactiveFormsModule],
+  exports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ButtonComponent,
+    BackButtonComponent,
+    FormHeaderComponent,
+  ],
 })
 export class GenericModule { }

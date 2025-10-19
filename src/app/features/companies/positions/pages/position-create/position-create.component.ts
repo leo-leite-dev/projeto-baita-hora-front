@@ -1,6 +1,5 @@
-import { Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Component, inject, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { finalize, shareReplay, take } from "rxjs";
 import { ToastrService } from "ngx-toastr";
 import { PositionsService } from "../../services/positions.service";
@@ -8,43 +7,41 @@ import { ServiceOfferingsService } from "../../../service-offerings/services/ser
 import { CompanyRole } from "../../../../../shared/enums/company-role.enum";
 import { PositionForm, PositionFormComponent } from "../../form/position-form.component";
 import { extractErrorMessage } from "../../../../../shared/utils/error.util";
-import { CreatePositionRequest } from "../../contracts/CreatePositionRequest";
-import { ServiceDto } from "../../models/position.model";
-import { ButtonComponent } from "../../../../../shared/components/buttons/button/button.component";
-import { BackButtonComponent } from "../../../../../shared/components/buttons/back-button/back-button.component";
+import { CreatePositionRequest } from "../../contracts/create-position-request.contract";
+import { GenericModule } from "../../../../../../shareds/common/GenericModule";
+import { Router } from "@angular/router";
+import { ServiceOfferingOption } from "../../../service-offerings/models/service-oferring-option.model";
 
 @Component({
   standalone: true,
   selector: 'app-position-create',
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ButtonComponent,
-    BackButtonComponent,
+    GenericModule,
     PositionFormComponent
   ],
   templateUrl: './position-create.component.html'
 })
-export class PositionCreateComponent {
+export class PositionCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
   private positionsService = inject(PositionsService);
   private serviceOfferingsService = inject(ServiceOfferingsService);
   private toastr = inject(ToastrService);
+  private router = inject(Router);
 
   form!: FormGroup<PositionForm>;
   submitting = false;
 
-  serviceOfferingOptions$ = this.serviceOfferingsService.listAll().pipe(
-    shareReplay({ bufferSize: 1, refCount: true })
-  );
+  serviceOfferingOptions$ = this.serviceOfferingsService
+    .listServiceOfferingActiveOptions()
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
-  constructor() {
+  ngOnInit(): void {
     this.buildForm();
   }
 
   private buildForm(): void {
     this.form = this.fb.group<PositionForm>({
-      positionName: this.fb.control('', {
+      name: this.fb.control('', {
         nonNullable: true,
         validators: [
           Validators.required,
@@ -52,11 +49,11 @@ export class PositionCreateComponent {
           Validators.maxLength(50)
         ],
       }),
-      accessLevel: this.fb.control(CompanyRole.Viewer, {
+      accessLevel: this.fb.control(CompanyRole.Staff, {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      serviceOfferings: this.fb.control<ServiceDto[]>([], {
+      serviceOfferings: this.fb.control<ServiceOfferingOption[]>([], {
         nonNullable: true,
         validators: [Validators.required, Validators.minLength(1)],
       }),
@@ -69,11 +66,13 @@ export class PositionCreateComponent {
       return;
     }
 
-    const { positionName, accessLevel, serviceOfferings } = this.form.getRawValue();
+    const { name, accessLevel, serviceOfferings } = this.form.getRawValue();
+
+    const accessLevelNum = Number(accessLevel);
 
     const payload: CreatePositionRequest = {
-      positionName: positionName,
-      accessLevel,
+      name,
+      accessLevel: accessLevelNum as CompanyRole,
       serviceOfferingIds: (serviceOfferings ?? []).map(s => s.id),
     };
 
@@ -90,12 +89,8 @@ export class PositionCreateComponent {
       )
       .subscribe({
         next: () => {
-          this.toastr.success('Posição criada com sucesso!');
-          this.form.reset({
-            positionName: '',
-            accessLevel: CompanyRole.Viewer,
-            serviceOfferings: [],
-          });
+          this.toastr.success('Cargo criado com sucesso!');
+          this.router.navigate(['/app/position/list']);
         },
         error: (err) => {
           const status: number | undefined = err?.status;
@@ -103,7 +98,7 @@ export class PositionCreateComponent {
 
           if (status === 409) {
             this.toastr.warning(msg, 'Atenção', { toastClass: 'ngx-toastr custom-toast toast-warning' });
-            this.form.get('positionName')?.setErrors({ duplicate: true });
+            this.form.get('name')?.setErrors({ duplicate: true });
             return;
           }
           this.form.setErrors({ server: msg });
@@ -113,7 +108,7 @@ export class PositionCreateComponent {
 
   reset(): void {
     this.form.reset({
-      positionName: '',
+      name: '',
       accessLevel: CompanyRole.Viewer,
       serviceOfferings: [],
     });

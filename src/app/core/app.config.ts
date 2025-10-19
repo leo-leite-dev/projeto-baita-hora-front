@@ -8,6 +8,7 @@ import { provideNgxMask } from 'ngx-mask';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { registerIcons } from '../../shareds/icons/fontawesome.icon';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -25,11 +26,11 @@ export const appConfig: ApplicationConfig = {
       multi: true
     },
 
-    provideNgxMask({
-      dropSpecialCharacters: false,
-    }),
-
+    provideNgxMask({ dropSpecialCharacters: false }),
     provideAnimations(),
+
+    provideNativeDateAdapter(),
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
 
     {
       provide: APP_INITIALIZER,

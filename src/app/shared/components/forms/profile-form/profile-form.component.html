@@ -1,0 +1,32 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-input type="text" label="Nome completo" formControlName="fullName" />
+        <app-field-errors [control]="group.controls.fullName" />
+    </div>
+
+    <div class="field">
+        <app-input type="masked" label="CPF" [mask]="'000.000.000-00'" [dropSpecialCharacters]="true"
+            formControlName="cpf" />
+        <app-field-errors label="CPF" [control]="group.controls.cpf" />
+    </div>
+
+    <div class="grid grid-3 field--full">
+        <div class="field">
+            <app-input type="text" label="RG" formControlName="rg" />
+            <app-field-errors label="RG" [control]="group.controls.rg" />
+        </div>
+
+        <div class="field">
+            <app-input type="phone" label="Telefone" [dropSpecialCharacters]="true" formControlName="phone" />
+            <app-field-errors label="Telefone" [control]="group.controls.phone" />
+        </div>
+
+        <div class="field">
+            <app-input type="date" label="Nascimento" formControlName="birthDate" [maxDate]="today" [minDate]="minBirth"
+                [startView]="'multi-year'" />
+            <app-field-errors label="Data de nascimento" [control]="group.controls.birthDate" />
+        </div>
+    </div>
+
+    <app-address-form class="field--full" [group]="group.controls.address" />
+</div>

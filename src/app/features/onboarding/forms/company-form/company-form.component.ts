@@ -1,9 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { InputTextComponent } from '../../../../shared/components/forms/input-text/input-text.component';
-import { AddressForm, AddressFormComponent } from '../address-form/address-form.component';
+import { AddressForm, AddressFormComponent } from '../../../../shared/components/forms/address-form/address-form.component';
 import { FieldErrorsComponent } from '../../../../shared/components/field-errors/field-errors.component';
-import { InputPhoneComponent } from '../../../../shared/components/forms/input-phone/input-phone.component';
+import { InputComponent } from '../../../../shared/components/inputs/input/input.component';
 
 export type CompanyForm = {
   companyName: FormControl<string>;
@@ -19,8 +18,7 @@ export type CompanyForm = {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    InputTextComponent,
-    InputPhoneComponent,
+    InputComponent,
     AddressFormComponent,
     FieldErrorsComponent
   ],

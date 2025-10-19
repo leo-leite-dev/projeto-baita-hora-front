@@ -1,7 +1,7 @@
 <div class="grid" [formGroup]="group">
     <div class="field">
-        <app-input-text label="Cargo" formControlName="positionName" />
-        <app-field-errors [control]="group.controls.positionName" />
+        <app-input label="Cargo" placeholder="Digite o nome do cargo" formControlName="name" />
+        <app-field-errors [control]="group.controls.name" />
     </div>
 
     <div class="field">
@@ -12,8 +12,7 @@
     <div class="field">
         <app-auto-chips-auto-complete formControlName="serviceOfferings" [options$]="serviceOfferingOptions$"
             [displayWith]="soDisplay" [trackBy]="soTrack" placeholder="Serviços vinculados"
-            inputPlaceholder="Digite para buscar">
-        </app-auto-chips-auto-complete>
+            inputPlaceholder="Digite para buscar" />
         <app-field-errors [control]="group.controls.serviceOfferings" />
     </div>
 </div>

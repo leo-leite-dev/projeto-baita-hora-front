@@ -4,7 +4,7 @@ export interface UserProfile {
     fullName: string;
     cpf: string;
     rg?: string;
-    userPhone: string;
+    phone: string;
     birthDate?: string;
     address: Address;
 }

@@ -1,0 +1,9 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-select label="Cargo" formControlName="positionId" [options]="(selectOptions$ | async) ?? []" />
+        <app-field-errors [control]="group.controls.positionId" />
+    </div>
+
+    <app-user-form class="field--full" [group]="group.controls.Member" [locked]="false" />
+
+</div>

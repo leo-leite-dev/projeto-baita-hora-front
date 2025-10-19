@@ -1,19 +1,17 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CompanyRole } from '../../../../shared/enums/company-role.enum';
-import { InputGenericModule } from '../../../../../shareds/common/InputGenericModule';
-import { SelectComponent } from '../../../../shared/components/forms/select/select.component';
-import { AutoChipsAutocompleteComponent } from '../../../../shared/components/forms/auto-chips-auto-complete/auto-chips-auto-complete.component';
-import { ServiceDto } from '../models/position.model';
+import { SelectComponent, SelectOption } from '../../../../shared/components/select/select.component';
+import { AutoChipsAutocompleteComponent } from '../../../../shared/components/inputs/auto-chips-auto-complete/auto-chips-auto-complete.component';
 import { Observable } from 'rxjs';
+import { InputGenericModule } from '../../../../../shareds/common/InputGenericModule';
+import { ServiceOfferingOption } from '../../service-offerings/models/service-oferring-option.model';
 
 export type PositionForm = {
-  positionName: FormControl<string>;
+  name: FormControl<string>;
   accessLevel: FormControl<CompanyRole>;
-  serviceOfferings: FormControl<ServiceDto[]>;
+  serviceOfferings: FormControl<ServiceOfferingOption[]>;
 };
-
-export type SelectOption<T = string | number> = { value: T; label: string };
 
 @Component({
   selector: 'app-position-form',
@@ -28,14 +26,14 @@ export type SelectOption<T = string | number> = { value: T; label: string };
 })
 export class PositionFormComponent {
   @Input({ required: true }) group!: FormGroup<PositionForm>;
-  @Input({ required: true }) serviceOfferingOptions$!: Observable<ServiceDto[]>;
+  @Input({ required: true }) serviceOfferingOptions$!: Observable<ServiceOfferingOption[]>;
 
-  roleOptions: SelectOption<CompanyRole>[] = [
-    { value: CompanyRole.Manager, label: 'Gerente' },
+  @Input() roleOptions: SelectOption<CompanyRole>[] = [
     { value: CompanyRole.Staff, label: 'Equipe' },
     { value: CompanyRole.Viewer, label: 'Usuário' },
+    { value: CompanyRole.Manager, label: 'Gerente' },
   ];
 
-  soDisplay = (o: ServiceDto | null) => o?.name ?? '';
-  soTrack = (o: ServiceDto) => o.id;
+  @Input() soDisplay: (o: ServiceOfferingOption | null) => string = (o) => o?.name ?? '';
+  @Input() soTrack: (o: ServiceOfferingOption) => string = (o) => o.id;
 }

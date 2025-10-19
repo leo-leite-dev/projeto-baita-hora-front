@@ -1,16 +1,17 @@
 <div class="grid" [formGroup]="group">
     <div class="field">
-        <app-input-text label="Serviço" formControlName="serviceOfferingName" />
-        <app-field-errors [control]="group.controls.serviceOfferingName" />
+        <app-input label="Serviço" placeholder="Digite o nome do serviço" formControlName="name" />
+        <app-field-errors [control]="group.controls.name" label="Serviço" />
     </div>
 
     <div class="field">
-        <app-input-number label="Preço" formControlName="price" />
-        <app-field-errors [control]="group.controls.price" />
+        <app-input type="currency" label="Preço" placeholder="Digite o preço" [fractionDigits]="2"
+            formControlName="price" />
+        <app-field-errors [control]="group.controls.price" label="Preço" />
     </div>
 
     <div class="field">
-        <app-input-text label="Moeda" formControlName="currency" />
-        <app-field-errors [control]="group.controls.currency" />
+        <app-input label="Moeda" placeholder="Ex: BRL, USD…" formControlName="currency" />
+        <app-field-errors [control]="group.controls.currency" label="Moeda" />
     </div>
 </div>

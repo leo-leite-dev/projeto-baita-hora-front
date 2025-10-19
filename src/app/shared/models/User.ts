@@ -1,8 +1,13 @@
 import { UserProfile } from "./UserProfile";
 
-export interface User {
-  userEmail: string;
+export interface UserBase {
+  email: string;
   username: string;
-  rawPassword: string;
   profile: UserProfile;
 }
+
+export interface User extends UserBase {
+  rawPassword: string;
+}
+
+export interface UserDto extends UserBase { }

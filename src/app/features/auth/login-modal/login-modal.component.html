@@ -21,12 +21,12 @@
 
         <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
             <div class="field">
-                <app-input-text label="Identificador" formControlName="identify" />
+                <app-input label="Identificador" type="text" formControlName="identify"></app-input>
                 <app-field-errors label="Identificador" [control]="form.get('identify')" />
             </div>
 
             <div class="field">
-                <app-input-text label="Senha" type="password" formControlName="password" />
+                <app-input label="Senha" type="password" formControlName="password"></app-input>
                 <app-field-errors label="Senha" [control]="form.get('password')" />
             </div>
 

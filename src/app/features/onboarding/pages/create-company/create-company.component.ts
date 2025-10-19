@@ -1,22 +1,25 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, AbstractControl, EmailValidator } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject, firstValueFrom } from 'rxjs';
-import { debounceTime, takeUntil, finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil, finalize, take } from 'rxjs/operators';
 import { OnboardingDataService } from '../../services/onboardind-data.service';
 import { OnboardingService } from '../../services/onboarding.service';
-import { RegisterOwnerWithCompanyRequest } from '../../contracts/RegisterOwnerWithCompanyRequest';
 import { ToastrService } from 'ngx-toastr';
-import { ErrorHandlingService, isNormalizedError } from '../../../../shared/services/error-handling.service';
-import { CreateUserRequest } from '../../../../shared/contracts/CreateUserRequest';
-import { CreateCompanyRequest } from '../../../../shared/contracts/CreateCompanyRequest';
+import { CreateUserRequest } from '../../../../shared/contracts/user-request';
+import { CreateCompanyRequest } from '../../../../shared/contracts/company-request';
 import { cnpjValidator } from '../../../../shared/validators/cnpjValidator';
 import { emailValidator } from '../../../../shared/validators/email.validator';
 import { cepValidator } from '../../../../shared/validators/cep.validator';
 import { ButtonComponent } from '../../../../shared/components/buttons/button/button.component';
-import { AddressForm } from '../../forms/address-form/address-form.component';
+import { AddressForm } from '../../../../shared/components/forms/address-form/address-form.component';
 import { CompanyForm, CompanyFormComponent } from '../../forms/company-form/company-form.component';
+import { onlyDigits, toIsoDate } from '../../../../shared/utils/string.util';
+import { FormHeaderComponent } from '../../../../shared/components/forms/form-header/form-header.component';
+import { BackButtonComponent } from '../../../../shared/components/buttons/back-button/back-button.component';
+import { extractErrorMessage } from '../../../../shared/utils/error.util';
+import { RegisterOwnerWithCompanyRequest } from '../../contracts/owner-request';
 
 @Component({
   selector: 'app-create-company',
@@ -25,7 +28,9 @@ import { CompanyForm, CompanyFormComponent } from '../../forms/company-form/comp
     CommonModule,
     ReactiveFormsModule,
     CompanyFormComponent,
-    ButtonComponent
+    ButtonComponent,
+    BackButtonComponent,
+    FormHeaderComponent
   ],
   templateUrl: './create-company.component.html',
   styleUrls: ['./create-company.component.scss'],
@@ -36,8 +41,6 @@ export class CreateCompanyComponent implements OnInit, OnDestroy {
   private data = inject(OnboardingDataService);
   private onboardingService = inject(OnboardingService);
   private toastr = inject(ToastrService);
-  private errorHandler = inject(ErrorHandlingService);
-
   private destroy$ = new Subject<void>();
 
   form: FormGroup<CompanyForm>;
@@ -47,55 +50,29 @@ export class CreateCompanyComponent implements OnInit, OnDestroy {
     this.form = this.fb.group<CompanyForm>({
       companyName: this.fb.control('', {
         nonNullable: true,
-        validators: [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.maxLength(50),
-        ],
+        validators: [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
       }),
       tradeName: this.fb.control('', {
         nonNullable: true,
-        validators: [
-          Validators.minLength(3),
-          Validators.maxLength(200),
-        ],
+        validators: [Validators.minLength(3), Validators.maxLength(200)],
       }),
       cnpj: this.fb.control('', {
         nonNullable: true,
-        validators: [Validators.required, cnpjValidator,],
+        validators: [Validators.required, cnpjValidator],
       }),
       companyPhone: this.fb.control('', { nonNullable: true }),
       companyEmail: this.fb.control('', {
         nonNullable: true,
         validators: [Validators.email, emailValidator],
       }),
-
       address: this.fb.group<AddressForm>({
-        street: this.fb.control('', {
-          nonNullable: true,
-          validators: [Validators.required],
-        }),
-        number: this.fb.control('', {
-          nonNullable: true,
-          validators: [Validators.required],
-        }),
+        street: this.fb.control('', { nonNullable: true, validators: [Validators.required] }),
+        number: this.fb.control('', { nonNullable: true, validators: [Validators.required] }),
         complement: this.fb.control('', { nonNullable: true }),
-        neighborhood: this.fb.control('', {
-          nonNullable: true,
-          validators: [Validators.required],
-        }),
-        city: this.fb.control('', {
-          nonNullable: true,
-          validators: [Validators.required],
-        }),
-        state: this.fb.control('', {
-          nonNullable: true,
-          validators: [Validators.required],
-        }),
-        zipCode: this.fb.control('', {
-          nonNullable: true,
-          validators: [Validators.required, cepValidator],
-        }),
+        neighborhood: this.fb.control('', { nonNullable: true, validators: [Validators.required] }),
+        city: this.fb.control('', { nonNullable: true, validators: [Validators.required] }),
+        state: this.fb.control('', { nonNullable: true, validators: [Validators.required] }),
+        zipCode: this.fb.control('', { nonNullable: true, validators: [Validators.required, cepValidator] }),
       }),
     });
   }
@@ -108,9 +85,7 @@ export class CreateCompanyComponent implements OnInit, OnDestroy {
     }
 
     const draftCompany = this.data.companyDraft ?? this.data.snapshot.company ?? null;
-    if (draftCompany) {
-      this.form.patchValue(draftCompany as any, { emitEvent: false });
-    }
+    if (draftCompany) this.form.patchValue(draftCompany as any, { emitEvent: false });
 
     this.form.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroy$))
@@ -129,52 +104,9 @@ export class CreateCompanyComponent implements OnInit, OnDestroy {
     this.router.navigate(['/onboarding/create-owner']);
   }
 
-  // ========== Helpers de UI para erros ==========
-  // invalid(path: string): boolean {
-  //   const c = this.form.get(path);
-  //   return !!(c && c.invalid && (c.dirty || c.touched));
-  // }
-
-  // firstError(path: string): string {
-  //   const c = this.form.get(path);
-  //   if (!c || !c.errors) return '';
-  //   if (c.errors['server']) return c.errors['server'];
-  //   if (c.errors['required']) return 'Campo obrigatório.';
-  //   if (c.errors['email']) return 'E-mail inválido.';
-  //   return 'Valor inválido.';
-  // }
-
-  // private focusGlobalError(): void {
-  //   // rola até o banner de erro global; se não houver, rola ao primeiro campo inválido
-  //   setTimeout(() => {
-  //     const banner = document.querySelector('[role="alert"]') as HTMLElement | null;
-  //     if (banner) {
-  //       banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  //       banner.focus?.();
-  //       return;
-  //     }
-  //     const firstInvalid = document.querySelector('.is-invalid') as HTMLElement | null;
-  //     firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  //   });
-  // }
-
-  // ========== Utils de normalização ==========
-  private onlyDigits(v: string | null | undefined): string {
-    return (v ?? '').replace(/\D+/g, '');
-  }
-  private toIsoDate(v: string | null | undefined): string {
-    const s = (v ?? '').trim();
-    if (!s) return '';
-    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-    const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    return m ? `${m[3]}-${m[2]}-${m[1]}` : s;
-  }
-
-  // ========== Submit ==========
-  async finish(): Promise<void> {
+  finish(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      // this.focusGlobalError();
       return;
     }
 
@@ -190,104 +122,69 @@ export class CreateCompanyComponent implements OnInit, OnDestroy {
       ...ownerRaw,
       profile: {
         ...ownerRaw.profile,
-        cpf: this.onlyDigits(ownerRaw.profile.cpf),
+        cpf: onlyDigits(ownerRaw.profile.cpf),
         rg: ownerRaw.profile.rg ?? '',
-        userPhone: this.onlyDigits(ownerRaw.profile.userPhone),
-        birthDate: this.toIsoDate(ownerRaw.profile.birthDate),
+        phone: onlyDigits(ownerRaw.profile.phone),
+        birthDate: toIsoDate(ownerRaw.profile.birthDate),
         address: {
           ...ownerRaw.profile.address,
-          zipCode: this.onlyDigits(ownerRaw.profile.address.zipCode),
+          number: String((ownerRaw.profile.address as any).number ?? '').trim(),
+          complement: ownerRaw.profile.address.complement ?? null,
+          zipCode: onlyDigits(ownerRaw.profile.address.zipCode),
         },
       },
     };
 
     const company: CreateCompanyRequest = {
       ...companyRaw,
-      cnpj: this.onlyDigits(companyRaw.cnpj),
-      companyPhone: this.onlyDigits(companyRaw.companyPhone),
+      cnpj: onlyDigits(companyRaw.cnpj),
+      companyPhone: onlyDigits(companyRaw.companyPhone),
       address: {
         ...companyRaw.address,
-        zipCode: this.onlyDigits(companyRaw.address.zipCode),
+        number: String((companyRaw.address as any).number ?? '').trim(),
+        complement: companyRaw.address.complement ?? null,
+        zipCode: onlyDigits(companyRaw.address.zipCode),
       },
     };
 
-    const payload: RegisterOwnerWithCompanyRequest = { owner, company };
-
-    this.loading = true;
-    this.form.disable({ emitEvent: false });
-    try {
-      await firstValueFrom(
-        this.onboardingService
-          .registerOwnerWithCompany(payload)
-          .pipe(
-            finalize(() => {
-              this.form.enable({ emitEvent: false });
-              this.loading = false;
-            })
-          )
-      );
-
-      this.data.clearCompanyDraft();
-      this.toastr.success('Cadastro realizado com sucesso!', 'Tudo certo', {
-        positionClass: 'toast-top-center',
-        progressBar: true,
-        closeButton: true,
-        timeOut: 4000,
-      });
-      this.router.navigate(['/onboarding/success']);
-    } catch (err: unknown) {
-      const parsed = isNormalizedError(err) ? err : this.errorHandler.parse(err);
-      const status = (parsed as any)?.status ?? (parsed as any)?.error?.status;
-      const body = (parsed as any)?.error ?? {};
-      const fallbackMsg = parsed?.message || 'Erro inesperado no servidor.';
-
-      const mapped = this.mapErrorsToFields(body);
-
-      if (!mapped) 
-        this.form.setErrors({ server: body?.message || fallbackMsg });
-
-      this.form.markAllAsTouched();
-    }
-  }
-
-  /**
-   * Mapeia mensagens vindas do back para campos do form.
-   * Aceita formatos:
-   *  - { field: 'cnpj', message: '...' }
-   *  - { path: 'address.zipCode', message: '...' }
-   *  - { errors: [{ field|path|name, message }, ...] }
-   *  - { fieldErrors: [...] }
-   * Retorna true se conseguiu mapear pelo menos um campo.
-   */
-  private mapErrorsToFields(body: any): boolean {
-    let mapped = false;
-
-    const setFieldError = (path?: string, message?: string) => {
-      if (!path) return;
-      const ctrl = this.resolveControlByPath(path);
-      if (ctrl) {
-        ctrl.setErrors({ server: message || 'Valor inválido.' });
-        mapped = true;
-      }
+    const body: RegisterOwnerWithCompanyRequest = {
+      owner,
+      company,
     };
 
-    const list = body?.errors || body?.fieldErrors;
-    if (Array.isArray(list) && list.length) {
-      for (const fe of list) {
-        setFieldError(fe?.field || fe?.path || fe?.name, fe?.message || body?.message);
-      }
-    }
+    this.loading = true;
+    this.form.disable();
 
-    if (!mapped && (body?.field || body?.path)) {
-      setFieldError(body.field || body.path, body?.message);
-    }
+    this.onboardingService.registerOwnerWithCompany(body)
+      .pipe(
+        take(1),
+        finalize(() => {
+          this.loading = false;
+          this.form.enable();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.data.clearCompanyDraft();
+          this.toastr.success('Cadastro realizado com sucesso!', '', {
+            positionClass: 'toast-bottom-right',
+            progressBar: true,
+            closeButton: true,
+            timeOut: 4000,
+          });
+          this.router.navigate(['/onboarding/success']);
+        },
+        error: (err) => {
+          const msg = extractErrorMessage(err);
 
-    return mapped;
+          this.form.setErrors({ server: msg });
+          this.form.markAllAsTouched();
+        }
+      });
   }
 
-  /** resolve "address.zipCode" ou "cnpj" para o controle correspondente */
-  private resolveControlByPath(path?: string): AbstractControl | null {
-    if (!path) return null;
-    return this.form.get(path) ?? null;
+  reset(): void {
+    this.form.reset();
+    this.data.clearCompanyDraft();
   }
 }

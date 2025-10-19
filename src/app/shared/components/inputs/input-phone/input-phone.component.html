@@ -1,0 +1,10 @@
+<div class="input-group">
+    <label *ngIf="label" [attr.for]="controlId">
+        {{ label }} <span *ngIf="required" aria-hidden="true">*</span>
+    </label>
+
+    <input [id]="controlId" [name]="controlId" type="text" [placeholder]="placeholder" [disabled]="disabled"
+        [required]="required" [attr.aria-required]="required" [mask]="mask"
+        [dropSpecialCharacters]="dropSpecialCharacters" [(ngModel)]="model" (ngModelChange)="onModelChange($event)"
+        (blur)="onBlur()" />
+</div>

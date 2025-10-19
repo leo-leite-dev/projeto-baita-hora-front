@@ -54,6 +54,13 @@ export class SideMenuComponent {
             { label: 'Meus Cargos', route: '/app/position/list' },
           ],
         },
+        {
+          label: 'Membros',
+          submenu: [
+            { label: 'Criar Membro', route: '/app/member/create' },
+            { label: 'Meus Funcionários', route: '/app/member/list' },
+          ],
+        },
       ],
     },
   ];

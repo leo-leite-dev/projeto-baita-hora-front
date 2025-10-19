@@ -51,23 +51,20 @@
 
 
 .refine-dialog-backdrop {
-  background: rgba(17, 24, 39, 0.55); /* slate-900 ~ */
+  background: rgba(17, 24, 39, 0.55); 
   backdrop-filter: saturate(140%) blur(6px);
 }
 
-/* Superfície do diálogo */
 .refine-dialog-panel .mat-mdc-dialog-surface {
   border-radius: 16px;
-  /* glassy card leve */
   background: #fff;
   box-shadow:
     0 10px 25px rgba(2, 6, 23, 0.18),
     0 2px 8px rgba(2, 6, 23, 0.12);
   border: 1px solid rgba(2, 6, 23, 0.06);
-  overflow: hidden; /* pro header com border-bottom colar certinho */
+  overflow: hidden;
 }
 
-/* Dark mode */
 @media (prefers-color-scheme: dark) {
   .refine-dialog-panel .mat-mdc-dialog-surface {
     background: rgba(17, 24, 39, 0.86);
@@ -78,8 +75,6 @@
   }
 }
 
-
-/* styles.scss (global) */
 ngx-mat-input-tel.tel-field .ngx-mat-input-tel-container {
   display: flex;
   align-items: center;
@@ -119,4 +114,22 @@ ngx-mat-input-tel.tel-field .country-selector {
 
 ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input {
   border-radius: 0 6px 6px 0;
+}
+
+.mat-mdc-icon-button[disabled] {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+.mat-mdc-menu-content {
+  background: #121a1473 !important;  
+  border: 1px solid rgba(0, 255, 128, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+}
+
+.mat-mdc-menu-item:hover {
+  background: rgba(0, 255, 128, 0.1) !important;
+  color: #00e676 !important;
 }

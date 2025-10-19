@@ -1,0 +1,141 @@
+<ng-container *ngIf="details$ | async as d; else loading">
+    <div class="dialog-header">
+        <!-- <div class="avatar">{{ initials(d.user.profile.fullName) }}</div> -->
+        <div class="title-wrap">
+            <h2 class="title">Detalhes de {{ d.user.profile.fullName }}</h2>
+            <div class="chips">
+                <mat-chip-set>
+                    <mat-chip selected [disabled]="true">{{ d.role }}</mat-chip>
+                    <mat-chip selected [disabled]="true" *ngIf="d.position">{{ d.position }}</mat-chip>
+                    <mat-chip selected [disabled]="true" [color]="d.isActive ? 'primary' : 'warn'">
+                        {{ d.isActive ? 'Ativo' : 'Inativo' }}
+                    </mat-chip>
+                </mat-chip-set>
+            </div>
+            <div class="meta">
+                Ingressou em {{ d.joinedAt | date:'mediumDate' }}
+            </div>
+        </div>
+        <button mat-icon-button mat-dialog-close aria-label="Fechar">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="cards-grid">
+        <!-- Contato -->
+        <mat-card class="info-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>alternate_email</mat-icon>
+                <mat-card-title>Contato</mat-card-title>
+                <mat-card-subtitle>Informações de comunicação</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="row">
+                    <div class="label"><mat-icon>mail</mat-icon>Email</div>
+                    <div class="value mono">
+                        {{ d.user.email }}
+                        <button mat-icon-button class="copy" matTooltip="Copiar" (click)="copy(d.user.email)">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="label"><mat-icon>badge</mat-icon>Username</div>
+                    <div class="value mono">
+                        {{ d.user.username }}
+                        <button mat-icon-button class="copy" matTooltip="Copiar" (click)="copy(d.user.username)">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="label"><mat-icon>call</mat-icon>Telefone</div>
+                    <div class="value mono">
+                        {{ d.user.profile.phone }}
+                        <button mat-icon-button class="copy" matTooltip="Copiar" (click)="copy(d.user.profile.phone)">
+                            <mat-icon>content_copy</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="info-card">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>fingerprint</mat-icon>
+                <mat-card-title>Identificação</mat-card-title>
+                <mat-card-subtitle>Dados pessoais</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="row">
+                    <div class="label"><mat-icon>badge</mat-icon>Nome</div>
+                    <div class="value">{{ d.user.profile.fullName }}</div>
+                </div>
+                <div class="row">
+                    <div class="label"><mat-icon>credit_card</mat-icon>CPF</div>
+                    <div class="value mono">{{ d.user.profile.cpf }}</div>
+                </div>
+                <div class="row">
+                    <div class="label"><mat-icon>assignment_ind</mat-icon>RG</div>
+                    <div class="value mono">{{ d.user.profile.rg || '—' }}</div>
+                </div>
+                <div class="row">
+                    <div class="label"><mat-icon>cake</mat-icon>Nascimento</div>
+                    <div class="value">
+                        {{ d.user.profile.birthDate ? (d.user.profile.birthDate | date:'mediumDate') : '—' }}
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="info-card address">
+            <mat-card-header>
+                <mat-icon mat-card-avatar>location_on</mat-icon>
+                <mat-card-title>Endereço</mat-card-title>
+                <mat-card-subtitle>Residencial</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <div class="row">
+                    <div class="label">Rua</div>
+                    <div class="value">{{ d.user.profile.address.street }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Número</div>
+                    <div class="value">{{ d.user.profile.address.number }}</div>
+                </div>
+                <div class="row" *ngIf="d.user.profile.address.complement">
+                    <div class="label">Complemento</div>
+                    <div class="value">{{ d.user.profile.address.complement }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Bairro</div>
+                    <div class="value">{{ d.user.profile.address.neighborhood }}</div>
+                </div>
+                <div class="row">
+                    <div class="label">Cidade / UF</div>
+                    <div class="value">
+                        {{ d.user.profile.address.city }}/{{ d.user.profile.address.state }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="label">CEP</div>
+                    <div class="value mono">{{ d.user.profile.address.zipCode }}</div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="actions">
+        <button mat-stroked-button mat-dialog-close>Fechar</button>
+    </div>
+</ng-container>
+
+<ng-template #loading>
+    <div class="skeleton">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </div>
+</ng-template>

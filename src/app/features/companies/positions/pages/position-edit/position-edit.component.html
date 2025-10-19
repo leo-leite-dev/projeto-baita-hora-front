@@ -1,0 +1,31 @@
+<div class="page">
+    <div class="card">
+        <app-back-button [to]="['/app/position/list']" variant="ghost" label="Voltar" aria-label="Voltar" />
+
+        <div class="card_head mt-20">
+            <app-form-header title="Edição de cargo" subtitle="Informe os dados do cargo" />
+
+            <div *ngIf="form.hasError('server')" class="alert" role="alert" aria-live="assertive">
+                {{ form.getError('server') }}
+            </div>
+        </div>
+
+        <ng-container *ngIf="loaded; else loadingTpl">
+            <form class="grid" [formGroup]="form" (ngSubmit)="submit()">
+                <app-position-form class="field--full" [group]="form"
+                    [serviceOfferingOptions$]="serviceOfferingOptions$" />
+
+                <div class="actions field--full">
+                    <app-button variant="clean" label="Reverter alterações" (clicked)="revert()"
+                        [disabled]="!loaded || submitting || !form.dirty" />
+                    <app-button variant="primary" htmlType="submit" label="Salvar alterações"
+                        [disabled]="form.invalid || submitting || !form.dirty" />
+                </div>
+            </form>
+        </ng-container>
+
+        <ng-template #loadingTpl>
+            <div class="loading">Carregando dados…</div>
+        </ng-template>
+    </div>
+</div>

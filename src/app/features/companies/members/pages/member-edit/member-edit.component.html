@@ -1,0 +1,25 @@
+<div class="page">
+    <div class="card">
+        <app-back-button [to]="['/app/member/list']" variant="ghost" label="Voltar" aria-label="Voltar" />
+
+        <div class="card_head mt-20">
+            <app-form-header [title]="(headerTitle$ | async) ?? ''" subtitle="Atualize ou corrija os dados cadastrais deste funcionário." />
+
+            <div *ngIf="form.hasError('server')" class="alert" role="alert" aria-live="assertive">
+                {{ form.getError('server') }}
+            </div>
+        </div>
+
+        <form class="grid" [formGroup]="form" (ngSubmit)="submit()">
+            <app-member-edit-form class="field--full" [group]="form" />
+
+            <div class="actions field--full">
+                <app-button variant="clean" htmlType="button" label="Limpar" (clicked)="revert()"
+                    [disabled]="submitting || !form.dirty" />
+                <app-button variant="primary" htmlType="submit" label="Salvar"
+                    [disabled]="form.invalid || submitting" />
+            </div>
+        </form>
+
+    </div>
+</div>

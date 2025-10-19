@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ButtonComponent {
   @Input() variant: 'primary' | 'ghost' | 'clean' | 'danger' = 'primary';
-  @Input() htmlType: 'button' | 'submit' = 'button';
+  @Input() htmlType: 'button' | 'submit' | 'reset' = 'button'; // acrescentei 'reset'
   @Input() disabled = false;
   @Input() loading = false;
   @Input() label = 'Continuar';
@@ -28,6 +28,9 @@ export class ButtonComponent {
       event.stopPropagation();
       return;
     }
-    this.clicked.emit(event);
+
+    if (this.htmlType !== 'submit')
+      this.clicked.emit(event);
+
   }
 }

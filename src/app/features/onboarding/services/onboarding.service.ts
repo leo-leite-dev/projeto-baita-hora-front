@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { RegisterOwnerWithCompanyRequest } from '../contracts/RegisterOwnerWithCompanyRequest';
-import { RegisterOwnerWithCompanyResponse } from '../contracts/RegisterOwnerWithCompanyResponse';
+import { RegisterOwnerWithCompanyRequest } from '../contracts/owner-request';
+import { RegisterOwnerWithCompanyResponse } from '../contracts/owner-response';
 import { ErrorHandlingService } from '../../../shared/services/error-handling.service';
 import { environment } from '../../../environments/environments';
 

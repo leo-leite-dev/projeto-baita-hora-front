@@ -1,0 +1,14 @@
+<div class="input-group select-group">
+  <label *ngIf="label" [for]="id">{{ label }}</label>
+
+  <div class="select-wrapper" [class.disabled]="disabled" [attr.aria-invalid]="invalid">
+    <select [id]="id" [disabled]="disabled" [ngModel]="stringValue" (ngModelChange)="handleChange($event)"
+      (blur)="onBlur()" [class.placeholder]="stringValue === ''" [attr.aria-invalid]="invalid">
+      <option value="" disabled hidden>{{ placeholder }}</option>
+
+      <option *ngFor="let opt of options; trackBy: trackByValue" [value]="stringify(opt.value)">
+        {{ opt.label }}
+      </option>
+    </select>
+  </div>
+</div>

@@ -1,9 +1,0 @@
-<div class="field">
-    <mat-form-field appearance="outline" class="mat-field">
-        <mat-label *ngIf="label">{{ label }}</mat-label>
-
-        <ngx-mat-input-tel class="tel-field" matInput [id]="inputId" [disabled]="disabled" [(ngModel)]="value"
-            (ngModelChange)="handleChange($event)" (blur)="handleBlur()">
-        </ngx-mat-input-tel>
-    </mat-form-field>
-</div>

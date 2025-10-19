@@ -43,7 +43,6 @@ export class HomeComponent {
 
   onCompanySelected(companyId: string) {
     this.authService.selectCompany({ companyId }).subscribe(resp => {
-      console.log('Empresa selecionada', resp);
       this.showCompanies = false;
     });
   }

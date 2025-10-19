@@ -1,29 +1,29 @@
 <div class="grid" [formGroup]="group">
     <div class="field">
-        <app-input-text class="field" label="Razão Social" formControlName="companyName" />
+        <app-input type="text" label="Razão Social" formControlName="companyName" />
         <app-field-errors [control]="group.controls.companyName" />
     </div>
 
     <div class="field">
-        <app-input-text class="field" label="Nome Fantasia" formControlName="tradeName" />
+        <app-input type="text" label="Nome Fantasia" formControlName="tradeName" />
         <app-field-errors [control]="group.controls.tradeName" />
     </div>
 
     <div class="grid grid-3 field--full">
         <div class="field">
-            <app-input-text class="field" label="CNPJ" formControlName="cnpj" mask="00.000.000/0000-00"
-                [dropSpecialCharacters]="true" />
+            <app-input type="masked" label="CNPJ" [mask]="'00.000.000/0000-00'" [dropSpecialCharacters]="true"
+                formControlName="cnpj" />
             <app-field-errors label="CNPJ" [control]="group.controls.cnpj" />
         </div>
 
         <div class="field">
-            <app-input-phone label="Telefone" formControlName="companyPhone" />
+            <app-input type="phone" label="Telefone" [dropSpecialCharacters]="true" formControlName="companyPhone" />
             <app-field-errors label="Telefone" [control]="group.controls.companyPhone" />
         </div>
 
         <div class="field">
-            <app-input-text class="field" label="E-mail" formControlName="companyEmail" />
-            <app-field-errors [control]="group.controls.companyEmail" />
+            <app-input type="email" label="E-mail" formControlName="companyEmail" />
+            <app-field-errors label="E-mail" [control]="group.controls.companyEmail" />
         </div>
     </div>
 

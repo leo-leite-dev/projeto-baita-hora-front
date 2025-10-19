@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, Subscription } from 'rxjs';
+import { finalize, take } from 'rxjs/operators';
 import { HasIdActive } from '../models/bulk-selection.models';
+import { ErrorHandlingService } from '../../../services/error-handling.service';
 
 export interface BulkOptions {
     undo?: boolean;
@@ -11,15 +13,20 @@ export interface BulkOptions {
 
 @Injectable({ providedIn: 'root' })
 export class BulkActiveService {
-    constructor(private snack: MatSnackBar) { }
+    private snack = inject(MatSnackBar);
+    private errors = inject(ErrorHandlingService);
 
-    private snapshot<T>(rows: T[]): T[] { return rows.map(r => ({ ...r })); }
+    private snapshot<T>(rows: T[]): T[] {
+        return rows.map(r => ({ ...r }));
+    }
 
     private patchActive<T extends HasIdActive>(
-        rows: readonly T[], ids: ReadonlyArray<T['id']>, isActive: boolean
+        rows: readonly T[],
+        ids: ReadonlyArray<T['id']>,
+        isActive: boolean
     ): T[] {
         const idSet = new Set(ids);
-        return rows.map(r => idSet.has(r.id) ? { ...r, isActive } : r);
+        return rows.map(r => (idSet.has(r.id) ? { ...r, isActive } : r));
     }
 
     bulkUpdate<T extends HasIdActive>(
@@ -35,8 +42,7 @@ export class BulkActiveService {
             validateEligible = false,
         }: BulkOptions & { validateEligible?: boolean } = {}
     ): Subscription | undefined {
-        if (!ids?.length)
-            return;
+        if (!ids?.length) return;
 
         const data = getData();
         let effectiveIds = ids;
@@ -47,10 +53,12 @@ export class BulkActiveService {
                 const it = byId.get(id);
                 return it ? it.isActive !== targetActive : false;
             });
+
             if (effectiveIds.length === 0) {
                 this.snack.open(
                     targetActive ? 'Nenhum item para ativar.' : 'Nenhum item para desativar.',
-                    undefined, { duration: 3000 }
+                    undefined,
+                    { duration: 3000 }
                 );
                 return;
             }
@@ -59,21 +67,25 @@ export class BulkActiveService {
         const snap = this.snapshot(data);
         setData(this.patchActive(getData(), effectiveIds, targetActive));
 
-        return requestFn(effectiveIds).subscribe({
-            next: () => {
-                const msg = successMsg ?? (targetActive ? 'Itens ativados.' : 'Itens desativados.');
-                if (undo) {
-                    const ref = this.snack.open(msg, 'Desfazer', { duration: 5000 });
-                    ref.onAction().subscribe(() => setData(snap));
-                } else {
-                    this.snack.open(msg, undefined, { duration: 3000 });
-                }
-            },
-            error: () => {
-                setData(snap);
-                this.snack.open(errorMsg ?? 'Falha na operação. Estado restaurado.', 'Ok', { duration: 4000 });
-            }
-        });
+        return requestFn(effectiveIds)
+            .pipe(take(1), finalize(() => void 0))
+            .subscribe({
+                next: () => {
+                    const msg = successMsg ?? (targetActive ? 'Itens ativados.' : 'Itens desativados.');
+                    if (undo) {
+                        const ref = this.snack.open(msg, 'Desfazer', { duration: 5000 });
+                        ref.onAction().subscribe(() => setData(snap));
+                    } else {
+                        this.snack.open(msg, undefined, { duration: 3000 });
+                    }
+                },
+error: (err) => {
+  setData(snap);
+  const parsed = this.errors.parse(err);
+  const msg = errorMsg ?? parsed.message ?? 'Falha na operação. Estado restaurado.';
+  this.snack.open(msg, 'Ok', { duration: 5000 });
+}
+            });
     }
 
     toggleOne<T extends HasIdActive>(
@@ -85,12 +97,18 @@ export class BulkActiveService {
         undo = true
     ): Subscription | undefined {
         const item = getData().find(r => r.id === id);
-
-        if (!item)
-            return;
+        if (!item) return;
 
         const targetActive = !item.isActive;
         const fn = targetActive ? requestFnActivate : requestFnDisable;
-        return this.bulkUpdate(getData, setData, [id], targetActive, fn, { undo, validateEligible: false });
+
+        return this.bulkUpdate(
+            getData,
+            setData,
+            [id],
+            targetActive,
+            fn,
+            { undo, validateEligible: false }
+        );
     }
 }

@@ -2,18 +2,18 @@ import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth/services/auth.service';
-import { InputTextComponent } from '../../../shared/components/forms/input-text/input-text.component';
 import { FieldErrorsComponent } from '../../../shared/components/field-errors/field-errors.component';
 import { GenericModule } from '../../../../shareds/common/GenericModule';
 import { FaIconComponent } from '../../../shared/components/icons/fa-icon.component';
 import { AuthResponse } from '../../../core/auth/models/auth-response.model';
+import { InputComponent } from '../../../shared/components/inputs/input/input.component';
 
 @Component({
   selector: 'app-login-modal',
   standalone: true,
   imports: [
     GenericModule,
-    InputTextComponent,
+    InputComponent,
     FaIconComponent,
     FieldErrorsComponent
   ],

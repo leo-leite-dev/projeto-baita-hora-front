@@ -1,0 +1,17 @@
+<div class="input-group date-input">
+    <label *ngIf="label" [for]="controlId">
+        {{ label }} <span *ngIf="required" aria-hidden="true">*</span>
+    </label>
+
+    <div class="input-wrapper">
+        <input matInput [matDatepicker]="picker" [id]="controlId" [name]="controlId" type="text"
+            [placeholder]="placeholder || 'dd/mm/aaaa'" [disabled]="disabled" [required]="required"
+            [attr.aria-required]="required" [attr.aria-readonly]="true" [(ngModel)]="model"
+            [matDatepickerFilter]="allowedDate" readonly (click)="openPicker(picker)"
+            (focus)="openOnFocus && openPicker(picker)" (keydown)="blockKeys($event)" (paste)="prevent($event)"
+            (drop)="prevent($event)" (dateChange)="onDateChange($event)" (blur)="onBlur()" />
+
+        <mat-datepicker-toggle class="date-input__toggle" [for]="picker" />
+        <mat-datepicker #picker [startView]="startView" (closed)="onClosed()" />
+    </div>
+</div>

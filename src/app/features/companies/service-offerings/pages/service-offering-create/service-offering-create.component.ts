@@ -1,25 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { finalize, take } from 'rxjs/operators';
-import { ServiceOfferingForm, ServiceOfferingFormComponent } from '../../form/service-offering-form.component'; // se for COMPONENT, adicione-o nos imports do @Component
-import { CreateServiceOfferingRequest } from '../../contracts/CreateServiceOfferingRequest';
 import { ToastrService } from 'ngx-toastr';
-import { ButtonComponent } from '../../../../../shared/components/buttons/button/button.component';
-import { extractErrorMessage } from '../../../../../shared/utils/error.util';
+import { Component, inject, OnInit } from '@angular/core';
+import { finalize, take } from 'rxjs/operators';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ServiceOfferingsService } from '../../services/service-offerings.service';
-import { BackButtonComponent } from '../../../../../shared/components/buttons/back-button/back-button.component';
+import { CreateServiceOfferingRequest } from '../../contracts/create-service-offering.contract';
+import { ServiceOfferingForm, ServiceOfferingFormComponent } from '../../form/service-offering-form.component';
+import { extractErrorMessage } from '../../../../../shared/utils/error.util';
+import { GenericModule } from '../../../../../../shareds/common/GenericModule';
 
 @Component({
   selector: 'app-service-offering-create',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ServiceOfferingFormComponent,
-    ButtonComponent,
-    BackButtonComponent
-  ],
+  imports: [GenericModule, ServiceOfferingFormComponent],
   templateUrl: './service-offering-create.component.html',
   styleUrls: ['./service-offering-create.component.scss']
 })
@@ -27,6 +20,7 @@ export class ServiceOfferingCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
   private service = inject(ServiceOfferingsService);
   private toastr = inject(ToastrService);
+  private router = inject(Router);
 
   form!: FormGroup<ServiceOfferingForm>;
   submitting = false;
@@ -37,16 +31,17 @@ export class ServiceOfferingCreateComponent implements OnInit {
 
   private buildForm(): void {
     this.form = this.fb.group<ServiceOfferingForm>({
-      serviceOfferingName: this.fb.control('', {
+      name: this.fb.control('', {
         nonNullable: true,
         validators: [
           Validators.required,
           Validators.minLength(3),
-          Validators.maxLength(50)
+          Validators.maxLength(50),
         ],
       }),
       price: this.fb.control(0, {
         nonNullable: true,
+        updateOn: 'change',
         validators: [Validators.required, Validators.min(0.01)],
       }),
       currency: this.fb.control('BRL', {
@@ -62,10 +57,10 @@ export class ServiceOfferingCreateComponent implements OnInit {
       return;
     }
 
-    const { serviceOfferingName, price, currency } = this.form.getRawValue();
+    const { name, price, currency } = this.form.getRawValue();
 
     const payload: CreateServiceOfferingRequest = {
-      serviceOfferingName,
+      name,
       amount: price,
       currency,
     };
@@ -84,11 +79,7 @@ export class ServiceOfferingCreateComponent implements OnInit {
       .subscribe({
         next: () => {
           this.toastr.success('Oferta de serviço criada com sucesso!');
-          this.form.reset({
-            serviceOfferingName: '',
-            price: 0,
-            currency: 'BRL',
-          });
+          this.router.navigate(['/app/service-offering/list']);
         },
         error: (err) => {
           const status: number | undefined = err?.status;
@@ -99,7 +90,7 @@ export class ServiceOfferingCreateComponent implements OnInit {
               toastClass: 'ngx-toastr custom-toast toast-warning',
             });
 
-            this.form.get('serviceOfferingName')?.setErrors({ duplicate: true });
+            this.form.get('name')?.setErrors({ duplicate: true });
             return;
           }
           this.form.setErrors({ server: msg });

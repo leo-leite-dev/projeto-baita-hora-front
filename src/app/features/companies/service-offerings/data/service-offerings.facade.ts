@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ServiceOffering } from '../models/ServiceOffering.model';
+import { ServiceOffering } from '../models/service-offering.model';
 import { BaseActivableFacade } from '../../../../shared/facades/base-activable.facade';
 import { ServiceOfferingsService } from '../services/service-offerings.service';
 

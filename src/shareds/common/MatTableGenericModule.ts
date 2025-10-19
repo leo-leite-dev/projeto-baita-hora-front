@@ -11,6 +11,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BulkSelectDirective } from '../../app/shared/directives/bulk-select.directive';
+import { BulkToolbarComponent } from '../../app/shared/components/bulk-toolbar/ui/bulk-toolbar.component';
+import { LinkButtonComponent } from '../../app/shared/components/buttons/link-button/link-button.component';
 
 @NgModule({
     imports: [
@@ -26,6 +29,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         MatCheckboxModule,
         MatSlideToggleModule,
         MatSnackBarModule,
+        BulkSelectDirective,
+        BulkToolbarComponent,
+        LinkButtonComponent,
     ],
     exports: [
         CommonModule,
@@ -40,6 +46,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         MatCheckboxModule,
         MatSlideToggleModule,
         MatSnackBarModule,
+        BulkSelectDirective,
+        BulkToolbarComponent,
+        LinkButtonComponent,
     ],
 })
 export class MatTableGenericModule { }
