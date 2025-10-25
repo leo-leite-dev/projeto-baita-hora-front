@@ -13,6 +13,7 @@ interface ProblemDetails {
 export interface NormalizedError {
     message: string;
     status: number;
+    fieldErrors?: Record<string, string>;
 }
 
 interface ValidationProblemDetails extends ProblemDetails {
@@ -65,10 +66,9 @@ function tryParseJson<T = any>(raw: unknown): T | undefined {
 
 @Injectable({ providedIn: 'root' })
 export class ErrorHandlingService {
-    parse(error: unknown): { message: string; status: number } {
-
+    parse(error: unknown): NormalizedError {
         if (isNormalizedError(error))
-            return { status: error.status, message: error.message };
+            return error;
 
         const err = isHttpError(error) ? error : new HttpErrorResponse({ error });
 
@@ -76,42 +76,51 @@ export class ErrorHandlingService {
             return { status: 0, message: 'Erro de conexão com o servidor.' };
 
         let raw: any = err.error;
-
         const parsedJson = tryParseJson(raw);
-        if (parsedJson !== undefined) 
+        if (parsedJson !== undefined)
             raw = parsedJson;
-        
-        if (raw && typeof raw === 'object') {
-            const title = typeof raw.title === 'string' ? raw.title.trim() : undefined;
-            const detail = typeof raw.detail === 'string' ? raw.detail.trim() : undefined;
 
-            if (title || detail) {
-                const message = [title, detail].filter(Boolean).join(' — ')
-                    || err.message
-                    || 'Erro ao processar a requisição.';
-                return { status: err.status, message };
+        const known = new Set(['type', 'title', 'status', 'detail', 'instance', 'errors']);
+        const fieldErrors: Record<string, string> = {};
+
+        const bag = raw?.errors ?? raw;
+        if (bag && typeof bag === 'object') {
+            for (const k of Object.keys(bag)) {
+                if (known.has(k)) continue;
+                const v = bag[k];
+                if (typeof v === 'string' && v.trim()) fieldErrors[k] = v.trim();
+                else if (Array.isArray(v) && v.length && typeof v[0] === 'string') fieldErrors[k] = v[0].trim();
             }
         }
 
-        if (err.status === 400 && isValidationProblem(raw) && raw.errors) {
-            const flat = Object.entries(raw.errors)
-                .flatMap(([field, msgs]) => (msgs ?? []).map(m => `${field}: ${m}`))
-                .join(' • ');
-            const message = flat || raw.detail || 'Erro de validação.';
-            return { status: 400, message };
+        if (err.status === 400 && (isValidationProblem(raw) || Object.keys(fieldErrors).length)) {
+            const flat = raw?.errors
+                ? Object.entries(raw.errors)
+                    .flatMap(([f, msgs]) => {
+                        if (Array.isArray(msgs)) 
+                            return msgs.map((m: string) => `${f}: ${m}`);
+                        
+                        return [];
+                    })
+                    .join(' • ')
+                : '';
+
+            const message = flat || raw?.detail || 'Erro de validação.';
+            return { status: 400, message, ...(Object.keys(fieldErrors).length ? { fieldErrors } : {}) };
         }
 
-        if (isProblem(raw)) {
-            const title = raw.title?.trim();
-            const detail = raw.detail?.trim();
-            const message = [title, detail].filter(Boolean).join(' — ')
-                || err.message
-                || 'Erro ao processar a requisição.';
-            return { status: err.status, message };
+        if (raw && typeof raw === 'object') {
+            const title = typeof raw.title === 'string' ? raw.title.trim() : undefined;
+            const detail = typeof raw.detail === 'string' ? raw.detail.trim() : undefined;
+            if (title || detail) {
+                const message = [title, detail].filter(Boolean).join(' — ') || err.message || 'Erro ao processar a requisição.';
+                return { status: err.status, message, ...(Object.keys(fieldErrors).length ? { fieldErrors } : {}) };
+            }
         }
 
-        if (typeof raw === 'string' && raw.trim().length > 0)
-            return { status: err.status, message: raw };
+        if (typeof raw === 'string' && raw.trim())
+            return { status: err.status, message: raw.trim(), ...(Object.keys(fieldErrors).length ? { fieldErrors } : {}) };
+
 
         const byStatus: Record<number, string> = {
             401: 'Sessão inválida ou expirada.',
@@ -122,11 +131,10 @@ export class ErrorHandlingService {
             502: 'Erro de gateway. O servidor está indisponível.',
             503: 'Serviço temporariamente indisponível.'
         };
-
         const fallback = byStatus[err.status] ?? (err.message || 'Algo deu errado. Por favor, tente novamente.');
-        return { status: err.status, message: fallback };
+        return { status: err.status, message: fallback, ...(Object.keys(fieldErrors).length ? { fieldErrors } : {}) };
     }
-    
+
     handleWithThrow = (error: unknown) => {
         const { message, status } = this.parse(error);
         console.error('[HTTP]', status, message);
@@ -143,11 +151,11 @@ export class ErrorHandlingService {
         return (source: Observable<T>) =>
             source.pipe(
                 catchError(err => {
-                    const { message, status } = this.parse(err);
+                    const norm = this.parse(err);
                     if (context)
-                        console.error(`[${context}]`, status, message);
+                        console.error(`[${context}]`, norm.status, norm.message);
 
-                    return throwError(() => err);
+                    return throwError(() => norm);
                 })
             );
     }

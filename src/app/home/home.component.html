@@ -2,7 +2,7 @@
     <h1>Bem-vindo ao <span>BaitaHora</span></h1>
     <p>Organize seu tempo do seu jeito, fácil e rápido.</p>
 
-    <div class="button-group">
+    <div class="button-group d-flex jc-center gap-10">
         <app-link-button [to]="['/onboarding/create-owner']" label="Criar Conta" variant="primary" />
         <app-button type="navigate" label="Entrar" (clicked)="openLoginModal()" />
     </div>

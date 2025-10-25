@@ -2,14 +2,20 @@
     content: '';
     position: fixed;
     inset: 0;
-    background: url('/assets/baitahora_animado.gif?v=6') center center / contain no-repeat fixed;
-    pointer-events: none;
+    background-image: url('/assets/baitahora_animado.gif?v=6');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center 30%;
     z-index: -1;
+    pointer-events: none;
 }
 
 .home-container {
-    height: 100%;
+    min-height: 95dvh;
     backdrop-filter: blur(6px);
-    background-color: rgba(0, 0, 0, 0.4);
+    -webkit-backdrop-filter: blur(6px);
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 16px;
+    padding: 32px;
 }

@@ -4,8 +4,8 @@ import { AuthService } from '../core/auth/services/auth.service';
 import { AuthResponse } from '../core/auth/models/auth-response.model';
 import { Router } from '@angular/router';
 import { ButtonComponent } from '../shared/components/buttons/button/button.component';
-import { LoginModalComponent } from '../features/auth/login-modal/login-modal.component';
-import { CompaniesModalComponent } from '../features/auth/companies-modal/companies-modal.component';
+import { LoginModalComponent } from '../core/auth/login-modal/login-modal.component';
+import { CompaniesModalComponent } from '../core/auth/companies-modal/companies-modal.component';
 import { LinkButtonComponent } from '../shared/components/buttons/link-button/link-button.component';
 
 @Component({

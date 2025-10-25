@@ -1,18 +1,17 @@
 @use 'colors' as *;
 
 .overlay {
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(110,48,255,.18), transparent 60%),
-    radial-gradient(1200px 600px at 120% 110%, rgba(110,48,255,.12), transparent 60%),
-    rgba(0,0,0,.58);
-  backdrop-filter: blur(10px) saturate(110%);
-  z-index: 999;
-  animation: overlayIn .22s ease-out;
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(110, 48, 255, .18), transparent 60%),
+        radial-gradient(1200px 600px at 120% 110%, rgba(110, 48, 255, .12), transparent 60%),
+        rgba(0, 0, 0, .58);
+    backdrop-filter: blur(10px) saturate(110%);
+    z-index: 999;
+    animation: overlayIn .22s ease-out;
 }
 
-/* ---------- Modal Card ---------- */
 .modal-content {
   position: fixed;
   inset: 50% auto auto 50%;
@@ -23,7 +22,6 @@
   color: $pure-white;
   z-index: 1000;
 
-  /* vidro polido com borda sutil */
   background:
     linear-gradient(180deg, rgba(22,22,26,.92), rgba(14,14,18,.92));
   border: 1px solid rgba(255,255,255,.07);
@@ -34,7 +32,6 @@
 
   animation: modalIn .26s cubic-bezier(.2,.7,.3,1.08) both;
 
-  /* acento superior */
   &::before {
     content: "";
     position: absolute;
@@ -49,7 +46,6 @@
     animation: accentIn .36s .06s cubic-bezier(.2,.7,.3,1) both;
   }
 
-  /* botão fechar */
   .modal-close-btn {
     position: absolute;
     top: -12px; right: -12px;
@@ -65,7 +61,6 @@
     &:active { transform: translateY(1px) scale(.98); }
   }
 
-  /* header compacto */
   .modal-header {
     margin: 6px 0 14px;
 
@@ -83,14 +78,12 @@
     }
   }
 
-  /* alerta/erro */
   .alert {
     margin: 8px 0 12px; padding: 10px 12px; border-radius: 12px; font-size: 13px;
     color: #ff6b6b; background: rgba(255,79,79,.09);
     border: 1px solid rgba(255,79,79,.28);
   }
 
-  /* form */
   .form { display: grid; gap: 16px; }
   .field { display: grid; gap: 8px; }
 
@@ -101,7 +94,6 @@
     letter-spacing: .2px;
   }
 
-  /* input estiloso + estados */
   .input {
     width: 100%;
     padding: 12px 12px;
@@ -133,7 +125,6 @@
     }
   }
 
-  /* feedback de erro no campo */
   .field--error .input {
     border-color: rgba(255,79,79,.55);
     box-shadow: 0 0 0 3px rgba(255,79,79,.22);
@@ -147,7 +138,6 @@
     color: rgba(255,255,255,.6);
   }
 
-  /* botão principal */
   .auth-button {
     width: 100%;
     padding: 12px 14px;
@@ -165,7 +155,6 @@
     &:disabled { opacity: .55; cursor: not-allowed; box-shadow: none; }
   }
 
-  /* suporte */
   .support {
     margin-top: 12px; text-align: center; font-size: 12.5px;
     .support__link {
@@ -174,32 +163,8 @@
     }
   }
 
-  /* foco visível universal (acessibilidade) */
   :is(button,a,input,textarea,select):focus-visible {
     outline: 2px solid rgba($pure-purple,.9);
     outline-offset: 2px; border-radius: 12px;
   }
-}
-
-/* ---------- Animations ---------- */
-@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes modalIn {
-  0%   { opacity: 0; transform: translate(-50%,-46%) scale(.94); filter: blur(.6px); }
-  60%  { opacity: 1; transform: translate(-50%,-50.5%) scale(1.008); }
-  100% { opacity: 1; transform: translate(-50%,-50%)  scale(1); filter: blur(0); }
-}
-@keyframes accentIn { from { transform: scaleX(0); opacity: .6; } to { transform: scaleX(1); opacity: .8; } }
-
-/* reduz movimento */
-@media (prefers-reduced-motion: reduce) {
-  .overlay, .modal-content, .modal-content::before {
-    animation: none !important;
-    transform: translate(-50%, -50%) scale(1) !important;
-    filter: none !important;
-  }
-}
-
-/* responsivo */
-@media (max-width: 420px) {
-  .modal-content { padding: 16px; border-radius: 16px; }
 }

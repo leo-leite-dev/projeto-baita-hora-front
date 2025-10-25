@@ -33,18 +33,15 @@ export class AuthService {
 
     login(payload: AuthenticateRequest): Observable<AuthResponse> {
         return this.http
-            .post<AuthResponse>(`${this.baseUrl}/login`, payload, { observe: 'response' })
+            .post<AuthResponse>(`${this.baseUrl}/login`, payload)
             .pipe(
-                map(res => {
-                    const auth = res.body as AuthResponse;
-
-                    if (auth?.companies?.length === 1) {
+                map(auth => {
+                    if (auth?.companies?.length === 1) 
                         this.setActiveCompany(auth.companies[0].companyId);
-                    }
-
+                    
                     return auth;
                 }),
-                this.errorHandler.rxThrow('auth.login')
+                this.errorHandler.rxThrow('auth.login') 
             );
     }
 
@@ -62,7 +59,7 @@ export class AuthService {
             .post<void>(`${this.baseUrl}/logout`, {}, { observe: 'response' })
             .pipe(
                 map(() => {
-                    this.clearActiveCompany(); 
+                    this.clearActiveCompany();
                     return void 0;
                 }),
                 this.errorHandler.rxThrow('auth.logout')

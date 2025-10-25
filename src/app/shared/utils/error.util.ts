@@ -1,8 +1,8 @@
 export function extractErrorMessage(err: any): string {
     if (!err) return 'Erro inesperado. Tente novamente.';
+    if (typeof err.message === 'string') return err.message;
 
     const body = err.error ?? err;
-
     return (
         body?.detail ??
         body?.title ??

@@ -6,9 +6,9 @@ import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environments';
 
 function isApiUrl(url: string): boolean {
-  if (url.startsWith('http://') || url.startsWith('https://')) 
+  if (url.startsWith('http://') || url.startsWith('https://'))
     return url.startsWith(environment.apiBaseUrl);
-  
+
   return true;
 }
 
@@ -23,19 +23,25 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         const url = req.url;
-        const isLogin = url.includes('/auth/login');
-        const isMe = url.includes('/auth/me');
-        const isRefresh = url.includes('/auth/refresh');
 
-        if (isLogin || isMe || isRefresh) 
+        const isAuthEndpoint =
+          url.includes('/auth/login') ||
+          url.includes('/auth/me') ||
+          url.includes('/auth/refresh') ||
+          url.includes('/auth/select-company');
+
+        if (isAuthEndpoint)
           return throwError(() => error);
-        
-        if (error.status === 401 || error.status === 403) {
+
+        const skipRedirect = req.headers.get('X-Skip-Auth-Redirect') === '1';
+
+        if (!skipRedirect && (error.status === 401 || error.status === 403)) {
           this.toastr.error('Sessão expirada. Faça login novamente.', 'Acesso negado');
-          setTimeout(() => this.router.navigate(['/login']), 1200);
-        } else if (error.status >= 500) {
-          this.toastr.error('Erro interno no servidor', 'Erro');
+          return throwError(() => error);
         }
+
+        if (error.status >= 500)
+          this.toastr.error('Erro interno no servidor', 'Erro');
 
         return throwError(() => error);
       })

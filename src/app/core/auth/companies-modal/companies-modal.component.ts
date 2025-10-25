@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { AuthCompanyResponse } from '../../../core/auth/models/auth-response.model';
+import { AuthCompanyResponse } from '../models/auth-response.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
