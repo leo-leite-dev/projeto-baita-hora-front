@@ -3,7 +3,8 @@ export function onlyDigits(v: string | null | undefined): string {
 }
 
 export function toIsoDate(v: Date | string | null | undefined): string | null {
-    if (v == null) return null;
+    if (v == null)
+        return null;
 
     if (v instanceof Date) {
         if (isNaN(v.getTime())) return null;
@@ -14,12 +15,15 @@ export function toIsoDate(v: Date | string | null | undefined): string | null {
     }
 
     const s = v.trim();
-    if (!s) return null;
+    if (!s)
+        return null;
 
-    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s))
+        return s;
 
     const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+    if (m)
+        return `${m[3]}-${m[2]}-${m[1]}`;
 
     const d = new Date(s);
     if (!isNaN(d.getTime())) {

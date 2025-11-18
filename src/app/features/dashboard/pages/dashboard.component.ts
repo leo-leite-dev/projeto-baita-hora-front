@@ -1,8 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GetAppointmentsResponse } from '../../appointments/models/appointments.models';
-import { AppointmentsService } from '../../appointments/services/appointments.service';
 import { DateLabelPipe } from '../../../shared/pipes/date-label.pipe';
 import { TimeFromUtcPipe } from '../../../shared/pipes/time-from-utc.pipe';
 import { DateUtil } from '../../../shared/utils/date.util';
@@ -10,6 +8,8 @@ import { FaIconComponent } from '../../../shared/components/icons/fa-icon.compon
 import { DatePickerComponent } from '../../../shared/components/date-picker/date-picker.component';
 import { MetricCardsComponent, MetricItem } from './components/metric-cards/metric-cards.component';
 import { faCalendar, faDollarSign, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
+import { Appointment } from '../../schedules/appointments/models/appointments.models';
+import { AppointmentsService } from '../../schedules/services/appointments.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
   faDollarSign = faDollarSign;
   faMoneyBillWave = faMoneyBillWave;
 
-  appointments = signal<GetAppointmentsResponse[]>([]);
+  appointments = signal<Appointment[]>([]);
   loading = signal(false);
   error = signal<string | null>(null);
 
@@ -43,7 +43,7 @@ export class DashboardComponent implements OnInit {
   companyId = signal<string | null>(null);
 
   ngOnInit(): void {
-    const resolved = (this.route.snapshot.data['appointments'] as GetAppointmentsResponse[]) ?? [];
+    const resolved = (this.route.snapshot.data['appointments'] as Appointment[]) ?? [];
     this.appointments.set(resolved);
 
     this.companyId.set(this.route.snapshot.paramMap.get('companyId'));

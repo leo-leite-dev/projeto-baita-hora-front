@@ -1,0 +1,171 @@
+@use 'colors' as *;
+
+::ng-deep .chips-panel.mat-mdc-autocomplete-panel {
+    padding: 4px;
+    border-radius: 12px;
+    background: linear-gradient(180deg, $panel-elev, $bg);
+    box-shadow:
+        0 16px 36px $black-75,
+        0 0 0 1px $white-05;
+}
+
+::ng-deep .chips-panel .mat-mdc-option {
+    border-radius: 8px;
+    margin: 2px 4px;
+    min-height: 34px;
+    padding-inline: 10px;
+    transition: background-color 120ms ease, transform 80ms ease, box-shadow 120ms ease;
+}
+
+::ng-deep .chips-panel .mat-mdc-option:hover {
+    background-color: $white-06;
+}
+
+::ng-deep .chips-panel .mat-mdc-option.mat-mdc-option-active,
+::ng-deep .chips-panel .mat-mdc-option.mdc-list-item--activated,
+::ng-deep .chips-panel .mat-mdc-option.mdc-list-item--selected {
+    background: linear-gradient(135deg, #6e30ff, $pure-purple 70%);
+    box-shadow: 0 10px 22px rgba($pure-purple, .35);
+    transform: translateY(-1px);
+}
+
+::ng-deep .chips-panel .mat-mdc-option .mdc-list-item__primary-text {
+    color: $pure-white;
+    font-size: 13.5px;
+}
+
+::ng-deep .chips-panel .mat-mdc-option.mdc-list-item--disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+.chips-autocomplete {
+    .input-wrap {
+        position: relative;
+    }
+
+    .clear-btn {
+        position: absolute;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 26px;
+        height: 26px;
+        border-radius: 999px;
+        border: 1px solid $white-16;
+        background: $black-75;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        cursor: pointer;
+        transition: background .15s ease, box-shadow .15s ease, transform .08s ease;
+
+        mat-icon {
+            font-size: 18px;
+            width: 18px;
+            height: 18px;
+            color: $pure-purple;
+            filter: drop-shadow(0 0 6px rgba($pure-purple, .6));
+            display: block;
+            line-height: 1;
+        }
+
+        &:hover {
+            background: $white-08;
+            box-shadow: 0 8px 20px $black-60;
+        }
+
+        &:active {
+            transform: translateY(-50%) scale(.96);
+            box-shadow: none;
+        }
+    }
+
+    .selected {
+        margin-top: 6px;
+        padding: 6px 10px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: radial-gradient(140% 180% at 0 0, $white-06, $black-50);
+        border: 1px solid $white-08;
+        color: $white-88;
+        font-size: 13px;
+    }
+
+    .selected mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: $pure-purple;
+        filter: drop-shadow(0 0 6px rgba($pure-purple, .6));
+        display: block;
+        line-height: 1;
+    }
+
+    .selected-text {
+        font-weight: 600;
+        letter-spacing: .2px;
+    }
+
+    .selected-remove-btn,
+    .selected-list li button {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 1px solid $white-10;
+        background: $black-70;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        padding: 0;
+        transition: background .15s ease, transform .08s ease, box-shadow .15s ease;
+
+        mat-icon {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+            color: $pure-purple;
+            filter: drop-shadow(0 0 6px rgba($pure-purple, .6));
+            display: block;
+            line-height: 1;
+        }
+
+        &:hover {
+            background: $white-08;
+            box-shadow: 0 6px 16px $black-60;
+        }
+
+        &:active {
+            transform: scale(.94);
+            box-shadow: none;
+        }
+    }
+
+    .selected-remove-btn {
+        margin-left: auto;
+        border: 0;
+    }
+
+    .selected-list {
+        margin-top: 6px;
+        padding: 6px;
+        border-radius: 10px;
+        background: $white-02;
+        border: 1px solid $white-05;
+        display: grid;
+        gap: 4px;
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: $white-85;
+        }
+    }
+}

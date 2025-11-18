@@ -12,9 +12,20 @@ function isApiUrl(url: string): boolean {
   return true;
 }
 
+function getDetail(err: any): string | undefined {
+  const body = err?.error ?? err;
+  return (
+    body?.detail ??
+    body?.title ??
+    body?.message ??
+    (Array.isArray(body?.errors) ? body.errors.map((e: any) => e?.message).filter(Boolean).join('\n') : undefined) ??
+    (typeof body === 'string' ? body : undefined)
+  );
+}
+
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private router: Router, private toastr: ToastrService) { }
+  constructor(private toastr: ToastrService) { }
 
   intercept<T>(req: HttpRequest<T>, next: HttpHandler): Observable<HttpEvent<T>> {
     const isApi = isApiUrl(req.url);
@@ -30,18 +41,30 @@ export class AuthInterceptor implements HttpInterceptor {
           url.includes('/auth/refresh') ||
           url.includes('/auth/select-company');
 
-        if (isAuthEndpoint)
-          return throwError(() => error);
+        if (isAuthEndpoint) return throwError(() => error);
 
         const skipRedirect = req.headers.get('X-Skip-Auth-Redirect') === '1';
+        const msg = getDetail(error);
 
-        if (!skipRedirect && (error.status === 401 || error.status === 403)) {
-          this.toastr.error('Sessão expirada. Faça login novamente.', 'Acesso negado');
+        if (error.status === 0) {
+          this.toastr.error('Falha de conexão. Tenta novamente mais tarde.', 'Rede');
           return throwError(() => error);
         }
 
-        if (error.status >= 500)
+        if (!skipRedirect && error.status === 401) {
+          this.toastr.error('Sessão expirada. Faça login novamente.', 'Autenticação');
+          return throwError(() => error);
+        }
+
+        if (error.status === 403) {
+          this.toastr.error(msg || 'Acesso negado. Permissão insuficiente.', 'Acesso negado');
+          return throwError(() => error);
+        }
+
+        if (error.status >= 500) {
           this.toastr.error('Erro interno no servidor', 'Erro');
+          return throwError(() => error);
+        }
 
         return throwError(() => error);
       })

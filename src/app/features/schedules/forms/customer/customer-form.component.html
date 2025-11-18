@@ -1,0 +1,17 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-input type="text" label="Nome completo" formControlName="customerName" />
+        <app-field-errors [control]="group.controls.customerName" />
+    </div>
+
+    <div class="field">
+        <app-input type="masked" label="CPF" [mask]="'000.000.000-00'" [dropSpecialCharacters]="true"
+            formControlName="customerCpf" />
+        <app-field-errors label="CPF" [control]="group.controls.customerCpf" />
+    </div>
+
+    <div class="field">
+        <app-input type="phone" label="Telefone" [dropSpecialCharacters]="true" formControlName="customerPhone" />
+        <app-field-errors label="Telefone" [control]="group.controls.customerPhone" />
+    </div>
+</div>

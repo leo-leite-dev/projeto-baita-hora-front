@@ -1,8 +1,6 @@
-/* =========================
-   colors.scss (completo)
-   ========================= */
-
-/* Cores Base */
+/* -------------------------
+   Cores Base
+   ------------------------- */
 $pure-black: #000000;
 $pure-white: #ffffff;
 $pure-orange: #ff5e00;
@@ -14,26 +12,30 @@ $pure-purple: #8000ff;
 $pure-blue-strong: #0047AB;
 $pure-blue-light: #87CEFA;
 
-/* Feedback / Sucesso */
+/* -------------------------
+   Feedback / Sucesso
+   ------------------------- */
 $success-green: #28a745;
 $success-green-dark: #218838;
 $orange-overlay: rgba(255, 94, 0, 0.53);
 
-/* Tema Principal */
-$primary: #2563eb;   // link / destaque
-$primary-2: #1d4ed8; // hover/ativo
+/* -------------------------
+   Tema Principal (Light)
+   ------------------------- */
+$primary: #2563eb;
+$primary-2: #1d4ed8;
 
-/* ---- Superfície clara (cards/dialogs brancos) ----
-   Tons escolhidos para ótimo contraste (WCAG AA)
-*/
+/* Superfícies claras */
 $surface: #ffffff;
 $border-light: #e5e7eb;
-$fg-strong: #111827; // título, <strong>
-$fg-default: #1f2937; // corpo padrão
-$fg-muted: #4b5563;   // secundário
-$fg-subtle: #6b7280;  // notas/caption
+$fg-strong: #111827;
+$fg-default: #1f2937;
+$fg-muted: #4b5563;
+$fg-subtle: #6b7280;
 
-/* ---- Tema Escuro / Steam ---- */
+/* -------------------------
+   Tema Escuro / Steam-like
+   ------------------------- */
 $bg: #0c0d10;
 $panel: #101218;
 $panel-elev: #11131b;
@@ -41,11 +43,13 @@ $border: rgba(255, 255, 255, 0.08);
 $border-mid: rgba(255, 255, 255, 0.14);
 $bg-light: rgba(255, 255, 255, 0.04);
 $text: #e9ecf1;
-$fg: $text; // alias p/ manter consistência no dark
+$fg: $text;
 $muted: #a7afbe;
 $danger: #ff8b8b;
 
-/* Cores dos Chips */
+/* -------------------------
+   Cores dos Chips
+   ------------------------- */
 $chip-blue: #3B82F6;
 $chip-green: #10B981;
 $chip-yellow: #F59E0B;
@@ -53,4 +57,39 @@ $chip-purple: #8B5CF6;
 $chip-red: #EF4444;
 $chip-gray: #9CA3AF;
 
-$iron-gray: #1f1f1f ;
+/* Cinza utilizado em painéis escuros */
+$iron-gray: #1f1f1f;
+
+/* =========================
+   Helpers de Transparência
+   (para evitar rgba hardcoded)
+   ========================= */
+
+/* Brancos */
+$white-02: rgba($pure-white, .02);
+$white-05: rgba($pure-white, .05);
+$white-06: rgba($pure-white, .06);
+$white-08: rgba($pure-white, .08);
+$white-10: rgba($pure-white, .10);
+$white-14: rgba($pure-white, .14);
+$white-16: rgba($pure-white, .16);
+$white-55: rgba($pure-white, .55);
+$white-85: rgba($pure-white, .85);
+$white-88: rgba($pure-white, .88);
+
+/* Pretos */
+$black-50: rgba($pure-black, .5);
+$black-60: rgba($pure-black, .6);
+$black-70: rgba($pure-black, .7);
+$black-75: rgba($pure-black, .75);
+
+/* Roxos auxiliares */
+$purple-shadow-30: rgba($pure-purple, .30);
+$purple-shadow-35: rgba($pure-purple, .35);
+$purple-shadow-38: rgba($pure-purple, .38);
+
+/* -------------------------
+   Gradientes frequentes (opcional)
+   ------------------------- */
+$gradient-primary: linear-gradient(135deg, #6e30ff, $pure-purple 70%);
+$gradient-panel: linear-gradient(180deg, $panel-elev, $bg);

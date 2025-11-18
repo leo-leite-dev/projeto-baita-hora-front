@@ -1,0 +1,66 @@
+<div class="input-group chips-autocomplete" [class.disabled]="disabled">
+    <label *ngIf="placeholder">{{ placeholder }}</label>
+
+    <div class="chips-input" [class.disabled]="disabled">
+        <mat-chip-grid *ngIf="showChips && multiple" #chipGrid aria-label="Seleção" class="chips">
+            <mat-chip-row *ngFor="let item of value; trackBy: chipTrackBy" [removable]="!disabled"
+                (removed)="remove(item)" class="chip">
+                {{ displayWith(item) }}
+
+                <button matChipRemove *ngIf="!disabled" aria-label="Remover" class="chip-remove">
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip-row>
+
+            <input class="chips-input__field" type="text"
+                [placeholder]="value.length ? '' : (inputPlaceholder || 'Digite para buscar')"
+                [matChipInputFor]="chipGrid" [matChipInputSeparatorKeyCodes]="[]" [matChipInputAddOnBlur]="false"
+                [formControl]="inputCtrl" [matAutocomplete]="auto" (keydown.backspace)="handleBackspace($event)"
+                (blur)="markTouched()" />
+        </mat-chip-grid>
+
+        <ng-container *ngIf="!showChips">
+            <div class="input-wrap" *ngIf="multiple || value.length === 0">
+                <input type="text" class="input-field" [placeholder]="inputPlaceholder || 'Digite para buscar'"
+                    [formControl]="inputCtrl" [matAutocomplete]="auto" (blur)="markTouched()" [disabled]="disabled"
+                    [readonly]="readonlySelectedText && !multiple && value.length === 1" />
+
+                <button *ngIf="
+            showClearButton &&
+            !disabled &&
+            ((inputCtrl.value ?? '').length || value.length)
+          " type="button" class="clear-btn" aria-label="Limpar" (click)="clear()">
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </div>
+
+            <div class="selected" *ngIf="!multiple && value.length === 1">
+                <mat-icon aria-hidden="true">check_circle</mat-icon>
+                <span class="selected-text">{{ displayWith(value[0]) }}</span>
+
+                <button type="button" class="selected-remove-btn" aria-label="Remover seleção" (click)="clear()">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
+
+            <ul class="selected-list" *ngIf="multiple && value.length">
+                <li *ngFor="let item of value; trackBy: chipTrackBy">
+                    <span>{{ displayWith(item) }}</span>
+                    <button *ngIf="!disabled" type="button" (click)="remove(item)" aria-label="Remover">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </li>
+            </ul>
+        </ng-container>
+    </div>
+
+    <mat-autocomplete #auto="matAutocomplete" class="chips-panel" (optionSelected)="select($event)">
+        <mat-option *ngFor="let option of (filtered$ | async) ?? []" [value]="option" [disabled]="isSelected(option)">
+            {{ displayWith(option) }}
+        </mat-option>
+
+        <mat-option *ngIf="((filtered$ | async) ?? []).length === 0" disabled>
+            Nenhum resultado
+        </mat-option>
+    </mat-autocomplete>
+</div>

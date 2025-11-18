@@ -1,0 +1,20 @@
+@use 'colors' as *;
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(110, 48, 255, .18), transparent 60%),
+        radial-gradient(1200px 600px at 120% 110%, rgba(110, 48, 255, .12), transparent 0%),
+        rgba(0, 0, 0, .58);
+    backdrop-filter: blur(10px) saturate(110%);
+    z-index: 999;
+    animation: overlayIn .22s ease-out;
+}
+
+.modal-content {
+    box-shadow:
+        0 22px 70px rgba(0, 0, 0, .55),
+        0 0 0 1px inset rgba(255, 255, 255, .03),
+        0 0 30px rgba($pure-purple, .18);
+}

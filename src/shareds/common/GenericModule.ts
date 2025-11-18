@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BackButtonComponent } from '../../app/shared/components/buttons/back-button/back-button.component';
 import { ButtonComponent } from '../../app/shared/components/buttons/button/button.component';
 import { FormHeaderComponent } from '../../app/shared/components/forms/form-header/form-header.component';
-import { InputGenericModule } from './InputGenericModule';
 
 @NgModule({
   imports: [

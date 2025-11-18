@@ -26,15 +26,16 @@ export class SideMenuComponent {
   private openMapL2 = new Set<string>();
 
   menuItems: MenuItem[] = [
-    { label: 'Dashboard', icon: 'article', route: '/app/dashboard', requiresCompanyId: true },
     {
-      label: 'Agenda',
+      label: 'Dashboard',
+      icon: 'article',
+      route: '/app/dashboard',
+      requiresCompanyId: true
+    },
+    {
+      label: 'Minha Agenda',
       icon: 'event',
-      submenu: [
-        { label: 'Agendar', route: '/app/service-offering/create-service' },
-        { label: 'Remarcar', route: '/app/service-offering' },
-        { label: 'Cancelar', route: '/app/service-offering' },
-      ],
+      route: '/app/my-schedule'
     },
     {
       label: 'Gerenciamento',

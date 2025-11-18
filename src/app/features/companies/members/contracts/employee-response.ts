@@ -1,5 +1,5 @@
 export interface RegisterEmployeeResponse {
-    userId: string;
+    memberId: string;
     fullName: string;
     username: string;
     email: string;

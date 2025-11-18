@@ -31,7 +31,8 @@ export class ProfileFormComponent {
   readonly minBirth = new Date(this.today.getFullYear() - 120, 0, 1);
 
   ngOnChanges(): void {
-    if (!this.group) return;
+    if (!this.group) 
+      return;
 
     if (!this.locked) {
       this.group.enable({ emitEvent: false });

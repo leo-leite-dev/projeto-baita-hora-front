@@ -1,0 +1,47 @@
+<div class="overlay"></div>
+
+<div class="modal-content">
+    <button class="modal-close-btn" (click)="closeDialog()" type="button" aria-label="Fechar">
+        <app-fa-icon icon="times" />
+    </button>
+
+    <div class="modal-header">
+        <div class="brand">
+            <span class="brand__badge">Cliente</span>
+            <span class="brand__scope">Seleção / Cadastro</span>
+        </div>
+    </div>
+
+    <div class="dialog-body form">
+        <div class="mb-20 field field--full">
+            <mat-button-toggle-group [formControl]="mode" aria-label="Modo de seleção de cliente" class="toggle-group">
+                <mat-button-toggle value="existing" class="toggle-item">
+                    <span class="toggle-label">Agendar Cliente</span>
+                </mat-button-toggle>
+                <mat-button-toggle value="new" class="toggle-item">
+                    <span class="toggle-label">Cadastrar Cliente</span>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+
+        <form *ngIf="mode.value === 'existing'" [formGroup]="existingForm" (ngSubmit)="submitExisting()" class="form"
+            novalidate>
+            <app-appointment-form [group]="existingForm" />
+
+            <div class="field actions">
+                <button class="auth-button" type="submit" (click)="submitExisting()" [disabled]="existingForm.invalid">
+                    Confirmar
+                </button>
+            </div>
+        </form>
+
+        <form *ngIf="mode.value === 'new'" [formGroup]="form" (ngSubmit)="submitNew()" class="form" novalidate>
+            <app-customer-form [group]="form" />
+
+            <div class="field actions">
+                <app-button variant="clean" label="Limpar" (clicked)="reset()" />
+                <app-button htmlType="submit" label="Salvar" [disabled]="form.invalid" />
+            </div>
+        </form>
+    </div>
+</div>

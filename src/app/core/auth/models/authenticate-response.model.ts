@@ -1,6 +1,6 @@
 export interface AuthenticateResponse {
   isAuthenticated: boolean;
-  userId: string | null;
-  username: string | null;
+  userId: string;
+  username: string;
   roles: string[];
 }

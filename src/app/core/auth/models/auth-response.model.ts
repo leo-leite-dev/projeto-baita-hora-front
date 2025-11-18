@@ -1,8 +1,9 @@
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
-  expiresAtUtc: string;  
+  expiresAtUtc: string;
   userId: string;
+  memberId?: string | null;
   username: string;
   roles: string[];
   companies: AuthCompanyResponse[];

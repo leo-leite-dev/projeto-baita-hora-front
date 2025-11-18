@@ -10,9 +10,9 @@
     </div>
 
     <div class="field">
-        <app-auto-chips-auto-complete formControlName="serviceOfferings" [options$]="serviceOfferingOptions$"
-            [displayWith]="soDisplay" [trackBy]="soTrack" placeholder="Serviços vinculados"
-            inputPlaceholder="Digite para buscar" />
+        <app-auto-complete formControlName="serviceOfferings" [options$]="serviceOfferingOptions$"
+            [displayWith]="soDisplay" [trackBy]="soTrack" [multiple]="true" [showChips]="true"
+            placeholder="Serviços vinculados" inputPlaceholder="Digite para buscar" />
         <app-field-errors [control]="group.controls.serviceOfferings" />
     </div>
 </div>

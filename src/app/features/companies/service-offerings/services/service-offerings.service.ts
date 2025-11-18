@@ -62,7 +62,10 @@ export class ServiceOfferingsService {
             .pipe(this.errors.rxThrow<void>("ServiceOfferingsService.remove"));
     }
 
-    listServiceOfferingActiveOptions(search: string = "", take: number = 20): Observable<ServiceOfferingOption[]> {
+    listServiceOfferingActiveOptions(
+        search: string = "",
+        take: number = 20
+    ): Observable<ServiceOfferingOption[]> {
         const params: Record<string, string> = {};
         if (search)
             params["search"] = search;
@@ -73,5 +76,22 @@ export class ServiceOfferingsService {
         return this.http
             .get<ServiceOfferingOption[]>(`${this.api}/options`, { params })
             .pipe(this.errors.rxThrow<ServiceOfferingOption[]>("ServiceOfferingsService.listActiveOptions"));
+    }
+
+    listServiceOfferingActiveOptionsForCurrentUser(
+        search: string = "",
+        take: number = 20
+    ): Observable<ServiceOfferingOption[]> {
+        const params: Record<string, string> = {};
+
+        if (search)
+            params["search"] = search;
+
+        if (take)
+            params["take"] = String(take);
+
+        return this.http
+            .get<ServiceOfferingOption[]>(`${this.api}/options/my`, { params })
+            .pipe(this.errors.rxThrow<ServiceOfferingOption[]>("ServiceOfferingsService.listActiveOptionsForCurrentUser"));
     }
 }

@@ -1,53 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../core/auth/services/auth.service';
-import { AuthResponse } from '../core/auth/models/auth-response.model';
 import { Router } from '@angular/router';
 import { ButtonComponent } from '../shared/components/buttons/button/button.component';
-import { LoginModalComponent } from '../core/auth/login-modal/login-modal.component';
-import { CompaniesModalComponent } from '../core/auth/companies-modal/companies-modal.component';
 import { LinkButtonComponent } from '../shared/components/buttons/link-button/link-button.component';
+import { LoginModalComponent } from '../core/auth/login-modal/login-modal.component';
+import { AuthResponse } from '../core/auth/models/auth-response.model';
+import { SessionService } from '../core/auth/services/session.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports:
-    [
-      CommonModule,
-      LoginModalComponent,
-      CompaniesModalComponent,
-      ButtonComponent,
-      LinkButtonComponent
-    ],
+  imports: [
+    CommonModule,
+    ButtonComponent,
+    LinkButtonComponent,
+    LoginModalComponent
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
   showLogin = false;
-  showCompanies = false;
-  companies: AuthResponse['companies'] = [];
 
-  constructor(
-    private authService: AuthService,
-    private router: Router) { }
+  private router = inject(Router);
+  private session = inject(SessionService);
 
   openLoginModal() {
     this.showLogin = true;
   }
 
-  onCompaniesDetected(resp: AuthResponse) {
+  onLoggedIn(resp: AuthResponse) {
     this.showLogin = false;
-    this.showCompanies = true;
-    this.companies = resp.companies;
-  }
 
-  onCompanySelected(companyId: string) {
-    this.authService.selectCompany({ companyId }).subscribe(resp => {
-      this.showCompanies = false;
-    });
-  }
+    const fromList = resp.companies?.[0]?.companyId ?? '';
+    let fromJwt = '';
+    try {
+      const payload = JSON.parse(atob(resp.accessToken.split('.')[1] || ''));
+      fromJwt = payload?.companyId || '';
+    } catch { }
 
-  goToCreateUserCompany() {
-    this.router.navigate(['/onboarding/create-owner']);
+    const companyId = fromJwt || fromList || 'placeholder';
+
+    this.session.markAuthenticated(companyId);
+
+    this.router.navigate(['/app', 'dashboard', companyId]);
   }
 }

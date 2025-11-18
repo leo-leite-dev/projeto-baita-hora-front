@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { CompanyRole } from '../../../../shared/enums/company-role.enum';
 import { SelectComponent, SelectOption } from '../../../../shared/components/select/select.component';
-import { AutoChipsAutocompleteComponent } from '../../../../shared/components/inputs/auto-chips-auto-complete/auto-chips-auto-complete.component';
+import { Autocomplete } from '../../../../shared/components/inputs/auto-complete/auto-complete.component';
 import { Observable } from 'rxjs';
 import { InputGenericModule } from '../../../../../shareds/common/InputGenericModule';
 import { ServiceOfferingOption } from '../../service-offerings/models/service-oferring-option.model';
@@ -19,7 +19,7 @@ export type PositionForm = {
   imports: [
     InputGenericModule,
     SelectComponent,
-    AutoChipsAutocompleteComponent,
+    Autocomplete,
   ],
   templateUrl: './position-form.component.html',
   styleUrls: ['./position-form.component.scss']

@@ -133,3 +133,22 @@ ngx-mat-input-tel.tel-field .ngx-mat-input-tel-input {
   background: rgba(0, 255, 128, 0.1) !important;
   color: #00e676 !important;
 }
+
+.cdk-overlay-container, .cdk-overlay-pane { z-index: 10000 !important; }
+
+/* Tema escuro do autocomplete (combina com o modal) */
+.mat-mdc-autocomplete-panel {
+  background: #0b1220 !important;
+  color: #e5e7eb !important;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 12px;
+  box-shadow: 0 14px 30px rgba(0,0,0,.35);
+}
+.mat-mdc-option.mdc-list-item {
+  color: #e5e7eb !important;
+}
+.mat-mdc-option.mdc-list-item--selected,
+.mat-mdc-option.mdc-list-item--activated,
+.mat-mdc-option:hover {
+  background: rgba(79,70,229,.18) !important;
+}

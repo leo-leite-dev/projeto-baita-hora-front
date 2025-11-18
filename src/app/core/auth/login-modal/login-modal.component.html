@@ -19,7 +19,7 @@
             {{ errorMessage }}
         </div>
 
-        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+        <form *ngIf="step === 'credentials'" [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
             <div class="field">
                 <app-input label="Identificador" type="text" formControlName="identify"></app-input>
                 <app-field-errors label="Identificador" [control]="form.get('identify')" />
@@ -30,10 +30,25 @@
                 <app-field-errors label="Senha" [control]="form.get('password')" />
             </div>
 
-            <button type="submit" [disabled]="form.invalid" class="auth-button">
-                Entrar
+            <button type="submit" [disabled]="form.invalid || loading" class="auth-button">
+                {{ loading ? 'Entrando…' : 'Entrar' }}
             </button>
         </form>
+
+        <section *ngIf="step === 'choose-company'" class="choose-company">
+            <p>Escolha a empresa para entrar:</p>
+            <ul class="company-list">
+                <li *ngFor="let c of pendingCompanies">
+                    <button class="company-item" (click)="selectCompany(c.companyId)" [disabled]="loading">
+                        {{ c.name }}
+                    </button>
+                </li>
+            </ul>
+
+            <button type="button" class="btn-back" (click)="backToCredentials()" [disabled]="loading">
+                Voltar
+            </button>
+        </section>
 
         <div class="support">
             <a class="support__link" (click)="navigateToRegister($event)">

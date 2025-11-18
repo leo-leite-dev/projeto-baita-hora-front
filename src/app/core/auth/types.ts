@@ -15,6 +15,7 @@ export const CompanyPermission = {
 export type CompanyPermissionKey = keyof typeof CompanyPermission;
 
 export type AuthContext = {
+    memberId: string;         
     companyId: string;
     role: CompanyRole;
     permissionMask?: number;

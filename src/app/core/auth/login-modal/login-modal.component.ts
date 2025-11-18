@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { AuthResponse } from '../models/auth-response.model';
 import { GenericModule } from '../../../../shareds/common/GenericModule';
@@ -10,6 +11,8 @@ import { FaIconComponent } from '../../../shared/components/icons/fa-icon.compon
 import { FieldErrorsComponent } from '../../../shared/components/field-errors/field-errors.component';
 import { extractErrorMessage } from '../../../shared/utils/error.util';
 import { SessionService } from '../services/session.service';
+
+type Step = 'credentials' | 'choose-company';
 
 @Component({
   selector: 'app-login-modal',
@@ -25,68 +28,118 @@ import { SessionService } from '../services/session.service';
 })
 export class LoginModalComponent {
   @Output() close = new EventEmitter<void>();
-  @Output() companiesDetected = new EventEmitter<AuthResponse>();
+  @Output() loggedIn = new EventEmitter<AuthResponse>();
 
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  private auth = inject(AuthService);
   private session = inject(SessionService);
   private router = inject(Router);
 
   form = this.fb.group({
     identify: ['', Validators.required],
-    password: ['', Validators.required]
+    password: ['', Validators.required],
+    companyId: [this.auth.getActiveCompany() ?? '', [Validators.required]]
   });
 
+  step: Step = 'credentials';
+  pendingCompanies: Array<{ companyId: string; name: string }> = [];
+
   errorMessage: string | null = null;
+  loading = false;
 
   onSubmit() {
-    if (this.form.invalid)
-      return;
+    if (this.form.invalid || this.loading) return;
 
-    this.form.disable();
     this.errorMessage = null;
+    this.loading = true;
+    this.form.disable();
 
     const payload = {
       identify: this.form.value.identify!,
-      password: this.form.value.password!
+      password: this.form.value.password!,
+      companyId: this.form.value.companyId!,
     };
 
-    this.authService.login(payload)
-      .pipe(finalize(() => this.form.enable()))
-      .subscribe({
-        next: (resp) => {
-          const companies = resp?.companies ?? [];
-          if (companies.length > 1) {
-            this.companiesDetected.emit(resp);
-            return;
-          }
+    this.auth.login(payload).pipe(
+      catchError(err => {
+        this.errorMessage = extractErrorMessage(err) ?? 'Falha ao autenticar.';
+        return of<AuthResponse | null>(null);
+      }),
+      finalize(() => {
+        this.loading = false;
+        this.form.enable();
+      })
+    ).subscribe(resp => {
+      if (!resp)
+        return;
 
-          const companyId = companies[0]?.companyId;
-          if (!companyId) {
-            this.errorMessage = 'Empresa não identificada após login.';
-            return;
-          }
+      if (resp.accessToken) {
+        this.finish(resp);
+        return;
+      }
 
-          this.authService.setActiveCompany(companyId);
-          this.session.markAuthenticated(companyId);
-          this.router.navigate(['/app/dashboard', companyId]);
-          this.close.emit();
-        },
-        error: (err) => {
-          const msg = extractErrorMessage(err);
-          if (err?.fieldErrors) {
-            Object.entries(err.fieldErrors).forEach(([key, message]) => {
-              this.form.get(key)?.setErrors({ server: message });
-            });
-          }
-          this.form.setErrors({ server: msg });
-          this.errorMessage = msg;
-        },
-      });
+      const companies = resp.companies ?? [];
+      if (companies.length === 0) {
+        this.errorMessage = 'Nenhuma empresa vinculada à sua conta.';
+        return;
+      }
+
+      if (companies.length === 1) {
+        this.selectCompany(companies[0].companyId);
+        return;
+      }
+
+      this.pendingCompanies = companies.map(c => ({ companyId: c.companyId, name: c.name }));
+      this.step = 'choose-company';
+    });
+  }
+
+  selectCompany(companyId: string) {
+    if (this.loading) return;
+
+    this.errorMessage = null;
+    this.loading = true;
+
+    const payload = {
+      identify: this.form.value.identify!,
+      password: this.form.value.password!,
+      companyId,
+    };
+
+    this.auth.login(payload).pipe(
+      catchError(err => {
+        this.errorMessage = extractErrorMessage(err) ?? 'Falha ao selecionar empresa.';
+        return of<AuthResponse | null>(null);
+      }),
+      finalize(() => { this.loading = false; })
+    ).subscribe(resp => {
+      if (!resp?.accessToken) {
+        this.errorMessage = 'Não foi possível concluir o login.';
+        return;
+      }
+
+      this.session.markAuthenticated(companyId);
+
+      this.loggedIn.emit(resp);
+
+      this.router.navigate(['/app/dashboard', companyId]);
+      this.close.emit();
+    });
+  }
+
+  backToCredentials() {
+    if (this.loading) return;
+    this.step = 'credentials';
+    this.errorMessage = '';
   }
 
   navigateToRegister(event: Event) {
     event.preventDefault();
+    this.close.emit();
+  }
+
+  private finish(resp: AuthResponse) {
+    this.loggedIn.emit(resp);
     this.close.emit();
   }
 }

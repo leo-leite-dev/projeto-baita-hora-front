@@ -1,0 +1,14 @@
+<div [formGroup]="group">
+    <div class="field">
+        <app-auto-complete formControlName="customer" [options$]="customerOptions$" [displayWith]="displayWith"
+            [trackBy]="trackBy" [multiple]="false" [showChips]="false" [readonlySelectedText]="true"
+            placeholder="Buscar cliente" inputPlaceholder="Digite nome" />
+        <app-field-errors [control]="group.controls.customer" />
+
+        <app-auto-complete formControlName="serviceOfferings" [options$]="serviceOfferingOptions$"
+            [displayWith]="displayWith" [trackBy]="trackBy" [multiple]="true" [showChips]="false"
+            [readonlySelectedText]="false" [showClearButton]="false" placeholder="Buscar Serviços"
+            inputPlaceholder="Digite o serviço" />
+        <app-field-errors [control]="group.controls.customer" />
+    </div>
+</div>
