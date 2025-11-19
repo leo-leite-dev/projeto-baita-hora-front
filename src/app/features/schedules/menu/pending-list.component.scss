@@ -1,0 +1,39 @@
+@use 'colors' as *;
+
+.menu-wrapper {
+    min-width: 200px;
+    max-height: 320px;
+    background: $panel;
+    border-radius: 0.75rem;
+    padding: 0.4rem 0;
+    box-shadow: 0 10px 30px $black-60;
+    border: 1px solid $white-06;
+    overflow-y: auto;
+    color: $pure-white;
+    font-size: 0.85rem;
+}
+
+.menu-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.menu-item {
+    padding: 0.55rem 0.85rem;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.menu-item:hover {
+    background: $white-06;
+    transform: translateX(2px);
+}
+
+.m-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.m-time {
+    font-size: 0.8rem;
+    opacity: 0.75;
+}

@@ -29,7 +29,7 @@ export class CustomersService {
             params["take"] = String(take);
 
         return this.http
-            .get<CustomerOption[]>(`${this.api}/options`, { params })
+            .get<CustomerOption[]>(`${this.api}/customer-options`, { params })
             .pipe(this.errors.rxThrow<CustomerOption[]>("SchedulesService.listCustomerOptions"));
     }
 }

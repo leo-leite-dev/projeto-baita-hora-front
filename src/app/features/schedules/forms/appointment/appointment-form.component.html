@@ -1,14 +1,23 @@
+<ng-template #customerOption let-c>
+    <div class="d-flex center gap-10" [matTooltip]="getPenaltyTooltip(c)" [matTooltipDisabled]="!c.noShowPenaltyTotal"
+        matTooltipPosition="right" matTooltipClass="tooltip-debt">
+        <img class="face-icon" [src]="getFace(c.noShowCount)" alt="status" />
+        <span>{{ c.name }}</span>
+    </div>
+</ng-template>
+
 <div [formGroup]="group">
     <div class="field">
-        <app-auto-complete formControlName="customer" [options$]="customerOptions$" [displayWith]="displayWith"
-            [trackBy]="trackBy" [multiple]="false" [showChips]="false" [readonlySelectedText]="true"
-            placeholder="Buscar cliente" inputPlaceholder="Digite nome" />
+        <app-auto-complete formControlName="customer" [options$]="customerOptions$" [displayWith]="displayCustomerWith"
+            [optionTemplate]="customerOption" [trackBy]="trackBy" [multiple]="false" [showChips]="false"
+            [readonlySelectedText]="true" placeholder="Buscar cliente"
+            inputPlaceholder="Digite nome"></app-auto-complete>
         <app-field-errors [control]="group.controls.customer" />
 
         <app-auto-complete formControlName="serviceOfferings" [options$]="serviceOfferingOptions$"
             [displayWith]="displayWith" [trackBy]="trackBy" [multiple]="true" [showChips]="false"
             [readonlySelectedText]="false" [showClearButton]="false" placeholder="Buscar Serviços"
-            inputPlaceholder="Digite o serviço" />
+            inputPlaceholder="Digite o serviço"></app-auto-complete>
         <app-field-errors [control]="group.controls.customer" />
     </div>
 </div>

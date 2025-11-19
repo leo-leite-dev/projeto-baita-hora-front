@@ -8,9 +8,8 @@ import { ScheduleDetails } from '../models/schedule-deital';
 import { ErrorHandlingService } from '../../../shared/services/error-handling.service';
 import { CreateAppointmentRequest } from '../contracts/appointments/create-appointment-request.contract';
 import { RescheduleAppointmentRequest } from '../contracts/appointments/reschedule-appointment-request';
-import { CompleteAppointmentRequest } from '../contracts/appointments/complete-appointment-request';
 import { CancelAppointmentRequest } from '../contracts/appointments/cancel-appointment-request';
-import { NoShowAppointmentRequest } from '../contracts/appointments/no-show-appointment-request';
+import { UpdateAttendanceStatusRequest } from '../contracts/appointments/update-attendance-statu-request';
 
 @Injectable({ providedIn: 'root' })
 export class AppointmentsService {
@@ -38,16 +37,10 @@ export class AppointmentsService {
             .pipe(this.errors.rxThrow<void>('AppointmentsService.cancel'));
     }
 
-    completeAppointment(appointmentId: string, payload: CompleteAppointmentRequest) {
+    updateAttendanceStatus(appointmentId: string, payload: UpdateAttendanceStatusRequest) {
         return this.http
-            .put<void>(`${this.api}/${appointmentId}/complete`, payload)
-            .pipe(this.errors.rxThrow<void>('AppointmentsService.complete'));
-    }
-
-    noShowAppointment(appointmentId: string, payload: NoShowAppointmentRequest) {
-        return this.http
-            .put<void>(`${this.api}/${appointmentId}/no-show`, payload)
-            .pipe(this.errors.rxThrow<void>('AppointmentsService.noShow'));
+            .put<void>(`${this.api}/${appointmentId}/attendance`, payload)
+            .pipe(this.errors.rxThrow<void>('AppointmentsService.updateAttendanceStatus'));
     }
 
     getAll(localYmd?: string): Observable<Appointment[]> {

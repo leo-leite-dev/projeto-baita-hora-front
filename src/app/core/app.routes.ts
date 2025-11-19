@@ -78,7 +78,7 @@ export const routes: Routes = [
       {
         path: 'my-schedule',
         loadComponent: () =>
-          import('../features/schedules/pages/my-schedule/my-schedule.component')
+          import('../features/schedules/pages/my-schedule.component')
             .then(m => m.MyScheduleComponent),
       },
       {

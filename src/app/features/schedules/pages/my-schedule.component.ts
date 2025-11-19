@@ -8,19 +8,20 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { EventResizeDoneArg } from '@fullcalendar/interaction';
 import { of, throwError } from 'rxjs';
 import { switchMap, tap, finalize, filter, catchError } from 'rxjs/operators';
-import { AuthContextService } from '../../../../core/auth';
-import { AppointmentsService } from '../../services/appointments.service';
-import { CustomersService } from '../../services/customer.service';
-import { CreateAppointmentRequest } from '../../contracts/appointments/create-appointment-request.contract';
-import { RescheduleAppointmentRequest } from '../../contracts/appointments/reschedule-appointment-request';
-import { CancelAppointmentRequest } from '../../contracts/appointments/cancel-appointment-request';
-import { NoShowAppointmentRequest } from '../../contracts/appointments/no-show-appointment-request';
+import { AuthContextService } from '../../../core/auth';
+import { AppointmentsService } from '../services/appointments.service';
+import { CustomersService } from '../services/customer.service';
+import { CreateAppointmentRequest } from '../contracts/appointments/create-appointment-request.contract';
+import { RescheduleAppointmentRequest } from '../contracts/appointments/reschedule-appointment-request';
+import { CancelAppointmentRequest } from '../contracts/appointments/cancel-appointment-request';
 import { ToastrService } from 'ngx-toastr';
-import { CreateAppointmentDialogComponent } from '../../modal/create/create-appointment-dialog.component';
-import {
-  CancelAppointmentDialogComponent,
-  CancelDialogResult,
-} from '../../modal/cancel/cancel-appointment.component';
+import { CreateAppointmentDialogComponent } from '../modal/create/create-appointment-dialog.component';
+import { CancelAppointmentDialogComponent, CancelDialogResult } from '../modal/cancel/cancel-appointment.component';
+import { FaIconComponent } from '../../../shared/components/icons/fa-icon.component';
+import { AttendanceConfirmationService } from '../services/attendance-confirmation.service';
+import { PendingListComponent } from '../menu/pending-list.component';
+import { UpdateAttendanceStatusRequest } from '../contracts/appointments/update-attendance-statu-request';
+import { AttendanceStatus } from '../appointments/enums/attendance-status.enum';
 
 type DialogData = CreateAppointmentRequest;
 
@@ -47,7 +48,13 @@ type AppointmentStatusUI = 'pending' | 'canceled' | 'done' | 'noshow';
 @Component({
   selector: 'app-my-schedule',
   standalone: true,
-  imports: [CommonModule, FullCalendarModule, MatDialogModule],
+  imports: [
+    CommonModule,
+    FullCalendarModule,
+    MatDialogModule,
+    FaIconComponent,
+    PendingListComponent
+  ],
   templateUrl: './my-schedule.component.html',
   styleUrls: ['./my-schedule.component.scss'],
 })
@@ -59,6 +66,17 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private auth = inject(AuthContextService);
   private toastr = inject(ToastrService);
+  private attendanceConfirmation = inject(AttendanceConfirmationService);
+
+  isPendingAttendanceOpen = false;
+
+  get pendingAttendanceCount(): number {
+    return this.attendanceConfirmation.getPendingCount();
+  }
+
+  get pendingAttendanceItems(): EventInput[] {
+    return this.attendanceConfirmation.getPendingList();
+  }
 
   statusLegend = [
     { key: 'attending', label: 'Atendendo' },
@@ -83,7 +101,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
     editable: true,
     eventDurationEditable: true,
     nowIndicator: true,
-    slotMinTime: '05:00:00',
+    slotMinTime: '07:00:00',
     slotMaxTime: '20:30:00',
     scrollTime: '08:00:00',
     allDaySlot: false,
@@ -95,8 +113,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
 
     eventDidMount: (arg: EventMountArg) => {
       const btn = arg.el.querySelector<HTMLButtonElement>('.slot-cancel');
-      if (!btn) 
-        return;
+      if (!btn) return;
 
       btn.addEventListener('click', (ev) => {
         ev.preventDefault();
@@ -106,7 +123,8 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
     },
 
     eventClassNames: (arg) => {
-      const status = (arg.event.extendedProps['status'] as AppointmentStatusUI) || 'pending';
+      const status =
+        (arg.event.extendedProps['status'] as AppointmentStatusUI) || 'pending';
       const classes = ['slot', `is-${status}`];
 
       const now = new Date();
@@ -115,28 +133,23 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
         (arg.event.end as Date) ??
         new Date(
           start.getTime() +
-          (((arg.event.extendedProps['durationMinutes'] as number) || 30) * 60000),
+          (((arg.event.extendedProps['durationMinutes'] as number) || 30) *
+            60000),
         );
 
-      if (now > end) 
-        classes.push('is-past');
-      
+      if (now > end) classes.push('is-past');
 
       return classes;
     },
 
     eventContent: (arg) => {
       const time = arg.timeText || '';
-      const name = (arg.event.extendedProps['customerName'] as string) || 'Cliente';
-      const serviceNames = (arg.event.extendedProps['serviceOfferingNames'] as string[]) ?? [];
+      const name =
+        (arg.event.extendedProps['customerName'] as string) || 'Cliente';
+      const serviceNames =
+        (arg.event.extendedProps['serviceOfferingNames'] as string[]) ?? [];
       const serviceTitle = serviceNames.join(', ');
 
-      let serviceLabel = '';
-      if (serviceNames.length === 1) 
-        serviceLabel = serviceNames[0];
-      else if (serviceNames.length > 1) 
-        serviceLabel = `${serviceNames[0]} +${serviceNames.length - 1}`;
-      
       const status =
         (arg.event.extendedProps['status'] as AppointmentStatusUI) || 'pending';
 
@@ -146,58 +159,53 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
         (arg.event.end as Date) ??
         new Date(
           start.getTime() +
-          (((arg.event.extendedProps['durationMinutes'] as number) || 30) * 60000),
+          (((arg.event.extendedProps['durationMinutes'] as number) || 30) *
+            60000),
         );
 
       const isAttending = now >= start && now <= end;
       const isPast = now > end;
 
       let dotClass: string;
-
-      if (status === 'noshow')
-        dotClass = 'dot-noshow';
-      else if (isAttending)
-        dotClass = 'dot-attending';
-      else if (isPast)
-        dotClass = 'dot-done';
-      else
-        dotClass = 'dot-' + status;
-
+      if (status === 'noshow') dotClass = 'dot-noshow';
+      else if (isAttending) dotClass = 'dot-attending';
+      else if (isPast) dotClass = 'dot-done';
+      else dotClass = 'dot-' + status;
 
       const canCancel =
         !isPast && status !== 'done' && status !== 'canceled' && status !== 'noshow';
 
       const cancelButtonHtml = canCancel
         ? `
-      <button
-        class="slot-cancel"
-        type="button"
-        data-app-id="${arg.event.id}"
-        aria-label="Cancelar agendamento">
-        ✕
-      </button>
-    `
+          <button
+            class="slot-cancel"
+            type="button"
+            data-app-id="${arg.event.id}"
+            aria-label="Cancelar agendamento">
+            ✕
+          </button>
+        `
         : '';
 
       return {
         html: `
-    <div class="slot-wrap">
-      <div class="slot-line1">
-        <span class="slot-time">${time}</span>
-        <span class="slot-sep">•</span>
-        <span class="slot-name" title="${name}">${name}</span>
-      </div>
+        <div class="slot-wrap">
+          <div class="slot-line1">
+            <span class="slot-time">${time}</span>
+            <span class="slot-sep">•</span>
+            <span class="slot-name" title="${name}">${name}</span>
+          </div>
 
-      <div class="slot-line2">
-        <span class="slot-service" title="${serviceTitle}">
-          ${serviceTitle || '&nbsp;'}
-        </span>
-        <span class="slot-dot ${dotClass}"></span>
-      </div>
+          <div class="slot-line2">
+            <span class="slot-service" title="${serviceTitle}">
+              ${serviceTitle || '&nbsp;'}
+            </span>
+            <span class="slot-dot ${dotClass}"></span>
+          </div>
 
-      ${cancelButtonHtml}
-    </div>
-  `,
+          ${cancelButtonHtml}
+        </div>
+      `,
       };
     },
 
@@ -249,13 +257,13 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
               (a.status as AppointmentStatusApi | undefined) ?? 'Pending';
 
             const attendanceStatus: AttendanceStatusApi =
-              (a.attendanceStatus as AttendanceStatusApi | undefined) ?? 'Unknown';
+              (a.attendanceStatus as AttendanceStatusApi | undefined) ??
+              'Unknown';
 
             let uiStatus: AppointmentStatusUI;
-            if (appointmentStatus === 'Pending')
-              uiStatus = 'pending';
-            else
-              uiStatus = attendanceStatus === 'NoShow' ? 'noshow' : 'done';
+            if (appointmentStatus === 'Pending') uiStatus = 'pending';
+            else uiStatus =
+              attendanceStatus === 'NoShow' ? 'noshow' : 'done';
 
             const isLocked = appointmentStatus === 'Finished';
 
@@ -286,8 +294,26 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
         api.removeAllEventSources();
         api.removeAllEvents();
         api.addEventSource(events);
+
+        setTimeout(() => {
+          this.attendanceConfirmation.process(events, () => this.loadMySchedule());
+        }, 200);
       },
     });
+  }
+
+  togglePendingAttendance(): void {
+    if (this.pendingAttendanceCount === 0)
+      return;
+
+    this.isPendingAttendanceOpen = !this.isPendingAttendanceOpen;
+  }
+
+  onPendingChoose(event: EventInput): void {
+    this.isPendingAttendanceOpen = false;
+    this.attendanceConfirmation.openAppointment(event, () =>
+      this.loadMySchedule(),
+    );
   }
 
   private decorateSelection(arg: DateSelectArg) {
@@ -309,7 +335,9 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
   private onEventDrop(arg: EventDropArg) {
     const event = arg.event;
 
-    const appointmentStatus = event.extendedProps['appointmentStatus'] as AppointmentStatusApi | undefined;
+    const appointmentStatus = event.extendedProps[
+      'appointmentStatus'
+    ] as AppointmentStatusApi | undefined;
 
     if (appointmentStatus === 'Finished') {
       this.toastr.info(
@@ -371,10 +399,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
           this.loadMySchedule();
         }),
         catchError((err) => {
-          this.toastr.error(
-            'Não foi possível remarcar o agendamento.',
-            'Erro',
-          );
+          this.toastr.error('Não foi possível remarcar o agendamento.', 'Erro');
           arg.revert();
           return throwError(() => err);
         }),
@@ -385,7 +410,9 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
   private onEventResize(arg: EventResizeDoneArg) {
     const event = arg.event;
 
-    const appointmentStatus = event.extendedProps['appointmentStatus'] as AppointmentStatusApi | undefined;
+    const appointmentStatus = event.extendedProps[
+      'appointmentStatus'
+    ] as AppointmentStatusApi | undefined;
 
     if (appointmentStatus === 'Finished') {
       this.toastr.info(
@@ -496,8 +523,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
             const customerId = res.customerId?.trim();
             const serviceOfferingIds = res.serviceOfferingIds ?? [];
 
-            if (!customerId || serviceOfferingIds.length === 0)
-              return of(null);
+            if (!customerId || serviceOfferingIds.length === 0) return of(null);
 
             const payload: CreateAppointmentRequest = {
               ...initialPayload,
@@ -551,10 +577,20 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
         switchMap((result) => {
           if (result === 'cancel') {
             const payload: CancelAppointmentRequest = { memberId };
-            return this.appointmentsService.cancelAppointment(appointmentId, payload);
+            return this.appointmentsService.cancelAppointment(
+              appointmentId,
+              payload,
+            );
           } else {
-            const payload: NoShowAppointmentRequest = { memberId };
-            return this.appointmentsService.noShowAppointment(appointmentId, payload);
+            const payload: UpdateAttendanceStatusRequest = {
+              memberId,
+              attendanceStatus: AttendanceStatus.NoShow, 
+            };
+
+            return this.appointmentsService.updateAttendanceStatus(
+              appointmentId,
+              payload,
+            );
           }
         }),
         tap(() => {

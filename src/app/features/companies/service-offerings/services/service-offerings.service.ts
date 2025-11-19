@@ -74,7 +74,7 @@ export class ServiceOfferingsService {
             params["take"] = String(take);
 
         return this.http
-            .get<ServiceOfferingOption[]>(`${this.api}/options`, { params })
+            .get<ServiceOfferingOption[]>(`${this.api}/services-oferrings-options`, { params })
             .pipe(this.errors.rxThrow<ServiceOfferingOption[]>("ServiceOfferingsService.listActiveOptions"));
     }
 
@@ -91,7 +91,7 @@ export class ServiceOfferingsService {
             params["take"] = String(take);
 
         return this.http
-            .get<ServiceOfferingOption[]>(`${this.api}/options/my`, { params })
+            .get<ServiceOfferingOption[]>(`${this.api}/services-oferrings-options/my-options`, { params })
             .pipe(this.errors.rxThrow<ServiceOfferingOption[]>("ServiceOfferingsService.listActiveOptionsForCurrentUser"));
     }
 }

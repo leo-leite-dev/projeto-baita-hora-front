@@ -56,11 +56,18 @@
 
     <mat-autocomplete #auto="matAutocomplete" class="chips-panel" (optionSelected)="select($event)">
         <mat-option *ngFor="let option of (filtered$ | async) ?? []" [value]="option" [disabled]="isSelected(option)">
-            {{ displayWith(option) }}
+            <ng-container *ngIf="optionTemplate; else defaultOption" [ngTemplateOutlet]="optionTemplate"
+                [ngTemplateOutletContext]="{ $implicit: option }">
+            </ng-container>
+
+            <ng-template #defaultOption>
+                {{ displayWith(option) }}
+            </ng-template>
         </mat-option>
 
         <mat-option *ngIf="((filtered$ | async) ?? []).length === 0" disabled>
             Nenhum resultado
         </mat-option>
     </mat-autocomplete>
+
 </div>

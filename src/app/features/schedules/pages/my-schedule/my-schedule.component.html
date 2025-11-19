@@ -1,8 +1,0 @@
-<div class="status-legend">
-    <div class="legend-item" *ngFor="let s of statusLegend">
-        <span class="legend-dot" [ngClass]="'lg-' + s.key"></span>
-        <span>{{ s.label }}</span>
-    </div>
-</div>
-
-<full-calendar #cal [options]="calendarOptions" />

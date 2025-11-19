@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, forwardRef, OnDestroy, ChangeDetectionStrategy, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR, ReactiveFormsModule, } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent, } from '@angular/material/autocomplete';
@@ -46,7 +46,9 @@ export class Autocomplete<T extends SelectableItem>
 
   @Input({ required: true, alias: 'options$' })
   set optionsStream(src: Observable<T[]> | null) {
-    if (!src) return;
+    if (!src)
+      return;
+
     src.pipe(takeUntil(this.destroy$)).subscribe(arr => this._optionsBS.next(arr ?? []));
   }
 
@@ -55,16 +57,16 @@ export class Autocomplete<T extends SelectableItem>
     if (!value)
       return;
 
-    if (isObservable(value)) {
+    if (isObservable(value))
       (value as Observable<T[]>)
         .pipe(takeUntil(this.destroy$))
         .subscribe(arr => this._optionsBS.next(arr ?? []));
-    } else {
+    else
       this._optionsBS.next(value ?? []);
-    }
   }
 
   @Input() displayWith: DisplayFn<T> = (v) => (v ? v.name : '');
+  @Input() optionTemplate?: TemplateRef<any>;
   @Input() trackBy: TrackByFn<T> = (v) => v.id;
   @Input() placeholder = '';
   @Input() inputPlaceholder = '';
@@ -73,7 +75,7 @@ export class Autocomplete<T extends SelectableItem>
   @Input() multiple = true;
   @Input() showChips = true;
   @Input() readonlySelectedText = true;
-  @Input() showClearButton = true; 
+  @Input() showClearButton = true;
 
   readonly inputCtrl = new FormControl<string>('', { nonNullable: true });
   value: T[] = [];
@@ -141,11 +143,10 @@ export class Autocomplete<T extends SelectableItem>
     } else {
       this.value = [item];
 
-      if (this.readonlySelectedText) {
+      if (this.readonlySelectedText)
         this.inputCtrl.setValue(this.displayWith(item), { emitEvent: false });
-      } else {
+      else
         this.inputCtrl.setValue('', { emitEvent: false });
-      }
     }
 
     this.emitChange();

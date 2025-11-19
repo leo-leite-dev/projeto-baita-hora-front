@@ -1,0 +1,34 @@
+<div class="overlay"></div>
+
+<div class="modal-content">
+    <button class="modal-close-btn" type="button" aria-label="Fechar" (click)="closeDialog()">
+        ×
+    </button>
+
+    <div class="modal-header">
+        <div class="brand">
+            <span class="brand__badge">Atendimento</span>
+            <span class="brand__scope">Confirmação de presença</span>
+        </div>
+    </div>
+
+    <div class="dialog-body form">
+        <p class="mb-20">
+            O cliente <strong>compareceu</strong> a este atendimento?
+        </p>
+
+        <div class="field actions">
+            <button type="button" class="auth-button auth-button--outline" (click)="choose('noShow')">
+                Não compareceu
+            </button>
+
+            <button type="button" class="auth-button" (click)="choose('attended')">
+                Compareceu
+            </button>
+
+            <button type="button" class="auth-button auth-button--ghost" (click)="choose('later')">
+                Responder depois
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,10 @@
+<div class="menu-wrapper">
+    <ng-container *ngIf="items.length > 0">
+        <div class="menu-item" *ngFor="let a of items" (click)="onClick(a)">
+            <div class="m-title">{{ a.extendedProps.customerName }}</div>
+            <div class="m-time">
+                {{ a.start | date: 'shortTime' }} - {{ a.end | date: 'shortTime' }}
+            </div>
+        </div>
+    </ng-container>
+</div>

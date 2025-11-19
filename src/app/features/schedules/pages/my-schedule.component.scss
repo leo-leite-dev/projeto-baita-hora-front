@@ -360,6 +360,94 @@ $states: (
     }
 }
 
+/* header da agenda + sino + dropdown */
+
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    .attendance-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+}
+
+.attendance-bell {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    margin-left: 12px;
+    color: #d1d1d1;
+
+    // hitbox maior e centralizado
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 999px;
+
+    transition: background 0.15s ease, transform 0.1s ease, color 0.15s ease;
+
+    &:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.06);
+        transform: translateY(-1px);
+        color: #ffffff;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: default;
+        pointer-events: none;
+    }
+}
+
+.bell-icon {
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.attendance-bell {
+    position: relative;
+    display: inline-block;
+}
+
+.attendance-bell .badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(-5%, -30%);
+
+    background: #e53935;
+    color: #fff;
+    border-radius: 999px;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 16px;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.attendance-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 50;
+}
+
+
 @media (max-width: 768px) {
     :host ::ng-deep .fc {
         .fc-toolbar {

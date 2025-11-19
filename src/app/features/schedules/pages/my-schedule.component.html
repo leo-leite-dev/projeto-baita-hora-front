@@ -1,0 +1,25 @@
+<div class="schedule-header">
+    <div class="status-legend">
+        <div class="legend-item" *ngFor="let s of statusLegend">
+            <span class="legend-dot" [ngClass]="'lg-' + s.key"></span>
+            <span>{{ s.label }}</span>
+        </div>
+    </div>
+
+    <div class="attendance-wrapper">
+        <button type="button" class="attendance-bell" (click)="togglePendingAttendance()"
+            [disabled]="pendingAttendanceCount === 0">
+            <app-fa-icon icon="bell" class="bell-icon" />
+
+            <span class="badge" *ngIf="pendingAttendanceCount > 0">
+                {{ pendingAttendanceCount }}
+            </span>
+        </button>
+
+        <div class="attendance-menu" *ngIf="isPendingAttendanceOpen">
+            <app-pending-list [items]="pendingAttendanceItems" (choose)="onPendingChoose($event)" />
+        </div>
+    </div>
+</div>
+
+<full-calendar #cal [options]="calendarOptions" />
