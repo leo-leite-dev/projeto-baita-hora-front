@@ -1,8 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Appointment } from '../appointments/models/appointments.models';
-import { DateUtil } from '../../../shared/utils/date.util';
 import { environment } from '../../../environments/environments';
 import { ScheduleDetails } from '../models/schedule-deital';
 import { ErrorHandlingService } from '../../../shared/services/error-handling.service';
@@ -43,20 +41,18 @@ export class AppointmentsService {
             .pipe(this.errors.rxThrow<void>('AppointmentsService.updateAttendanceStatus'));
     }
 
-    getAll(localYmd?: string): Observable<Appointment[]> {
-        let params: HttpParams | undefined;
-
-        if (localYmd) {
-            const iso = DateUtil.toIsoStartOfDay(localYmd);
-            params = new HttpParams().set('date', iso);
-        }
-
-        return this.http.get<Appointment[]>(this.baseUrl, { params });
-    }
-
     getMySchedule(): Observable<ScheduleDetails> {
         return this.http
             .get<ScheduleDetails>(`${this.api}/me`)
             .pipe(this.errors.rxThrow<ScheduleDetails>("SchedulesService.getMySchedule"));
+    }
+
+    getMemberSchedule(memberId: string, dateUtc?: string): Observable<ScheduleDetails> {
+        const params: any = {};
+        if (dateUtc) params.dateUtc = dateUtc;
+
+        return this.http
+            .get<ScheduleDetails>(`${this.api}/member/${memberId}`, { params })
+            .pipe(this.errors.rxThrow<ScheduleDetails>('AppointmentsService.getMemberSchedule'));
     }
 }

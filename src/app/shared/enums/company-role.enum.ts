@@ -1,7 +1,7 @@
 export enum CompanyRole {
-    Owner = 0,
-    Unknown = 1,
-    Manager = 2,
-    Staff = 3,
-    Viewer = 4,
+    Owner = 'Owner',
+    Unknown = 'Unknown',
+    Manager = 'Manager',
+    Staff = 'Staff',
+    Viewer = 'Viewer',
 }

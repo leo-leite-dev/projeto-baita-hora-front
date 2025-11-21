@@ -24,9 +24,11 @@ export class DatePickerComponent implements ControlValueAccessor {
     this._value = v ?? '';
     this.onChange(this._value || null);
   }
+
   get value(): string | null {
     return this._value || null;
   }
+
 
   @Input() min?: string;
   @Input() max?: string;
@@ -44,12 +46,15 @@ export class DatePickerComponent implements ControlValueAccessor {
   writeValue(val: string | null): void {
     this._value = val ?? '';
   }
+
   registerOnChange(fn: (val: string | null) => void): void {
     this.onChange = fn;
   }
+
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
+
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
@@ -63,5 +68,21 @@ export class DatePickerComponent implements ControlValueAccessor {
 
   handleBlur() {
     this.onTouched();
+  }
+
+  openPicker(input: HTMLInputElement) {
+    if (this.disabled) 
+      return;
+
+    const withPicker = input as HTMLInputElement & {
+      showPicker?: () => void;
+    };
+
+    if (typeof withPicker.showPicker === 'function') {
+      withPicker.showPicker();
+    } else {
+      input.focus();
+      input.click();
+    }
   }
 }

@@ -5,6 +5,7 @@
 @use 'input' as *;
 @use 'table' as *;
 @use 'modal' as *;
+@use 'scrollbar' as *;
 @use 'error' as *;
 
 html, body {
@@ -19,11 +20,23 @@ body {
 
 .content-box {
   font-family: 'Orbitron', sans-serif;
-  height: 90vh;
+  height: 88vh;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 50px auto 0;
   padding: 34px;
   border-radius: 12px;
   color: $pure-white;
+  overflow: hidden; 
+}
+
+.container-overflow {
+  height: 78vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: 'Orbitron', sans-serif;
+  color: $pure-white;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 12px;
 }

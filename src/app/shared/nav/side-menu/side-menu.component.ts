@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
+import { AbilityService } from '../../../core/auth';
+import { PendingAttendanceService } from '../../services/pending-attendance.service';
 
 export interface MenuItem {
   label: string;
@@ -19,6 +21,8 @@ export interface MenuItem {
   styleUrls: ['./side-menu.component.scss'],
 })
 export class SideMenuComponent {
+  private pendingAttendance = inject(PendingAttendanceService);
+
   menuExpanded = true;
   menuExpandedOnMobile = false;
   selectedMenuTitle: string | null = null;
@@ -66,7 +70,18 @@ export class SideMenuComponent {
     },
   ];
 
-  constructor(private router: Router) { }
+  private router = inject(Router);
+  private ability = inject(AbilityService);
+
+  pendingUnknownTotal = this.pendingAttendance.pendingUnknownTotal;
+
+  get canViewDashboard() {
+    return this.ability.canViewDashboard();
+  }
+
+  get canManage() {
+    return this.ability.canManageCompany();
+  }
 
   toggleMenu() {
     this.menuExpanded = !this.menuExpanded;
@@ -87,12 +102,17 @@ export class SideMenuComponent {
 
   toggleSubmenu2(parent: string, subItem: MenuItem) {
     const key = `${parent}|${subItem.label}`;
-    if (this.openMapL2.has(key)) this.openMapL2.delete(key);
-    else this.openMapL2.add(key);
+    if (this.openMapL2.has(key))
+      this.openMapL2.delete(key);
+
+    else
+      this.openMapL2.add(key);
   }
 
   navigateTo(item: MenuItem) {
-    if (!item.route) return;
+    if (!item.route)
+      return;
+
     this.router.navigateByUrl(item.route);
   }
 }

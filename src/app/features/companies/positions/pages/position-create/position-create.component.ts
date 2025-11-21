@@ -10,7 +10,7 @@ import { extractErrorMessage } from "../../../../../shared/utils/error.util";
 import { CreatePositionRequest } from "../../contracts/create-position-request.contract";
 import { GenericModule } from "../../../../../../shareds/common/GenericModule";
 import { Router } from "@angular/router";
-import { ServiceOfferingOption } from "../../../service-offerings/models/service-oferring-option.model";
+import { ServiceOfferingOption } from "../../../service-offerings/models/service-oferring-options.model";
 
 @Component({
   standalone: true,
@@ -72,7 +72,7 @@ export class PositionCreateComponent implements OnInit {
 
     const payload: CreatePositionRequest = {
       name,
-      accessLevel: accessLevelNum as CompanyRole,
+      accessLevel: accessLevelNum as unknown as CompanyRole,
       serviceOfferingIds: (serviceOfferings ?? []).map(s => s.id),
     };
 

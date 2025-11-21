@@ -1,0 +1,30 @@
+@use 'colors' as *;
+
+.scroll {
+    &::-webkit-scrollbar {
+        width: 2px;
+        height: 1px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: $bg-light;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #00d4ff, #00ff00);
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(45deg, #00ff00, #00d4ff);
+    }
+
+    &::-webkit-scrollbar-thumb:active {
+        background: linear-gradient(45deg, #ff0077, #00d4ff);
+    }
+
+    &::-webkit-scrollbar-corner {
+        background: transparent;
+    }
+}

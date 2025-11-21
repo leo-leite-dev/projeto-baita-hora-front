@@ -4,8 +4,8 @@ import { FaIconComponent } from '../../../../../shared/components/icons/fa-icon.
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 export type MetricItem = {
-  icon?: string;         
-  faIcon?: IconProp;      
+  icon?: string;
+  faIcon?: IconProp;
   label: string;
   value: string | number;
   help?: string;

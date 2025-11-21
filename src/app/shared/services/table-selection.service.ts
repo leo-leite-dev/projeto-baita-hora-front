@@ -28,7 +28,8 @@ export class TableSelectionService<T extends HasIdActive> {
         return this._selected();
     }
     bindSelection(sel: SelectionModel<T> | null) {
-        if (this._selection() === sel) return;
+        if (this._selection() === sel) 
+            return;
 
         this._selection.set(sel);
         this.selectionSub?.unsubscribe();
@@ -68,7 +69,10 @@ export class TableSelectionService<T extends HasIdActive> {
 
     readonly isMixed = computed(() => {
         const sel = this._selected();
-        if (sel.length < 2) return false;
+
+        if (sel.length < 2)
+             return false;
+
         const hasA = sel.some(s => s.isActive);
         const hasI = sel.some(s => !s.isActive);
         return hasA && hasI;
@@ -78,24 +82,35 @@ export class TableSelectionService<T extends HasIdActive> {
 
     readonly actionLock = computed<ActionLock>(() => {
         const sel = this._selected();
-        if (sel.length === 0) return null;
+
+        if (sel.length === 0)
+            return null;
+
         const allActive = sel.every(s => s.isActive);
         const allInactive = sel.every(s => !s.isActive);
-        if (allActive) return 'disable';
-        if (allInactive) return 'enable';
+
+        if (allActive)
+            return 'disable';
+
+        if (allInactive)
+            return 'enable';
+
         return null;
     });
 
     async ensureRefinedIfMixed(deps: MixedRefinerDeps<T>): Promise<ActionLock> {
-        if (!this.isMixed() || this.isRefining()) return null;
+        if (!this.isMixed() || this.isRefining()) 
+            return null;
 
         const sel = this._selection();
-        if (!sel) return null;
+        if (!sel) 
+            return null;
 
         this.isRefining.set(true);
         try {
             const lock = await deps.refineIfMixed(deps.dialog, sel, deps.data);
-            if (!lock) return null;
+            if (!lock) 
+                return null;
 
             deps.notify(
                 lock === 'disable'

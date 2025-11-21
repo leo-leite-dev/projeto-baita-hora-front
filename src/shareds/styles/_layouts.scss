@@ -2,8 +2,16 @@
     display: flex;
 }
 
+.d-grid {
+    display: grid;
+}
+
 .column {
     flex-direction: column;
+}
+
+.wrap {
+    white-space: nowrap;
 }
 
 .jc-center {
@@ -22,6 +30,10 @@
     align-items: center;
 }
 
+.mt-20{
+    margin-top: 20px;
+}
+
 .mb-10 {
     margin-bottom: 10px;
 }
@@ -36,4 +48,12 @@
 
 .gap-10 {
     gap: 10px;
+}
+
+.gap-16 {
+    gap: 10px;
+}
+
+.gap-6 {
+    gap: 6px;
 }

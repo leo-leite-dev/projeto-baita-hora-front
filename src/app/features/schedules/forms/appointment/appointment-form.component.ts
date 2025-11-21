@@ -5,7 +5,7 @@ import { FormGenericModule } from '../../../../../shareds/common/FormGenericModu
 import { Autocomplete, SelectableItem, DisplayFn, TrackByFn } from '../../../../shared/components/inputs/auto-complete/auto-complete.component';
 import { ServiceOfferingsService } from '../../../companies/service-offerings/services/service-offerings.service';
 import { CustomersService } from '../../services/customer.service';
-import { ServiceOfferingOption } from '../../../companies/service-offerings/models/service-oferring-option.model';
+import { ServiceOfferingOption } from '../../../companies/service-offerings/models/service-oferring-options.model';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 export type AppointmentForm = {

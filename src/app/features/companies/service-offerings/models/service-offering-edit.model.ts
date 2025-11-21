@@ -1,4 +1,4 @@
-import { ServiceOfferingBase } from "./service-offering-base";
+import { ServiceOfferingBase } from "./service-offering-base.model";
 
 export interface ServiceOfferingEditView extends ServiceOfferingBase {
     price: number;

@@ -1,6 +1,5 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environments';
@@ -41,7 +40,8 @@ export class AuthInterceptor implements HttpInterceptor {
           url.includes('/auth/refresh') ||
           url.includes('/auth/select-company');
 
-        if (isAuthEndpoint) return throwError(() => error);
+        if (isAuthEndpoint) 
+          return throwError(() => error);
 
         const skipRedirect = req.headers.get('X-Skip-Auth-Redirect') === '1';
         const msg = getDetail(error);

@@ -1,3 +1,3 @@
 export * from "./types";
-export * from "./auth-context";
+export * from "../auth/services/auth-context.service";
 export * from "./ability";

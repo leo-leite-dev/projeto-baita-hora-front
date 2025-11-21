@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { FullCalendarComponent, FullCalendarModule } from '@fullcalendar/angular';
@@ -8,7 +8,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin, { EventResizeDoneArg } from '@fullcalendar/interaction';
 import { of, throwError } from 'rxjs';
 import { switchMap, tap, finalize, filter, catchError } from 'rxjs/operators';
-import { AuthContextService } from '../../../core/auth';
+import { AuthContextService } from '../../../core/auth/services/auth-context.service';
 import { AppointmentsService } from '../services/appointments.service';
 import { CustomersService } from '../services/customer.service';
 import { CreateAppointmentRequest } from '../contracts/appointments/create-appointment-request.contract';
@@ -60,6 +60,8 @@ type AppointmentStatusUI = 'pending' | 'canceled' | 'done' | 'noshow';
 })
 export class MyScheduleComponent implements OnInit, OnDestroy {
   @ViewChild('cal') cal?: FullCalendarComponent;
+
+  @Input() memberId?: string;
 
   private customersService = inject(CustomersService);
   private appointmentsService = inject(AppointmentsService);
@@ -229,75 +231,95 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
   };
 
   ngOnInit(): void {
-    setTimeout(() => this.loadMySchedule(), 500);
+    setTimeout(() => {
+      if (this.memberId)
+        this.loadMemberSchedule(this.memberId);
+
+      else
+        this.loadMySchedule();
+
+    }, 500);
 
     this.refreshTimer = setInterval(() => {
       this.cal?.getApi().refetchEvents();
     }, 60_000);
   }
 
-  ngOnDestroy(): void {
-    if (this.refreshTimer) clearInterval(this.refreshTimer);
+  private reloadCurrentSchedule(): void {
+    if (this.memberId)
+      this.loadMemberSchedule(this.memberId);
+
+    else
+      this.loadMySchedule();
   }
+
+  ngOnDestroy(): void {
+    if (this.refreshTimer)
+      clearInterval(this.refreshTimer);
+  }
+
+  private applySchedule(appts: any[], reloadFn: () => void): void {
+    const events: EventInput[] = appts
+      .filter((a: any) => {
+        const statusFromApi: AppointmentStatusApi =
+          (a.status as AppointmentStatusApi | undefined) ?? 'Pending';
+
+        return statusFromApi !== 'Cancelled';
+      })
+      .map((a: any) => {
+        const appointmentStatus: AppointmentStatusApi =
+          (a.status as AppointmentStatusApi | undefined) ?? 'Pending';
+
+        const attendanceStatus: AttendanceStatusApi =
+          (a.attendanceStatus as AttendanceStatusApi | undefined) ?? 'Unknown';
+
+        let uiStatus: AppointmentStatusUI;
+        if (appointmentStatus === 'Pending') uiStatus = 'pending';
+        else uiStatus =
+          attendanceStatus === 'NoShow' ? 'noshow' : 'done';
+
+        const isLocked = appointmentStatus === 'Finished';
+
+        return {
+          id: a.id,
+          title: '',
+          start: a.startsAtUtc,
+          end: a.endsAtUtc,
+          editable: !isLocked,
+          startEditable: !isLocked,
+          durationEditable: !isLocked,
+          extendedProps: {
+            status: uiStatus,
+            appointmentStatus,
+            attendanceStatus,
+            durationMinutes: a.durationMinutes,
+            customerId: a.customerId,
+            customerName: a.customerName,
+            serviceOfferingIds: a.serviceOfferingIds ?? [],
+            serviceOfferingNames: a.serviceOfferingNames ?? [],
+          },
+        };
+      });
+
+    const api = this.cal?.getApi();
+    if (!api) return;
+
+    api.removeAllEventSources();
+    api.removeAllEvents();
+    api.addEventSource(events);
+
+    setTimeout(() => {
+      this.attendanceConfirmation.process(events, reloadFn);
+    }, 200);
+  }
+
 
   private loadMySchedule(): void {
     this.appointmentsService.getMySchedule().subscribe({
       next: (s) => {
         const appts = Array.isArray(s) ? s : s?.appointments ?? [];
 
-        const events: EventInput[] = appts
-          .filter((a: any) => {
-            const statusFromApi: AppointmentStatusApi =
-              (a.status as AppointmentStatusApi | undefined) ?? 'Pending';
-
-            return statusFromApi !== 'Cancelled';
-          })
-          .map((a: any) => {
-            const appointmentStatus: AppointmentStatusApi =
-              (a.status as AppointmentStatusApi | undefined) ?? 'Pending';
-
-            const attendanceStatus: AttendanceStatusApi =
-              (a.attendanceStatus as AttendanceStatusApi | undefined) ??
-              'Unknown';
-
-            let uiStatus: AppointmentStatusUI;
-            if (appointmentStatus === 'Pending') uiStatus = 'pending';
-            else uiStatus =
-              attendanceStatus === 'NoShow' ? 'noshow' : 'done';
-
-            const isLocked = appointmentStatus === 'Finished';
-
-            return {
-              id: a.id,
-              title: '',
-              start: a.startsAtUtc,
-              end: a.endsAtUtc,
-              editable: !isLocked,
-              startEditable: !isLocked,
-              durationEditable: !isLocked,
-              extendedProps: {
-                status: uiStatus,
-                appointmentStatus,
-                attendanceStatus,
-                durationMinutes: a.durationMinutes,
-                customerId: a.customerId,
-                customerName: a.customerName,
-                serviceOfferingIds: a.serviceOfferingIds ?? [],
-                serviceOfferingNames: a.serviceOfferingNames ?? [],
-              },
-            };
-          });
-
-        const api = this.cal?.getApi();
-        if (!api) return;
-
-        api.removeAllEventSources();
-        api.removeAllEvents();
-        api.addEventSource(events);
-
-        setTimeout(() => {
-          this.attendanceConfirmation.process(events, () => this.loadMySchedule());
-        }, 200);
+        this.applySchedule(appts, () => this.loadMySchedule());
       },
     });
   }
@@ -309,10 +331,20 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
     this.isPendingAttendanceOpen = !this.isPendingAttendanceOpen;
   }
 
+  private loadMemberSchedule(memberId: string): void {
+    this.appointmentsService.getMemberSchedule(memberId).subscribe({
+      next: (s) => {
+        const appts = Array.isArray(s) ? s : s?.appointments ?? [];
+
+        this.applySchedule(appts, () => this.loadMemberSchedule(memberId));
+      },
+    });
+  }
+
   onPendingChoose(event: EventInput): void {
     this.isPendingAttendanceOpen = false;
     this.attendanceConfirmation.openAppointment(event, () =>
-      this.loadMySchedule(),
+      this.reloadCurrentSchedule(),
     );
   }
 
@@ -365,7 +397,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
     }
 
     const appointmentId = event.id;
-    const memberId = this.getMemberIdAuthenticate();
+    const memberId = this.getCurrentMemberId(); // <<< aqui mudou
 
     if (!memberId || !appointmentId) {
       arg.revert();
@@ -396,7 +428,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
       .pipe(
         tap(() => {
           this.toastr.success('Agendamento remarcado com sucesso!');
-          this.loadMySchedule();
+          this.reloadCurrentSchedule();
         }),
         catchError((err) => {
           this.toastr.error('Não foi possível remarcar o agendamento.', 'Erro');
@@ -442,7 +474,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
     }
 
     const appointmentId = event.id;
-    const memberId = this.getMemberIdAuthenticate();
+    const memberId = this.getCurrentMemberId();
 
     if (!memberId || !appointmentId) {
       arg.revert();
@@ -468,7 +500,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
           this.toastr.success(
             'Duração do agendamento atualizada com sucesso!',
           );
-          this.loadMySchedule();
+          this.reloadCurrentSchedule();
         }),
         catchError((err) => {
           this.toastr.error(
@@ -485,7 +517,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
   private onSelectSlot(selection: DateSelectArg) {
     const startsAtUtc = new Date(selection.start!).toISOString();
     const endsAtUtc = new Date(selection.end!).toISOString();
-    const memberId = this.getMemberIdAuthenticate();
+    const memberId = this.getCurrentMemberId();
     if (!memberId) {
       this.cal?.getApi().unselect();
       return;
@@ -532,7 +564,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
             };
 
             return this.appointmentsService.createAppointment(payload).pipe(
-              tap(() => this.loadMySchedule()),
+              tap(() => this.reloadCurrentSchedule()),
               finalize(() => this.cal?.getApi().unselect()),
             );
           }
@@ -551,7 +583,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
 
   private onClickCancelSlot(event: EventApi) {
     const appointmentId = event.id;
-    const memberId = this.getMemberIdAuthenticate();
+    const memberId = this.getCurrentMemberId();
 
     if (!appointmentId || !memberId) {
       this.toastr.error('Não foi possível identificar o agendamento.', 'Erro');
@@ -584,7 +616,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
           } else {
             const payload: UpdateAttendanceStatusRequest = {
               memberId,
-              attendanceStatus: AttendanceStatus.NoShow, 
+              attendanceStatus: AttendanceStatus.NoShow,
             };
 
             return this.appointmentsService.updateAttendanceStatus(
@@ -595,7 +627,7 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
         }),
         tap(() => {
           this.toastr.success('Agendamento atualizado com sucesso!');
-          this.loadMySchedule();
+          this.reloadCurrentSchedule();
         }),
         catchError((err) => {
           this.toastr.error(
@@ -613,7 +645,11 @@ export class MyScheduleComponent implements OnInit, OnDestroy {
     return Math.max(0, Math.round(diff / 60000));
   }
 
-  private getMemberIdAuthenticate(): string {
-    return this.auth.snapshot.memberId;
+  private getMemberIdAuthenticate(): string | null {
+    return this.auth.snapshot.memberId ?? null;
+  }
+
+  private getCurrentMemberId(): string | null {
+    return this.memberId ?? this.getMemberIdAuthenticate();
   }
 }

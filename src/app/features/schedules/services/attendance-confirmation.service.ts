@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { EventInput } from '@fullcalendar/core';
 import { AppointmentsService } from './appointments.service';
-import { AuthContextService } from '../../../core/auth';
+import { AuthContextService } from '../../../core/auth/services/auth-context.service';
 import { AttendanceStatus } from '../appointments/enums/attendance-status.enum';
 import { AttendanceDialogComponent } from '../modal/attendance/attendance-dialog.component';
 import { UpdateAttendanceStatusRequest } from '../contracts/appointments/update-attendance-statu-request';

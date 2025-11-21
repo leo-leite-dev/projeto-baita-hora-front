@@ -12,7 +12,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Clipboard, ClipboardModule } from '@angular/cdk/clipboard';
 import { Observable } from 'rxjs';
-import { MemberProfileDetails } from '../models/MemberProfileDetails';
+import { MemberProfileDetails } from '../models/member-profile-details';
 import { MembersService } from '../services/member.service';
 
 @Component({

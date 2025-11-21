@@ -1,11 +1,14 @@
-<label class="dashboard-date-picker">
+<label class="d-flex column gap-6">
     <span class="label fs-12">{{ label }}</span>
 
     <div class="date-input d-flex center gap-10" [class.disabled]="disabled">
-        <app-fa-icon icon="times" />
 
-        <input type="date" [value]="_value" [min]="min" [max]="max" [disabled]="disabled"
-            (input)="handleInput($any($event.target).value)" (change)="handleInput($any($event.target).value)"
+        <input #dateInput class="date-field" type="date" [value]="_value" [min]="min" [max]="max" [disabled]="disabled"
+            (mousedown)="$event.preventDefault()" (change)="handleInput($any($event.target).value)"
             (blur)="handleBlur()" [attr.aria-label]="'Selecionar ' + label" />
+
+        <button type="button" class="icon-btn calendar-btn" [disabled]="disabled" (click)="openPicker(dateInput)">
+            <app-fa-icon icon="calendar" />
+        </button>
     </div>
 </label>

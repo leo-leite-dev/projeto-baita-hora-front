@@ -48,7 +48,8 @@ export class LoginModalComponent {
   loading = false;
 
   onSubmit() {
-    if (this.form.invalid || this.loading) return;
+    if (this.form.invalid || this.loading)
+       return;
 
     this.errorMessage = null;
     this.loading = true;

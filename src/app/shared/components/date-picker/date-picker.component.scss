@@ -1,23 +1,57 @@
-// @use 'colors' as *;
+@use 'colors' as *;
 
-// .date-input {
-//     padding: 8px 10px;
-//     border-radius: 10px;
-//     background: $panel;
-//     border: 1px solid $border;
+.date-input {
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: $panel;
+    border: 1px solid $border;
+    cursor: text;
+    position: relative;
 
-//     input[type="date"] {
-//         appearance: none;
-//         border: 0;
-//         background: transparent;
-//         color: $text;
-//         font: 600 13px/1 "Segoe UI", Roboto, sans-serif;
-//         outline: none;
-//         padding: 2px 0;
-//     }
+    &:focus-within {
+        outline: 2px solid $purple-shadow-35;
+        outline-offset: 2px;
+    }
 
-//     &:focus-within {
-//         outline: 2px solid rgba(110, 168, 255, 0.35);
-//         outline-offset: 2px;
-//     }
-// }
+    &.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+
+        app-fa-icon {
+            color: $muted;
+            font-size: 14px;
+        }
+
+        &:hover app-fa-icon {
+            color: lighten($muted, 20%);
+        }
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+    }
+
+    .date-field {
+        appearance: none;
+        border: 0;
+        background: transparent;
+        color: $text;
+        font: 600 13px/1 "Segoe UI", Roboto, sans-serif;
+        outline: none;
+        padding: 2px 0;
+        width: 100%;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0;
+        cursor: pointer;
+    }
+}

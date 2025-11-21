@@ -6,54 +6,42 @@
     </div>
 
     <app-date-picker label="Data" [value]="date()" (valueChange)="onDateChange($event)" />
+  
   </header>
 
   <ng-container *ngIf="loading(); else content">
-    <div class="skeleton lg" aria-live="polite">Carregando agendamentos…</div>
+    <div class="skeleton lg" aria-live="polite">
+      Carregando agendamentos…
+    </div>
   </ng-container>
 
   <ng-template #content>
-    <app-metric-cards [columns]="3" [items]="metricItems">
-    </app-metric-cards>
+    <app-metric-cards [columns]="3" [items]="metricItems" />
 
-    <ng-container *ngIf="!error(); else errorBox">
-      <section *ngIf="appointments().length > 0" class="appointments">
-        <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
-          <h2>Próximos agendamentos</h2>
-          <small class="muted">Exibindo até 5</small>
+    <div class="container-overflow scroll">
+      <ng-container *ngIf="!error(); else errorBox">
+        <app-team-schedule *ngIf="memberAppointmentsFromStats.length > 0"
+          [memberAppointments]="memberAppointmentsFromStats" [daySummary]="daySummaryFromStats"
+          (confirmAttendance)="confirmAttendance($event.memberId, $event.appointmentId)" />
+
+        <section *ngIf="appointments().length === 0 && 
+                      memberAppointmentsFromStats.length === 0" class="empty d-flex column center">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 7h14M7 3v4m10-4v4M6 21h12a2 2 0 0 0 2-2V7H4v12a2 2 0 0 0 2 2Z" />
+          </svg>
+          <h3>Sem agendamentos</h3>
+          <p class="muted">
+            Nada marcado para esta data. Aproveite para tomar um café ☕.
+          </p>
+        </section>
+      </ng-container>
+
+      <ng-template #errorBox>
+        <div class="alert error" role="alert">
+          {{ error() }}
         </div>
-
-        <ul class="list">
-          <li *ngFor="let a of appointments() | slice:0:5" class="item">
-            <div style="display:flex; gap:12px; align-items:center; min-width:0;">
-              <div class="avatar" [attr.data-seed]="a.customerName">
-                {{ (a.customerName || '—').slice(0,1) }}
-              </div>
-              <div>
-                <div class="customer" [title]="a.customerName">{{ a.customerName }}</div>
-                <div class="time">
-                  {{ a.startsAtUtc | timeFromUtc }} – {{ a.endsAtUtc | timeFromUtc }}
-                </div>
-              </div>
-            </div>
-            <span class="muted">{{ a.status }}</span>
-          </li>
-        </ul>
-      </section>
-
-      <section *ngIf="appointments().length === 0" class="empty">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 7h14M7 3v4m10-4v4M6 21h12a2 2 0 0 0 2-2V7H4v12a2 2 0 0 0 2 2Z" />
-        </svg>
-        <h3>Sem agendamentos</h3>
-        <p class="muted">Nada marcado para esta data. Aproveite para tomar um café ☕.</p>
-      </section>
-    </ng-container>
-
-    <ng-template #errorBox>
-      <div class="alert error" role="alert">
-        {{ error() }}
-      </div>
-    </ng-template>
+      </ng-template>
+    </div>
   </ng-template>
+
 </section>

@@ -5,7 +5,7 @@ import { ShellComponent } from '../layout/shell.component';
 import { ServiceOfferingResolver } from '../features/companies/service-offerings/resolver/service-offering.resolver';
 import { PositionResolver } from '../features/companies/positions/resolver/position.resolver';
 import { MemberResolver } from '../features/companies/members/resolver/member.resolver';
-import { MemberEditFacade } from '../features/companies/members/data/member-edit.facade';
+import { permissionGuard } from './auth/guards/permission.guard';
 
 export const routes: Routes = [
   {
@@ -34,6 +34,7 @@ export const routes: Routes = [
       },
     ],
   },
+
   {
     path: 'app',
     component: ShellComponent,
@@ -41,6 +42,8 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard/:companyId',
+        canMatch: [permissionGuard],
+        data: { permission: 'dashboard' },
         loadComponent: () =>
           import('../features/dashboard/pages/dashboard.component')
             .then(m => m.DashboardComponent),
@@ -50,8 +53,11 @@ export const routes: Routes = [
               .then(m => m.DashboardResolver),
         },
       },
+
       {
         path: 'service-offering',
+        canMatch: [permissionGuard],
+        data: { permission: 'manage' },
         children: [
           {
             path: 'create',
@@ -75,14 +81,18 @@ export const routes: Routes = [
           { path: '', pathMatch: 'full', redirectTo: 'list' },
         ],
       },
+
       {
         path: 'my-schedule',
         loadComponent: () =>
           import('../features/schedules/pages/my-schedule.component')
             .then(m => m.MyScheduleComponent),
       },
+
       {
         path: 'position',
+        canMatch: [permissionGuard],
+        data: { permission: 'manage' },
         children: [
           {
             path: 'create',
@@ -106,8 +116,11 @@ export const routes: Routes = [
           { path: '', pathMatch: 'full', redirectTo: 'list' },
         ],
       },
+
       {
         path: 'member',
+        canMatch: [permissionGuard],
+        data: { permission: 'manage' },
         children: [
           {
             path: 'create',
@@ -131,8 +144,9 @@ export const routes: Routes = [
           { path: '', pathMatch: 'full', redirectTo: 'list' },
         ],
       },
-      { path: '', pathMatch: 'full', redirectTo: 'dashboard/placeholder' },
-      { path: '**', redirectTo: 'dashboard/placeholder' },
+
+      { path: '', pathMatch: 'full', redirectTo: 'my-schedule' },
+      { path: '**', redirectTo: 'my-schedule' },
     ],
   },
 

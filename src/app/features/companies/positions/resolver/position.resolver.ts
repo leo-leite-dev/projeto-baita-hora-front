@@ -5,24 +5,40 @@ import { CompanyRole } from '../../../../shared/enums/company-role.enum';
 import { PositionsService } from '../../positions/services/positions.service';
 import { PositionEditView } from '../models/position-edit-view.model';
 
+function isCompanyRoleValue(value: unknown): value is CompanyRole {
+  const values = Object.values(CompanyRole) as (string | number)[];
+
+  return (
+    (typeof value === 'number' || typeof value === 'string') &&
+    values.includes(value as string | number)
+  );
+}
 
 function toCompanyRole(v: unknown): CompanyRole {
-  if (typeof v === 'number' && CompanyRole[v] !== undefined)
-    return v as CompanyRole;
+  if (isCompanyRoleValue(v)) {
+    return v;
+  }
 
-  if (typeof v === 'string' && CompanyRole[v as keyof typeof CompanyRole] !== undefined)
+  if (
+    typeof v === 'string' &&
+    CompanyRole[v as keyof typeof CompanyRole] !== undefined
+  )
     return CompanyRole[v as keyof typeof CompanyRole];
+
 
   return CompanyRole.Viewer;
 }
 
-
-export const PositionResolver: ResolveFn<PositionEditView | null> = (route: ActivatedRouteSnapshot) => {
+export const PositionResolver: ResolveFn<PositionEditView | null> = (
+  route: ActivatedRouteSnapshot,
+) => {
   const service = inject(PositionsService);
   const id = route.paramMap.get('id') ?? '';
 
   return service.getById(id).pipe(
-    map(res => res ? { ...res, accessLevel: toCompanyRole(res.accessLevel) } : null),
-    catchError(() => of(null))
+    map(res =>
+      res ? { ...res, accessLevel: toCompanyRole(res.accessLevel) } : null,
+    ),
+    catchError(() => of(null)),
   );
 };

@@ -12,7 +12,8 @@ import { ActivateEmployeesRequest } from '../contracts/activate-employee-request
 import { DisableEmployeesRequest } from '../contracts/disable-employees-request';
 import { ChangeMemberPositionRequest } from '../contracts/change-member-position-request';
 import { ChangeMemberPositionResponse } from '../contracts/change-member-position.response';
-import { MemberProfileDetails } from '../models/MemberProfileDetails';
+import { MemberProfileDetails } from '../models/member-profile-details';
+import { MemberOption } from '../models/member-options.model';
 
 @Injectable({ providedIn: 'root' })
 export class MembersService {
@@ -78,5 +79,21 @@ export class MembersService {
         return this.http
             .patch<ChangeMemberPositionResponse>(`${this.membersUrl}/${memberId}/position`, payload)
             .pipe(this.errors.rxThrow<ChangeMemberPositionResponse>('MembersService.promote'));
+    }
+
+    listMemberOptions(search: string = '', take: number = 20): Observable<MemberOption[]> {
+        const params: Record<string, string> = {};
+
+        if (search)
+            params['search'] = search;
+
+        if (take)
+            params['take'] = String(take);
+
+        return this.http
+            .get<MemberOption[]>(`${this.membersUrl}/options`, { params })
+            .pipe(
+                this.errors.rxThrow<MemberOption[]>('MembersService.listMemberOptions'),
+            );
     }
 }

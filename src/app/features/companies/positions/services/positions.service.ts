@@ -1,14 +1,15 @@
-import { Observable } from "rxjs";
-import { CreatePositionRequest } from "../contracts/create-position-request.contract";
-import { Position } from "../models/position.model";
-import { HttpClient } from "@angular/common/http";
-import { ErrorHandlingService } from "../../../../shared/services/error-handling.service";
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../../environments/environments";
-import { PatchPositionRequest } from "../contracts/patch-position-request.contract";
-import { ActivatePositionsRequest } from "../contracts/activate-positions.contract";
-import { DisablePositionsRequest } from "../contracts/disable-positions.contract";
+import { HttpClient } from "@angular/common/http";
+import { ErrorHandlingService } from "../../../../shared/services/error-handling.service";
+import { Observable } from "rxjs";
+import { Position } from "../models/position.model";
 import { PositionEditView } from "../models/position-edit-view.model";
+import { CreatePositionRequest } from "../contracts/create-position-request.contract";
+import { PatchPositionRequest } from "../contracts/patch-position-request.contract";
+import { DisablePositionsRequest } from "../contracts/disable-positions.contract";
+import { ActivatePositionsRequest } from "../contracts/activate-positions.contract";
+
 
 @Injectable({ providedIn: "root" })
 export class PositionsService {

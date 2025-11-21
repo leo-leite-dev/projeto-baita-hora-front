@@ -1,15 +1,37 @@
-import { Injectable } from "@angular/core";
-import { AuthContextService } from "./auth-context";
-import { canManageCompany, canCreateServiceOffering, canDisableServiceOffering, canRemoveServiceOffering, canDisablePosition, canRemovePosition } from "./types";
+import { inject, Injectable } from "@angular/core";
+import { AuthContextService } from "./services/auth-context.service";
+import { CompanyRole } from "../../shared/enums/company-role.enum";
+
+export type PermissionKey = 'dashboard' | 'manage' | 'schedule';
 
 @Injectable({ providedIn: "root" })
 export class AbilityService {
-    constructor(private auth: AuthContextService) { }
+    private auth = inject(AuthContextService);
 
-    canManageCompany() { return canManageCompany(this.auth.snapshot); }
-    canCreateServiceOffering() { return canCreateServiceOffering(this.auth.snapshot); }
-    canDisableServiceOffering() { return canDisableServiceOffering(this.auth.snapshot); }
-    canRemoveServiceOffering() { return canRemoveServiceOffering(this.auth.snapshot); }
-    canDisablePosition() { return canDisablePosition(this.auth.snapshot); }
-    canRemovePosition() { return canRemovePosition(this.auth.snapshot); }
+    private permissionMap: Record<PermissionKey, (role: CompanyRole) => boolean> = {
+        dashboard: (role) =>
+            role === CompanyRole.Owner,
+
+        manage: (role) =>
+            role === CompanyRole.Owner || role === CompanyRole.Manager,
+
+        schedule: () => true
+    };
+
+    isPermissionKey(value: any): value is PermissionKey {
+        return ['dashboard', 'manage', 'schedule'].includes(value);
+    }
+
+    hasPermission(permission: PermissionKey): boolean {
+        const role = this.auth.snapshot.role;
+        return this.permissionMap[permission](role);
+    }
+
+    canViewDashboard() {
+        return this.hasPermission('dashboard');
+    }
+
+    canManageCompany() {
+        return this.hasPermission('manage');
+    }
 }

@@ -9,7 +9,7 @@ import { PositionForm, PositionFormComponent } from '../../form/position-form.co
 import { CompanyRole } from '../../../../../shared/enums/company-role.enum';
 import { extractErrorMessage } from '../../../../../shared/utils/error.util';
 import { PatchPositionRequest } from '../../contracts/patch-position-request.contract';
-import { ServiceOfferingOption } from '../../../service-offerings/models/service-oferring-option.model';
+import { ServiceOfferingOption } from '../../../service-offerings/models/service-oferring-options.model';
 import { GenericModule } from '../../../../../../shareds/common/GenericModule';
 import { ButtonComponent } from '../../../../../shared/components/buttons/button/button.component';
 import { BackButtonComponent } from '../../../../../shared/components/buttons/back-button/back-button.component';

@@ -5,7 +5,7 @@ import { SelectComponent, SelectOption } from '../../../../shared/components/sel
 import { Autocomplete } from '../../../../shared/components/inputs/auto-complete/auto-complete.component';
 import { Observable } from 'rxjs';
 import { InputGenericModule } from '../../../../../shareds/common/InputGenericModule';
-import { ServiceOfferingOption } from '../../service-offerings/models/service-oferring-option.model';
+import { ServiceOfferingOption } from '../../service-offerings/models/service-oferring-options.model';
 
 export type PositionForm = {
   name: FormControl<string>;

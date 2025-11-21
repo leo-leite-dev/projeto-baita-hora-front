@@ -1,0 +1,78 @@
+<section class="member-appts d-flex column gap-16" *ngIf="filteredMemberAppointments().length > 0">
+    <div class="member-appts-header d-flex jc-space-between center gap-10 mt-20">
+        <div class="d-flex column gap-8">
+            <div class="tabs d-flex gap-10">
+                <app-toggle-view-button view="team-appointment" [activeView]="activeView" label="Compromissos equipe"
+                    (changed)="onToggleView($event)" />
+
+                <app-toggle-view-button view="team-schedule" [activeView]="activeView" label="Agenda equipe"
+                    (changed)="onToggleView($event)" />
+
+                <app-toggle-view-button view="team-schedule" [activeView]="activeView" label="Minha equipe"
+                    (changed)="onToggleView($event)" />
+            </div>
+        </div>
+
+        <div class="member-appts-summary d-flex center gap-10 fs-12"
+            *ngIf="activeView === 'team-appointment' && statusChips() as chips"> <span class="chip"
+                *ngFor="let chip of chips" [class.active]="selectedStatus() === chip.key" [class.danger]="chip.danger"
+                (click)="setStatusFilter(chip.key)">
+                {{ chip.label }}
+            </span>
+        </div>
+    </div>
+
+    <ul *ngIf="activeView === 'team-appointment'" class="member-list-appointments d-grid scroll">
+        <li *ngFor="let m of filteredMemberAppointments()" class="member-block">
+            <header class="member-header d-flex center gap-10 mb-10">
+                <div class="avatar d-grid" [attr.data-seed]="m.memberName">
+                    {{ m.memberName.slice(0, 1) }}
+                </div>
+
+                <div class="info">
+                    <div class="member-name fs-14">{{ m.memberName }}</div>
+                    <div class="position fs-12">{{ m.positionName || '—' }}</div>
+                </div>
+            </header>
+
+            <ul class="appt-list d-grid gap-10">
+                <li *ngFor="let a of m.appointments" class="appt-item d-flex center jc-space-between">
+                    <div class="details d-grid gap-6">
+                        <div class="row">
+                            <span class="label">Cliente:</span>
+                            <span class="value" [title]="a.customerName">
+                                {{ a.customerName }}
+                            </span>
+                        </div>
+
+                        <div class="row d-flex gap-6">
+                            <span class="label">Horário:</span>
+                            <span class="value">
+                                {{ a.startsAtUtc | timeFromUtc }} –
+                                {{ a.endsAtUtc | timeFromUtc }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="appt-actions">
+                        <span class="status muted">{{ a.status }}</span>
+
+                        <app-fa-icon icon="clock" class="confirm-attendance-icon"
+                            *ngIf="a.status === 'Finished' && a.attendanceStatus === 'Unknown'"
+                            (click)="onConfirmAttendance(m.memberId, a.id)" />
+                    </div>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <div *ngIf="activeView === 'team-schedule'" class="member-list-schedule d-flex column gap-16">
+        <app-auto-complete [options$]="memberOptions$" [multiple]="false" [showChips]="false"
+            [readonlySelectedText]="true" [preventDuplicates]="false" [placeholder]="'Profissional'"
+            [inputPlaceholder]="'Buscar profissional'" [showClearButton]="true" [ngModel]="selectedMember"
+            (ngModelChange)="onMemberAutocompleteChange($event)" />
+
+        <app-my-schedule *ngIf="selectedMemberId" [memberId]="selectedMemberId" />
+    </div>
+
+</section>

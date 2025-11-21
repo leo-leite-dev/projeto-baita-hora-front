@@ -5,12 +5,12 @@ $muted: #9aa3b2;
 $brand: #6ea8fe;
 $hover: rgba(255, 255, 255, .06);
 $divider: rgba(255, 255, 255, .08);
-$shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255,255,255,.02);
+$shadow: 0 10px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .02);
 
 $w-expanded: 260px;
 $w-collapsed: 72px;
 $radius: 14px;
-$transition: .25s cubic-bezier(.22,.61,.36,1);
+$transition: .25s cubic-bezier(.22, .61, .36, 1);
 $font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
 
 mat-icon {
@@ -51,16 +51,25 @@ mat-icon {
     height: 32px;
     padding: 0;
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0,0,0,.35);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .35);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: transform $transition, background $transition, box-shadow $transition;
 
-    &:hover { background: $bg-elev; transform: translateX(2px); }
-    &:active { transform: translateX(1px) scale(.98); }
-    mat-icon { font-size: 20px; }
+    &:hover {
+      background: $bg-elev;
+      transform: translateX(2px);
+    }
+
+    &:active {
+      transform: translateX(1px) scale(.98);
+    }
+
+    mat-icon {
+      font-size: 20px;
+    }
   }
 
   .menu-header {
@@ -70,14 +79,24 @@ mat-icon {
     align-items: center;
     min-height: 64px;
 
-    h2, .collapsed-logo {
+    h2,
+    .collapsed-logo {
       margin: 0;
       font-weight: 700;
       letter-spacing: .4px;
     }
 
-    h2 { font-size: 18px; color: $txt; }
-    .collapsed-logo { width: 100%; text-align: center; font-size: 18px; color: $txt; }
+    h2 {
+      font-size: 18px;
+      color: $txt;
+    }
+
+    .collapsed-logo {
+      width: 100%;
+      text-align: center;
+      font-size: 18px;
+      color: $txt;
+    }
   }
 
   .menu-list {
@@ -88,9 +107,18 @@ mat-icon {
     overflow-y: auto;
     overscroll-behavior: contain;
 
-    &::-webkit-scrollbar { width: 8px; }
-    &::-webkit-scrollbar-track { background: transparent; }
-    &::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 8px; }
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, .08);
+      border-radius: 8px;
+    }
 
     .menu-item {
       border-radius: $radius;
@@ -106,14 +134,44 @@ mat-icon {
         cursor: pointer;
         transition: background $transition, color $transition, padding $transition;
 
-        &:hover { background: $hover; }
+        &:hover {
+          background: $hover;
+        }
 
         mat-icon:first-child {
           flex: 0 0 24px;
-          width: 24px; height: 24px; font-size: 24px;
+          width: 24px;
+          height: 24px;
+          font-size: 24px;
           color: $muted;
           transition: color $transition, transform $transition;
         }
+
+.badge {
+  background: #fe6e6e;
+  color: #050814;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 22px;
+  height: 18px;
+
+  padding: 0 6px;
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+
+  margin-left: 8px;
+
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+
+  transform: translateY(1px);
+}
+
 
         span {
           flex: 1 1 auto;
@@ -129,20 +187,32 @@ mat-icon {
         .arrow {
           margin-left: auto;
           flex: 0 0 22px;
-          width: 22px; height: 22px; font-size: 22px;
+          width: 22px;
+          height: 22px;
+          font-size: 22px;
           color: $muted;
           transform-origin: center;
           transition: transform $transition, color $transition, opacity $transition;
           opacity: .9;
         }
 
-        &:focus-visible { outline: 2px solid rgba($brand, .65); outline-offset: 2px; }
+        &:focus-visible {
+          outline: 2px solid rgba($brand, .65);
+          outline-offset: 2px;
+        }
       }
 
-      &.open > .main-item {
+      &.open>.main-item {
         background: $hover;
-        mat-icon:first-child { color: $brand; }
-        .arrow { transform: rotate(180deg); color: $brand; }
+
+        mat-icon:first-child {
+          color: $brand;
+        }
+
+        .arrow {
+          transform: rotate(180deg);
+          color: $brand;
+        }
       }
 
       /* ===== Submenu 1º nível ===== */
@@ -165,7 +235,9 @@ mat-icon {
             cursor: pointer;
             transition: background .25s, color .25s;
 
-            &:hover { background: $hover; }
+            &:hover {
+              background: $hover;
+            }
 
             span {
               flex: 1 1 auto;
@@ -180,7 +252,9 @@ mat-icon {
 
             .arrow {
               margin-left: auto;
-              width: 20px; height: 20px; font-size: 20px;
+              width: 20px;
+              height: 20px;
+              font-size: 20px;
               display: inline-flex;
               align-items: center;
               justify-content: center;
@@ -191,7 +265,7 @@ mat-icon {
             }
           }
 
-          &.open > .sub-item .arrow {
+          &.open>.sub-item .arrow {
             transform: rotate(180deg);
             color: $brand;
           }
@@ -213,8 +287,13 @@ mat-icon {
               cursor: pointer;
               transition: background .2s, border-color .2s, transform .2s;
 
-              &:hover { background: $hover; }
-              &:active { transform: translateY(1px); }
+              &:hover {
+                background: $hover;
+              }
+
+              &:active {
+                transform: translateY(1px);
+              }
             }
           }
         }
@@ -226,8 +305,13 @@ mat-icon {
   &.collapsed {
     width: $w-collapsed;
 
-    .menu-header { padding: 16px 0; }
-    .menu-toggle { right: -10px; }
+    .menu-header {
+      padding: 16px 0;
+    }
+
+    .menu-toggle {
+      right: -10px;
+    }
 
     .menu-list {
       padding: 8px 8px 12px;
@@ -237,11 +321,20 @@ mat-icon {
           justify-content: center;
           padding: 12px 10px;
 
-          span, .arrow { display: none; }
-          mat-icon:first-child { color: $txt; }
+          span,
+          .arrow {
+            display: none;
+          }
+
+          mat-icon:first-child {
+            color: $txt;
+          }
         }
 
-        .submenu, .submenu.level-2 { display: none; }
+        .submenu,
+        .submenu.level-2 {
+          display: none;
+        }
       }
     }
   }
@@ -250,13 +343,18 @@ mat-icon {
     transform: translateX(-100%);
     max-width: 86vw;
 
-    &.menu-open { transform: translateX(0); }
+    &.menu-open {
+      transform: translateX(0);
+    }
 
-    .menu-toggle { top: 16px; right: 12px; }
+    .menu-toggle {
+      top: 16px;
+      right: 12px;
+    }
   }
 }
 
-.side-menu .menu-list .menu-item + .menu-item {
+.side-menu .menu-list .menu-item+.menu-item {
   margin-top: 4px;
   border-top: 1px solid transparent;
 }

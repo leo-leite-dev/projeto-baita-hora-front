@@ -8,7 +8,7 @@ import { CreateServiceOfferingRequest } from "../contracts/create-service-offeri
 import { PatchServiceOfferingRequest } from "../contracts/patch-service-offering.contract";
 import { ActivateServiceOfferingsRequest } from "../contracts/activate-service-offerings.contract";
 import { DisableServiceOfferingsRequest } from "../contracts/disable-service-offerings.contract";
-import { ServiceOfferingOption } from "../models/service-oferring-option.model";
+import { ServiceOfferingOption } from "../models/service-oferring-options.model";
 import { ServiceOfferingEditView } from "../models/service-offering-edit.model";
 
 @Injectable({ providedIn: "root" })
@@ -74,7 +74,7 @@ export class ServiceOfferingsService {
             params["take"] = String(take);
 
         return this.http
-            .get<ServiceOfferingOption[]>(`${this.api}/services-oferrings-options`, { params })
+            .get<ServiceOfferingOption[]>(`${this.api}/options`, { params })
             .pipe(this.errors.rxThrow<ServiceOfferingOption[]>("ServiceOfferingsService.listActiveOptions"));
     }
 
@@ -91,7 +91,7 @@ export class ServiceOfferingsService {
             params["take"] = String(take);
 
         return this.http
-            .get<ServiceOfferingOption[]>(`${this.api}/services-oferrings-options/my-options`, { params })
+            .get<ServiceOfferingOption[]>(`${this.api}/my-options`, { params })
             .pipe(this.errors.rxThrow<ServiceOfferingOption[]>("ServiceOfferingsService.listActiveOptionsForCurrentUser"));
     }
 }

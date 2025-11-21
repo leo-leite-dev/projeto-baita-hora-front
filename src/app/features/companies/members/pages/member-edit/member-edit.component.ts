@@ -75,7 +75,7 @@ export class MemberEditComponent implements OnInit {
     private initData(): void {
         this.member$.pipe(take(1)).subscribe({
             next: (member) => {
-                this.id = member.memberId;
+                this.id = member.id;
                 this.initial = member;
 
                 this.form.setValue(

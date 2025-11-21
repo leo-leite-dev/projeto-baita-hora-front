@@ -1,52 +1,46 @@
 @use 'colors' as *;
 
 $radius: 14px;
-$shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+$shadow: 0 10px 30px $black-75;
 
-.dashboard-cards {
-  display: grid;
+.metric-cards {
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 14px;
-}
 
-.card {
-  background: linear-gradient(180deg, $panel-elev, $panel);
-  border: 1px solid $border;
-  border-radius: $radius;
-  box-shadow: $shadow;
-  overflow: hidden;
-}
-
-.metric {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
-  padding: 16px 18px;
-
-  .icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    display: grid;
-    place-items: center;
-    font-size: 22px;
-    background: rgba(110, 168, 255, 0.1);
-    border: 1px solid rgba(110, 168, 255, 0.25);
+  .card {
+    background: linear-gradient(180deg, $panel-elev, $panel);
+    border: 1px solid $border;
+    border-radius: $radius;
+    box-shadow: $shadow;
+    overflow: hidden;
   }
 
-  .label {
-    font-size: 12px;
-    color: $muted;
-  }
+  .metric {
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    padding: 16px 0;
 
-  .value {
-    font: 800 34px/1 "Segoe UI", Roboto, sans-serif;
-    letter-spacing: -0.02em;
-  }
+    .metric-content {
+      padding-left: 10px;
 
-  .help {
-    font-size: 12px;
-    color: $muted;
-    text-transform: capitalize;
+      .icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        place-items: center;
+        font-size: 22px;
+        background: $white-05;
+        border: 1px solid $white-14;
+      }
+    }
+
+    .label {
+      color: $muted;
+    }
+
+    .value {
+      font: 800 34px/1 "Segoe UI", Roboto, sans-serif;
+      letter-spacing: -0.02em;
+      color: $text;
+    }
   }
 }

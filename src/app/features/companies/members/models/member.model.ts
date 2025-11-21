@@ -1,6 +1,6 @@
-export interface Member {
-    id: string;
-    name: string;
+import { MemberBase } from "./member-base";
+
+export interface Member extends MemberBase {
     phone: string;
     role: string;
     position: string;
