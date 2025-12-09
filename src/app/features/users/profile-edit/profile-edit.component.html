@@ -1,0 +1,37 @@
+<div class="page">
+    <app-page-state [loading]="loading" [error]="error" loadingMessage="Carregando seu perfil...">
+        <form class="card" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+            <app-back-button [to]="['/app/profile/details']" variant="ghost" label="Voltar" aria-label="Voltar" />
+
+            <div class="profile-header">
+                <div class="avatar">
+                    <ng-template #initials>
+                        <span>
+                            {{ profileGroup.get('fullName')?.value?.charAt(0) || '?' }}
+                        </span>
+                    </ng-template>
+                </div>
+
+                <div class="identity">
+                    <h2 appSectionTitle>Dados de usuário</h2>
+                    <app-user-form [group]="userGroup" />
+                </div>
+            </div>
+
+            <div class="profile-content">
+                <section class="info-block">
+                    <h2 appSectionTitle>Dados pessoais e endereço</h2>
+                    <app-profile-form [group]="profileGroup" />
+                </section>
+            </div>
+
+            <div class="actions field--full">
+                <app-button variant="clean" htmlType="button" label="Limpar" (clicked)="revert()"
+                    [disabled]="submitting || !form.dirty" />
+
+                <app-button variant="primary" htmlType="submit" label="Salvar"
+                    [disabled]="form.invalid || submitting" />
+            </div>
+        </form>
+    </app-page-state>
+</div>

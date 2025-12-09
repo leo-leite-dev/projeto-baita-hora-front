@@ -1,0 +1,45 @@
+<li class="menu-item" [class.open]="selectedMenuTitle === item.label" *ngIf="
+    (item.label === 'Dashboard' && canViewDashboard) ||
+    (item.label === 'Gerenciamento' && canManage) ||
+    (item.label !== 'Dashboard' && item.label !== 'Gerenciamento')
+  ">
+
+    <div class="main-item d-flex center gap-10" (click)="item.submenu ? toggleSubmenu.emit(item) : navigate.emit(item)"
+        [title]="!menuExpanded ? item.label : ''">
+        <mat-icon *ngIf="item.icon">{{ item.icon }}</mat-icon>
+
+        <span *ngIf="menuExpanded">{{ item.label }}</span>
+
+        <span class="badge" *ngIf="item.label === 'Dashboard' && pendingUnknownTotal > 0 && menuExpanded">
+            {{ pendingUnknownTotal }}
+        </span>
+
+        <mat-icon class="arrow" *ngIf="item.submenu && menuExpanded">
+            {{ selectedMenuTitle === item.label ? 'expand_less' : 'expand_more' }}
+        </mat-icon>
+    </div>
+
+    <ul class="submenu" *ngIf="item.submenu && selectedMenuTitle === item.label && menuExpanded">
+        <li class="submenu-item" *ngFor="let subItem of item.submenu"
+            [class.open]="isSubmenuItemOpen(item.label, subItem.label)">
+            <div class="sub-item" (click)="
+          subItem.submenu
+            ? toggleSubmenuItem.emit({ parent: item, subItem })
+            : navigate.emit(subItem)
+        ">
+                <span>{{ subItem.label }}</span>
+
+                <mat-icon class="arrow" *ngIf="subItem.submenu">
+                    {{ isSubmenuItemOpen(item.label, subItem.label) ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
+            </div>
+
+            <ul class="submenu level-2" *ngIf="subItem.submenu && isSubmenuItemOpen(item.label, subItem.label)">
+                <li *ngFor="let sub2 of subItem.submenu">
+                    <app-profile-menu-item [label]="sub2.label" variant="clean" (clicked)="navigate.emit(sub2)" />
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+</li>

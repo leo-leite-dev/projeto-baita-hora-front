@@ -8,7 +8,7 @@ import { ButtonComponent } from '../../../../../shared/components/buttons/button
 import { BackButtonComponent } from '../../../../../shared/components/buttons/back-button/back-button.component';
 import { MemberAdminEditView } from '../../models/member-edit.model';
 import { MembersService } from '../../services/member.service';
-import { PatchMemberRequest } from '../../contracts/patch-member-request';
+import { PatchEmployeeRequest } from '../../contracts/member.contract';
 import { MemberEditForm, MemberEditFormComponent } from '../../form/member-edit-form/member-edit-form.component';
 import { MemberEditFacade } from '../../data/member-edit.facade';
 
@@ -104,7 +104,7 @@ export class MemberEditComponent implements OnInit {
         }
 
         const raw = this.form.getRawValue();
-        const diff: PatchMemberRequest = {};
+        const diff: PatchEmployeeRequest = {};
 
         if (raw.email !== this.initial.email)
             (diff as any).email = raw.email;
@@ -161,7 +161,8 @@ export class MemberEditComponent implements OnInit {
     }
 
     revert(): void {
-        if (!this.initial) return;
+        if (!this.initial) 
+            return;
 
         this.form.setValue(
             {

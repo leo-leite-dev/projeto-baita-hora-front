@@ -1,0 +1,4 @@
+<app-button [variant]="variant" [htmlType]="'button'" [label]="label" [disabled]="disabled" [loading]="loading"
+    (clicked)="onClick()">
+    <app-fa-icon *ngIf="icon" btnPrefix [prefix]="'fas'" [icon]="icon!" className="dropdown-icon" />
+</app-button>

@@ -10,7 +10,7 @@ import { BackButtonComponent } from '../../../../../shared/components/buttons/ba
 import { GenericModule } from '../../../../../../shareds/common/GenericModule';
 import { extractErrorMessage } from '../../../../../shared/utils/error.util';
 import { ServiceOfferingsService } from '../../services/service-offerings.service';
-import { PatchServiceOfferingRequest } from '../../contracts/patch-service-offering.contract';
+import { PatchServiceOfferingRequest } from '../../contracts/service-offerings.contract';
 
 @Component({
   selector: 'app-edit-service-offering',

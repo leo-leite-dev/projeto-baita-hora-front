@@ -4,7 +4,7 @@ import { finalize, take } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ServiceOfferingsService } from '../../services/service-offerings.service';
-import { CreateServiceOfferingRequest } from '../../contracts/create-service-offering.contract';
+import { CreateServiceOfferingRequest } from '../../contracts/service-offerings.contract';
 import { ServiceOfferingForm, ServiceOfferingFormComponent } from '../../form/service-offering-form.component';
 import { extractErrorMessage } from '../../../../../shared/utils/error.util';
 import { GenericModule } from '../../../../../../shareds/common/GenericModule';

@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormGenericModule } from '../../../../../../shareds/common/FormGenericModule';
-import { UserFormComponent } from '../../../../../shared/components/forms/user-form/user-form.component';
 
 export type MemberEditForm = {
   email: FormControl<string>;
@@ -12,10 +11,7 @@ export type MemberEditForm = {
 @Component({
   selector: 'app-member-edit-form',
   standalone: true,
-  imports: [
-    FormGenericModule,
-    UserFormComponent
-  ],
+  imports: [FormGenericModule],
   templateUrl: './member-edit-form.component.html',
   styleUrls: ['./member-edit-form.component.scss'],
 })

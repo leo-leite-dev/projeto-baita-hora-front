@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+export type ButtonVariant = 'primary' | 'ghost' | 'clean' | 'danger';
+
 @Component({
   selector: 'app-button',
   standalone: true,
@@ -11,7 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class ButtonComponent {
   @Input() variant: 'primary' | 'ghost' | 'clean' | 'danger' = 'primary';
-  @Input() htmlType: 'button' | 'submit' | 'reset' = 'button'; // acrescentei 'reset'
+  @Input() htmlType: 'button' | 'submit' | 'reset' = 'button'; 
   @Input() disabled = false;
   @Input() loading = false;
   @Input() label = 'Continuar';
@@ -31,6 +33,5 @@ export class ButtonComponent {
 
     if (this.htmlType !== 'submit')
       this.clicked.emit(event);
-
   }
 }

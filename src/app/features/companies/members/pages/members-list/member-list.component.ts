@@ -12,7 +12,7 @@ import { Member } from '../../models/member.model';
 import { MemberFacade } from '../../data/member.facade';
 import { MembersService } from '../../services/member.service';
 import { PositionsService } from '../../../positions/services/positions.service';
-import { ChangeMemberPositionRequest } from '../../contracts/change-member-position-request';
+import { ChangeMemberPositionRequest } from '../../contracts/member.contract';
 import { MatTableGenericModule } from '../../../../../../shareds/common/MatTableGenericModule';
 import { Position } from '../../../positions/models/position.model';
 import { extractErrorMessage } from '../../../../../shared/utils/error.util';

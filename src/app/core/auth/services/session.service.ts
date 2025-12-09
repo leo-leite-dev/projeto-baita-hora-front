@@ -9,7 +9,7 @@ export class SessionService {
   private auth = inject(AuthService);
 
   private _user$ = new BehaviorSubject<AuthenticateResponse | null>(null);
-  private _isAuth$ = new BehaviorSubject<boolean | null>(null); 
+  private _isAuth$ = new BehaviorSubject<boolean | null>(null);
   private _ready$ = new BehaviorSubject<boolean>(false);
   private hydration$?: Observable<void>;
 
@@ -39,7 +39,7 @@ export class SessionService {
         }),
         finalize(() => {
           this._ready$.next(true);
-          this.hydration$ = undefined; 
+          this.hydration$ = undefined;
         }),
         map(() => void 0),
         shareReplay(1)
@@ -55,20 +55,28 @@ export class SessionService {
   markAuthenticated(companyId?: string) {
     this._isAuth$.next(true);
 
-    if (companyId) 
+    if (companyId)
       this.auth.setActiveCompany(companyId);
-    
+
     this.auth.me().pipe(take(1)).subscribe({
       next: user => this._user$.next(user),
-      error: () => {},
+      error: () => { },
       complete: () => this._ready$.next(true),
     });
+  }
+
+  logout(): Observable<void> {
+    return this.auth.logout().pipe(
+      tap(() => {
+        this.clear();
+      })
+    );
   }
 
   clear() {
     this._user$.next(null);
     this._isAuth$.next(false);
-    this._ready$.next(true); 
+    this._ready$.next(true);
     this.auth.clearActiveCompany();
   }
 

@@ -1,0 +1,11 @@
+<div class="grid" [formGroup]="group">
+    <div class="field">
+        <app-input type="email" label="E-mail" formControlName="email" />
+        <app-field-errors [control]="group.controls.email" />
+    </div>
+
+    <div class="field">
+        <app-input type="text" label="Usuário" formControlName="username" />
+        <app-field-errors [control]="group.controls.username" />
+    </div>
+</div>

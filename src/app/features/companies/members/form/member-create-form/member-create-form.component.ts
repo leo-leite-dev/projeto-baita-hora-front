@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, map, of, startWith } from 'rxjs';
-import { PositionOptions } from '../../../positions/models/position-options.mode';
-import { UserForm, UserFormComponent } from '../../../../../shared/components/forms/user-form/user-form.component';
 import { SelectComponent, SelectOption } from '../../../../../shared/components/select/select.component';
 import { FormGenericModule } from '../../../../../../shareds/common/FormGenericModule';
+import { PositionOptions } from '../../../positions/models/position.model';
+import { AccountForm, AccountFormComponent } from '../../../../../shared/components/forms/account-form/account-form.component';
 
 export type MemberCreateForm = {
   positionId: FormControl<string>;
-  Member: FormGroup<UserForm>;
+  Member: FormGroup<AccountForm>;
 };
 
 @Component({
@@ -16,7 +16,7 @@ export type MemberCreateForm = {
   standalone: true,
   imports: [
     FormGenericModule,
-    UserFormComponent,
+    AccountFormComponent,
     SelectComponent
   ],
   templateUrl: './member-create-form.component.html',

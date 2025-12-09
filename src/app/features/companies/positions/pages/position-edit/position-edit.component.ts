@@ -8,12 +8,12 @@ import { ServiceOfferingsService } from '../../../service-offerings/services/ser
 import { PositionForm, PositionFormComponent } from '../../form/position-form.component';
 import { CompanyRole } from '../../../../../shared/enums/company-role.enum';
 import { extractErrorMessage } from '../../../../../shared/utils/error.util';
-import { PatchPositionRequest } from '../../contracts/patch-position-request.contract';
-import { ServiceOfferingOption } from '../../../service-offerings/models/service-oferring-options.model';
+import { PatchPositionRequest } from '../../contracts/position-request.contract';
+import { ServiceOfferingOption } from '../../../service-offerings/models/service-offering.model';
 import { GenericModule } from '../../../../../../shareds/common/GenericModule';
 import { ButtonComponent } from '../../../../../shared/components/buttons/button/button.component';
 import { BackButtonComponent } from '../../../../../shared/components/buttons/back-button/back-button.component';
-import { PositionEditView } from '../../models/position-edit-view.model';
+import { PositionEdit } from '../../models/position.model';
 
 @Component({
   selector: 'app-position-edit',
@@ -35,7 +35,7 @@ export class PositionEditComponent implements OnInit {
   private serviceOfferingsService = inject(ServiceOfferingsService);
   private toastr = inject(ToastrService);
 
-  private initial!: PositionEditView;
+  private initial!: PositionEdit;
   private id!: string;
 
   form!: FormGroup<PositionForm>;

@@ -3,13 +3,8 @@ import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { ErrorHandlingService } from "../../../../shared/services/error-handling.service";
 import { environment } from "../../../../environments/environments";
-import { ServiceOffering } from "../models/service-offering.model";
-import { CreateServiceOfferingRequest } from "../contracts/create-service-offering.contract";
-import { PatchServiceOfferingRequest } from "../contracts/patch-service-offering.contract";
-import { ActivateServiceOfferingsRequest } from "../contracts/activate-service-offerings.contract";
-import { DisableServiceOfferingsRequest } from "../contracts/disable-service-offerings.contract";
-import { ServiceOfferingOption } from "../models/service-oferring-options.model";
-import { ServiceOfferingEditView } from "../models/service-offering-edit.model";
+import { ServiceOffering, ServiceOfferingEdit, ServiceOfferingOption } from "../models/service-offering.model";
+import { ActivateServiceOfferingsRequest, CreateServiceOfferingRequest, DisableServiceOfferingsRequest, PatchServiceOfferingRequest } from "../contracts/service-offerings.contract";
 
 @Injectable({ providedIn: "root" })
 export class ServiceOfferingsService {
@@ -24,7 +19,7 @@ export class ServiceOfferingsService {
             .pipe(this.errors.rxThrow<ServiceOffering[]>("ServiceOfferingsService.list"));
     }
 
-    getById(id: string): Observable<ServiceOfferingEditView> {
+    getById(id: string): Observable<ServiceOfferingEdit> {
         return this.http
             .get<ServiceOffering>(`${this.api}/${id}`)
             .pipe(this.errors.rxThrow<ServiceOffering>("ServiceOfferingsService.getById"));

@@ -1,0 +1,116 @@
+<div class="content-box">
+    <app-page-state [loading]="loading" [error]="error" loadingMessage="Carregando seu perfil...">
+        <div class="profile-card" *ngIf="profile">
+            <div class="profile-actions">
+                <app-link-button label="Editar dados" variant="primary" [icon]="'pen'"
+                    [to]="['/app/profile/profile-edit']" />
+            </div>
+
+            <div class="profile-header">
+                <div class="avatar">
+                    <ng-container *ngIf="profile.profileImageUrl; else initials">
+                        <img [src]="profile.profileImageUrl" alt="Foto de perfil" loading="lazy" />
+                    </ng-container>
+
+                    <ng-template #initials>
+                        <span>
+                            {{ profile.fullName?.charAt(0) || '?' }}
+                        </span>
+                    </ng-template>
+                </div>
+
+                <div class="identity">
+                    <h1>{{ profile.fullName }}</h1>
+
+                    <p class="identity__cpf">
+                        CPF: <span>{{ profile.cpf }}</span>
+                    </p>
+
+                    <p class="identity__rg" *ngIf="profile.rg">
+                        RG: <span>{{ profile.rg }}</span>
+                    </p>
+
+                    <p class="identity__age" *ngIf="profile.birthDate">
+                        Data de nascimento:
+                        <span>{{ profile.birthDate | date: 'dd/MM/yyyy' }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                <section class="info-block" *ngIf="user">
+                    <h2>Dados da conta</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Usuário</span>
+                            <span class="value">{{ user.username }}</span>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="label">E-mail</span>
+                            <span class="value">{{ user.email }}</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-block">
+                    <h2>Contato</h2>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Telefone</span>
+
+                            <ng-container *ngIf="profile.phone | intlPhone as phone">
+                                <span class="value phone-value">
+                                    <span class="flag">{{ phone.flag }}</span>
+                                    <span class="number">{{ phone.formatted }}</span>
+                                </span>
+                            </ng-container>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-block" *ngIf="profile.address">
+                    <h2>Endereço</h2>
+
+                    <div class="info-grid">
+                        <div class="info-item" *ngIf="profile.address.street">
+                            <span class="label">Logradouro</span>
+                            <span class="value">
+                                {{ profile.address.street }}
+                                <ng-container *ngIf="profile.address.number">
+                                    , {{ profile.address.number }}
+                                </ng-container>
+                            </span>
+                        </div>
+
+                        <div class="info-item" *ngIf="profile.address.neighborhood">
+                            <span class="label">Bairro</span>
+                            <span class="value">{{ profile.address.neighborhood }}</span>
+                        </div>
+
+                        <div class="info-item" *ngIf="profile.address.city">
+                            <span class="label">Cidade</span>
+                            <span class="value">
+                                {{ profile.address.city }}
+                                <ng-container *ngIf="profile.address.state">
+                                    - {{ profile.address.state }}
+                                </ng-container>
+                            </span>
+                        </div>
+
+                        <div class="info-item" *ngIf="profile.address.zipCode">
+                            <span class="label">CEP</span>
+                            <span class="value">{{ profile.address.zipCode }}</span>
+                        </div>
+
+                        <div class="info-item" *ngIf="profile.address.complement">
+                            <span class="label">Complemento</span>
+                            <span class="value">{{ profile.address.complement }}</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </app-page-state>
+</div>

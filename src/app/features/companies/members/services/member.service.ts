@@ -5,12 +5,7 @@ import { environment } from '../../../../environments/environments';
 import { ErrorHandlingService } from '../../../../shared/services/error-handling.service';
 import { Member } from '../models/member.model';
 import { MemberAdminEditView } from '../models/member-edit.model';
-import { RegisterEmployeeRequest } from '../contracts/register-employee-request';
-import { RegisterEmployeeResponse } from '../contracts/employee-response';
-import { PatchMemberRequest } from '../contracts/patch-member-request';
-import { ActivateEmployeesRequest } from '../contracts/activate-employee-request';
-import { DisableEmployeesRequest } from '../contracts/disable-employees-request';
-import { ChangeMemberPositionRequest } from '../contracts/change-member-position-request';
+import { ActivateEmployeesRequest, ChangeMemberPositionRequest, DisableEmployeesRequest, PatchEmployeeRequest, RegisterEmployeeRequest } from '../contracts/member.contract';
 import { ChangeMemberPositionResponse } from '../contracts/change-member-position.response';
 import { MemberProfileDetails } from '../models/member-profile-details';
 import { MemberOption } from '../models/member-options.model';
@@ -43,13 +38,13 @@ export class MembersService {
             .pipe(this.errors.rxThrow<MemberAdminEditView>('MembersService.getById'));
     }
 
-    create(payload: RegisterEmployeeRequest): Observable<RegisterEmployeeResponse> {
+    create(payload: RegisterEmployeeRequest): Observable<string> {
         return this.http
-            .post<RegisterEmployeeResponse>(this.employeesUrl, payload)
-            .pipe(this.errors.rxThrow<RegisterEmployeeResponse>('MembersService.create'));
+            .post<string>(this.employeesUrl, payload)
+            .pipe(this.errors.rxThrow<string>('MembersService.create'));
     }
 
-    patch(memberId: string, payload: PatchMemberRequest): Observable<void> {
+    patch(memberId: string, payload: PatchEmployeeRequest): Observable<void> {
         return this.http
             .patch<void>(`${this.membersUrl}/${memberId}`, payload)
             .pipe(this.errors.rxThrow<void>('MembersService.patch'));

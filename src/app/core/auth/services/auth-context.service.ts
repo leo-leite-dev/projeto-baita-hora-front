@@ -1,24 +1,29 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CompanyRole } from '../../../shared/enums/company-role.enum';
+import { AuthResponse } from '../models/auth-response.model';
 
 export type AuthState = {
     memberId: string;
+    username: string;
     companyId: string;
     role: CompanyRole;
     permissionMask: number;
     isAuthenticated: boolean;
+    expiresAtUtc?: string | null;
 };
 
 const defaultAuth: AuthState = {
     memberId: '',
+    username: '',
     companyId: '',
     role: CompanyRole.Viewer,
     permissionMask: 0,
     isAuthenticated: false,
+    expiresAtUtc: null,
 };
 
-const STORAGE_KEY = 'auth_ctx_v1';
+const STORAGE_KEY = 'auth_ctx_v2';
 
 @Injectable({ providedIn: 'root' })
 export class AuthContextService {
@@ -26,90 +31,70 @@ export class AuthContextService {
     readonly state$ = this._state$.asObservable();
 
     constructor() {
-        console.log('🧊 AuthContextService ctor: creating service');
-
         const saved = this.getFromStorage();
-        console.log('📦 AuthContextService ctor: loaded from storage:', saved);
 
         if (saved) {
             const next = this.hydrate(saved);
-            console.log('💧 AuthContextService ctor: hydrated state:', next);
             this._state$.next(next);
-        } else {
-            console.log('📭 AuthContextService ctor: no saved auth, using defaultAuth:', defaultAuth);
         }
     }
 
     get snapshot(): AuthState {
-        const value = this._state$.value;
-        console.log('🔍 AuthContextService.snapshot getter:', value);
-        return value;
+        return this._state$.value;
     }
 
-    setAuth(next: Partial<AuthState> & { expiresAtUtc?: string } = {}) {
-        console.log('🔵 AuthContextService.setAuth called with:', next);
+    loginFromResponse(auth: AuthResponse): void {
+        this.setAuth({
+            memberId: auth.memberId,
+            username: auth.username.value,
+            companyId: auth.companyId,
+            role: auth.role,
+            permissionMask: auth.permissionMask ?? 0,
+            isAuthenticated: true,
+            expiresAtUtc: auth.expiresAtUtc,
+        });
+    }
 
+    setAuth(next: Partial<AuthState> = {}) {
         const prev = this._state$.value;
-        console.log('♻️ AuthContextService.setAuth previous state:', prev);
 
-        const merged = { ...prev, ...next };
-        console.log('🧮 AuthContextService.setAuth merged before inferAuth:', merged);
-        console.log(
-            '🎭 AuthContextService.setAuth role/permissionMask before inferAuth:',
-            { role: merged.role, permissionMask: merged.permissionMask }
-        );
+        const merged: AuthState = {
+            ...prev,
+            ...next,
+        };
 
-        const isAuthenticated =
-            typeof next.isAuthenticated === 'boolean'
-                ? next.isAuthenticated
-                : this.inferAuth(merged, next.expiresAtUtc);
-
-        const finalState: AuthState = { ...merged, isAuthenticated };
-
-        console.log('🟢 AuthContextService.setAuth final state:', finalState);
+        const finalState: AuthState = {
+            ...merged,
+            isAuthenticated: this.inferAuth(merged),
+        };
 
         this._state$.next(finalState);
-        this.saveToStorage({ ...finalState, expiresAtUtc: next.expiresAtUtc });
-
-        console.log(
-            '📌 AuthContextService.setAuth saved to storage (with expiresAtUtc):',
-            next.expiresAtUtc
-        );
+        this.saveToStorage(finalState);
     }
 
     clearAuth() {
-        console.log('🧹 AuthContextService.clearAuth called');
         this._state$.next(defaultAuth);
         this.removeFromStorage();
-        console.log('🗑️ AuthContextService.clearAuth reset to defaultAuth and removed from storage');
     }
 
     private hydrate(saved: any): AuthState {
-        console.log('💾 AuthContextService.hydrate called with:', saved);
+        const base = { ...defaultAuth, ...saved } as AuthState;
 
-        const { expiresAtUtc, ...rest } = saved || {};
-        if (expiresAtUtc && this.isExpired(expiresAtUtc)) {
-            console.log('⏰ AuthContextService.hydrate: token expired, clearing storage');
+        if (base.expiresAtUtc && this.isExpired(base.expiresAtUtc)) {
             this.removeFromStorage();
             return defaultAuth;
         }
 
-        const base = { ...defaultAuth, ...rest } as AuthState;
         const hydrated: AuthState = {
             ...base,
-            isAuthenticated: this.inferAuth(base, expiresAtUtc),
+            isAuthenticated: this.inferAuth(base),
         };
-
-        console.log('💧 AuthContextService.hydrate result:', hydrated);
 
         return hydrated;
     }
 
-    private inferAuth(state: Partial<AuthState>, expiresAtUtc?: string | null): boolean {
-        console.log('🧠 AuthContextService.inferAuth input:', { state, expiresAtUtc });
-
-        if (expiresAtUtc && this.isExpired(expiresAtUtc)) {
-            console.log('⛔ AuthContextService.inferAuth: expired token, returning false');
+    private inferAuth(state: Partial<AuthState>): boolean {
+        if (state.expiresAtUtc && this.isExpired(state.expiresAtUtc)) {
             return false;
         }
 
@@ -119,72 +104,54 @@ export class AuthContextService {
             !!state.memberId ||
             !!state.isAuthenticated;
 
-        console.log('✅ AuthContextService.inferAuth result:', result);
-
         return result;
     }
 
     private isExpired(expiresAtUtc?: string | null): boolean {
-        if (!expiresAtUtc) {
-            console.log('⌛ AuthContextService.isExpired: no expiresAtUtc, returning false');
+        if (!expiresAtUtc)
             return false;
-        }
 
         const exp = Date.parse(expiresAtUtc);
 
-        if (Number.isNaN(exp)) {
-            console.log(
-                '⚠️ AuthContextService.isExpired: invalid expiresAtUtc, returning false. Value:',
-                expiresAtUtc
-            );
+        if (Number.isNaN(exp))
             return false;
-        }
 
         const now = Date.now();
         const isExpired = now >= exp;
-
-        console.log('⏱️ AuthContextService.isExpired:', { now, exp, isExpired });
 
         return isExpired;
     }
 
     private hasWindow(): boolean {
         const has = typeof window !== 'undefined' && !!window.localStorage;
-        if (!has) {
-            console.log('🚫 AuthContextService.hasWindow: window/localStorage not available');
-        }
+        if (!has) { }
         return has;
     }
 
-    private saveToStorage(payload: any) {
-        if (!this.hasWindow()) return;
+    private saveToStorage(payload: AuthState) {
+        if (!this.hasWindow())
+            return;
         try {
-            console.log('💿 AuthContextService.saveToStorage payload:', payload);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-        } catch (err) {
-            console.log('❌ AuthContextService.saveToStorage error:', err);
-        }
+        } catch (err) { }
     }
 
     private getFromStorage(): any | null {
-        if (!this.hasWindow()) return null;
+        if (!this.hasWindow())
+            return null;
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
-            console.log('📥 AuthContextService.getFromStorage raw:', raw);
             return raw ? JSON.parse(raw) : null;
         } catch (err) {
-            console.log('❌ AuthContextService.getFromStorage error:', err);
             return null;
         }
     }
 
     private removeFromStorage() {
-        if (!this.hasWindow()) return;
+        if (!this.hasWindow())
+            return;
         try {
-            console.log('🧨 AuthContextService.removeFromStorage: removing key', STORAGE_KEY);
             localStorage.removeItem(STORAGE_KEY);
-        } catch (err) {
-            console.log('❌ AuthContextService.removeFromStorage error:', err);
-        }
+        } catch (err) { }
     }
 }

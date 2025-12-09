@@ -2,7 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { AuthContextService } from "./services/auth-context.service";
 import { CompanyRole } from "../../shared/enums/company-role.enum";
 
-export type PermissionKey = 'dashboard' | 'manage' | 'schedule';
+export type PermissionKey = 'dashboard' | 'manageCompany' | 'schedule' | 'manageUser';
 
 @Injectable({ providedIn: "root" })
 export class AbilityService {
@@ -12,14 +12,17 @@ export class AbilityService {
         dashboard: (role) =>
             role === CompanyRole.Owner,
 
-        manage: (role) =>
+        manageCompany: (role) =>
             role === CompanyRole.Owner || role === CompanyRole.Manager,
+
+        manageUser: (role) =>
+            role === CompanyRole.Owner,
 
         schedule: () => true
     };
 
     isPermissionKey(value: any): value is PermissionKey {
-        return ['dashboard', 'manage', 'schedule'].includes(value);
+        return ['dashboard', 'manageCompany', 'schedule'].includes(value);
     }
 
     hasPermission(permission: PermissionKey): boolean {
@@ -32,6 +35,10 @@ export class AbilityService {
     }
 
     canManageCompany() {
-        return this.hasPermission('manage');
+        return this.hasPermission('manageCompany');
+    }
+
+    canManageUser(): boolean {
+        return this.hasPermission('manageUser');
     }
 }

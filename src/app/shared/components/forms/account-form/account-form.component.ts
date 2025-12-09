@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ProfileForm, ProfileFormComponent } from '../profile-form/profile-form.component';
 import { FormGenericModule } from '../../../../../shareds/common/FormGenericModule';
 
-export type UserForm = {
+export type AccountForm = {
   email: FormControl<string>;
   username: FormControl<string>;
   rawPassword: FormControl<string>;
@@ -12,17 +12,17 @@ export type UserForm = {
 };
 
 @Component({
-  selector: 'app-user-form',
+  selector: 'app-account-form',
   standalone: true,
   imports: [
     FormGenericModule,
     ProfileFormComponent
   ],
-  templateUrl: './user-form.component.html',
-  styleUrl: './user-form.component.scss'
+  templateUrl: './account-form.component.html',
+  styleUrl: './account-form.component.scss'
 })
-export class UserFormComponent {
-  @Input({ required: true }) group!: FormGroup<UserForm>;
+export class AccountFormComponent {
+  @Input({ required: true }) group!: FormGroup<AccountForm>;
   @Input() locked = false;
   @Input() editableKeys: string[] = [];
 }

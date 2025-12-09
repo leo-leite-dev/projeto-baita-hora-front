@@ -11,11 +11,19 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    canMatch: [guestGuard],
-    loadComponent: () =>
-      import('../home/home.component').then(m => m.HomeComponent),
+    redirectTo: 'auth/login',
   },
-
+  {
+    path: 'auth',
+    canMatch: [guestGuard],
+    children: [
+      {
+        path: 'login',
+        loadComponent: () =>
+          import('../home/home.component').then(m => m.HomeComponent),
+      },
+    ],
+  },
   {
     path: 'onboarding',
     canMatch: [guestGuard],
@@ -34,7 +42,6 @@ export const routes: Routes = [
       },
     ],
   },
-
   {
     path: 'app',
     component: ShellComponent,
@@ -57,7 +64,7 @@ export const routes: Routes = [
       {
         path: 'service-offering',
         canMatch: [permissionGuard],
-        data: { permission: 'manage' },
+        data: { permission: 'manageCompany' },
         children: [
           {
             path: 'create',
@@ -92,7 +99,7 @@ export const routes: Routes = [
       {
         path: 'position',
         canMatch: [permissionGuard],
-        data: { permission: 'manage' },
+        data: { permission: 'manageCompany' },
         children: [
           {
             path: 'create',
@@ -120,7 +127,7 @@ export const routes: Routes = [
       {
         path: 'member',
         canMatch: [permissionGuard],
-        data: { permission: 'manage' },
+        data: { permission: 'manageCompany' },
         children: [
           {
             path: 'create',
@@ -142,6 +149,53 @@ export const routes: Routes = [
                 .then(m => m.MemberListComponent),
           },
           { path: '', pathMatch: 'full', redirectTo: 'list' },
+        ],
+      },
+      {
+        path: 'member',
+        canMatch: [permissionGuard],
+        data: { permission: 'manageCompany' },
+        children: [
+          {
+            path: 'create',
+            loadComponent: () =>
+              import('../features/companies/members/pages/member-create/member-create.component')
+                .then(m => m.MemberCreateComponent),
+          },
+          {
+            path: ':id/edit',
+            resolve: { member: MemberResolver },
+            loadComponent: () =>
+              import('../features/companies/members/pages/member-edit/member-edit.component')
+                .then(m => m.MemberEditComponent),
+          },
+          {
+            path: 'list',
+            loadComponent: () =>
+              import('../features/companies/members/pages/members-list/member-list.component')
+                .then(m => m.MemberListComponent),
+          },
+          { path: '', pathMatch: 'full', redirectTo: 'list' },
+        ],
+      },
+      {
+        path: 'profile',
+        canMatch: [permissionGuard],
+        data: { permission: 'manageCompany' },
+        children: [
+          {
+            path: 'details',
+            loadComponent: () =>
+              import('../features/users/profile-details/profile-details.component')
+                .then(m => m.ProfileDetailsComponent),
+          },
+          {
+            path: 'profile-edit',
+            loadComponent: () =>
+              import('../features/users/profile-edit/profile-edit.component')
+                .then(m => m.ProfileEditComponent),
+          },
+          { path: '', pathMatch: 'full', redirectTo: 'detailslist' },
         ],
       },
 

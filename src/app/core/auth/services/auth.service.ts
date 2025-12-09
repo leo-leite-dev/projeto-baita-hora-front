@@ -3,20 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environments';
 import { ErrorHandlingService } from '../../../shared/services/error-handling.service';
-import { AuthenticateRequest } from '../models/authenticate-request.model';
+import { AuthenticateRequest } from '../contracts/authenticate-request.model';
 import { AuthenticateResponse } from '../models/authenticate-response.model';
 import { AuthResponse } from '../models/auth-response.model';
 import { AuthContextService } from './auth-context.service';
-import { CompanyRole } from '../../../shared/enums/company-role.enum';
+import { PreLoginRequest } from '../contracts/pre-login-request';
+import { PreLoginResponse } from '../models/pre-login-response.model';
 
 export interface SelectCompanyRequest {
     companyId: string;
-}
-
-function decodeJwt<T = any>(token: string): T {
-    const base64 = token.split('.')[1];
-    const json = atob(base64.replace(/-/g, '+').replace(/_/g, '/'));
-    return JSON.parse(json);
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,85 +35,19 @@ export class AuthService {
         localStorage.removeItem(this.ACTIVE_COMPANY_KEY);
     }
 
+    prelogin(payload: PreLoginRequest): Observable<PreLoginResponse> {
+        return this.http
+            .post<PreLoginResponse>(`${this.baseUrl}/prelogin`, payload)
+            .pipe(
+                this.errorHandler.rxThrow('auth.prelogin')
+            );
+    }
+
     login(payload: AuthenticateRequest): Observable<AuthResponse> {
         return this.http
             .post<AuthResponse>(`${this.baseUrl}/login`, payload)
             .pipe(
-                tap(auth => {
-                    console.log('🔥 [AuthService.login] resp:', auth);
-
-                    if (!auth.accessToken) {
-                        console.log('⚠️ [AuthService.login] no accessToken in response');
-                        return;
-                    }
-
-                    const decoded: any = decodeJwt(auth.accessToken);
-
-                    console.log('🟡 [AuthService.login] Decoded JWT full:', decoded);
-                    console.log('🔍 [AuthService.login] decoded.role:', decoded['role']);
-                    console.log('🔍 [AuthService.login] decoded.companyRole:', decoded['companyRole']);
-                    console.log('🔍 [AuthService.login] decoded.permissionMask:', decoded['permissionMask']);
-                    console.log(
-                        '🔍 [AuthService.login] decoded .NET role claims:',
-                        decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
-                        decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role']
-                    );
-
-                    // 1) tenta descobrir de onde vem a role no token
-                    const rawRole: unknown =
-                        decoded['companyRole'] ??
-                        decoded['role'] ??
-                        decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ??
-                        decoded['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role'];
-
-                    console.log('🧾 [AuthService.login] rawRole from token:', rawRole);
-
-                    // 2) converte essa rawRole para CompanyRole
-                    let mappedRole: CompanyRole = CompanyRole.Viewer;
-
-                    if (typeof rawRole === 'number') {
-                        // enum numérico vindo direto (0, 1, 2, 3...)
-                        mappedRole = rawRole as unknown as CompanyRole;
-                    } else if (typeof rawRole === 'string') {
-                        // pode ser "Owner", "Admin", etc.
-                        if (CompanyRole[rawRole as keyof typeof CompanyRole] !== undefined) {
-                            mappedRole = CompanyRole[rawRole as keyof typeof CompanyRole];
-                        }
-                    }
-
-                    // 3) permissionMask se existir no token
-                    const permissionMask: number =
-                        typeof decoded['permissionMask'] === 'number'
-                            ? decoded['permissionMask']
-                            : 0;
-
-                    console.log('🎯 [AuthService.login] mapped role:', mappedRole);
-                    console.log('🎯 [AuthService.login] mapped permissionMask:', permissionMask);
-
-                    // 4) memberId / companyId
-                    const memberId: string =
-                        decoded['memberId'] ??
-                        decoded['sub'] ??
-                        '';
-                    const companyId: string = decoded['companyId'] ?? '';
-
-                    console.log('🧩 [AuthService.login] memberId/companyId:', {
-                        memberId,
-                        companyId,
-                    });
-
-                    // 5) finalmente seta no AuthContext
-                    this.authCtx.setAuth({
-                        memberId,
-                        companyId,
-                        role: mappedRole,
-                        permissionMask,
-                        isAuthenticated: true,
-                        // se teu AuthResponse tiver expiresAtUtc, manda pra lá que o AuthContext usa:
-                        expiresAtUtc: (auth as any).expiresAtUtc,
-                    });
-                }),
-
+                tap(auth => this.authCtx.loginFromResponse(auth)),
                 this.errorHandler.rxThrow('auth.login')
             );
     }
@@ -129,6 +58,7 @@ export class AuthService {
             .pipe(
                 map(() => {
                     this.clearActiveCompany();
+                    this.authCtx.clearAuth();
                     return void 0;
                 }),
                 this.errorHandler.rxThrow('auth.logout')

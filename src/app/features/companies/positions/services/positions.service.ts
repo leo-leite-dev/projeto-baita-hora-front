@@ -3,13 +3,8 @@ import { environment } from "../../../../environments/environments";
 import { HttpClient } from "@angular/common/http";
 import { ErrorHandlingService } from "../../../../shared/services/error-handling.service";
 import { Observable } from "rxjs";
-import { Position } from "../models/position.model";
-import { PositionEditView } from "../models/position-edit-view.model";
-import { CreatePositionRequest } from "../contracts/create-position-request.contract";
-import { PatchPositionRequest } from "../contracts/patch-position-request.contract";
-import { DisablePositionsRequest } from "../contracts/disable-positions.contract";
-import { ActivatePositionsRequest } from "../contracts/activate-positions.contract";
-
+import { Position, PositionEdit } from "../models/position.model";
+import { ActivatePositionsRequest, CreatePositionRequest, DisablePositionsRequest, PatchPositionRequest } from "../contracts/position-request.contract";
 
 @Injectable({ providedIn: "root" })
 export class PositionsService {
@@ -24,7 +19,7 @@ export class PositionsService {
       .pipe(this.errors.rxThrow<Position[]>("PositionsService.list"));
   }
 
-  getById(id: string): Observable<PositionEditView> {
+  getById(id: string): Observable<PositionEdit> {
     return this.http
       .get<Position>(`${this.api}/${id}`)
       .pipe(this.errors.rxThrow<Position>("PositionsService.getById"));

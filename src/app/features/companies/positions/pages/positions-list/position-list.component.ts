@@ -13,7 +13,7 @@ import { PositionsFacade } from "../../data/position.facade";
 import { PositionsService } from "../../services/positions.service";
 import { EntityFacade } from "../../../../../shared/components/table/contracts/entity-facade";
 import { EntityDeleteService } from "../../../../../shared/components/table/contracts/entity-delete-service";
-import { ServiceOfferingOption } from "../../../service-offerings/models/service-oferring-options.model";
+import { ServiceOfferingOption } from "../../../service-offerings/models/service-offering.model";
 
 @Component({
   selector: 'app-position-list',

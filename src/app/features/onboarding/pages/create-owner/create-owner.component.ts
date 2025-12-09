@@ -13,11 +13,11 @@ import { ButtonComponent } from '../../../../shared/components/buttons/button/bu
 import { OwnerFormComponent } from '../../forms/owner-form/owner-form.component';
 import { AddressForm } from '../../../../shared/components/forms/address-form/address-form.component';
 import { ProfileForm } from '../../../../shared/components/forms/profile-form/profile-form.component';
-import { UserForm } from '../../../../shared/components/forms/user-form/user-form.component';
+import { AccountForm } from '../../../../shared/components/forms/account-form/account-form.component';
 import { GenericModule } from '../../../../../shareds/common/GenericModule';
 
 type RootOwnerForm = {
-  owner: FormGroup<UserForm>;
+  owner: FormGroup<AccountForm>;
 };
 
 @Component({
@@ -55,7 +55,7 @@ export class CreateOwnerComponent implements OnInit {
 
   private buildForm(): void {
     this.form = this.fb.group<RootOwnerForm>({
-      owner: this.fb.group<UserForm>(
+      owner: this.fb.group<AccountForm>(
         {
           email: this.fb.control('', {
             nonNullable: true,
@@ -154,7 +154,7 @@ export class CreateOwnerComponent implements OnInit {
     this.data.clearAll();
   }
 
-  get ownerGroup(): FormGroup<UserForm> {
+  get ownerGroup(): FormGroup<AccountForm> {
     return this.form.controls.owner;
   }
 }

@@ -18,7 +18,7 @@ import { CreateUserRequest } from '../../../../../shared/contracts/user-request'
 import { onlyDigits, toIsoDate } from '../../../../../shared/utils/string.util';
 import { AddressForm } from '../../../../../shared/components/forms/address-form/address-form.component';
 import { ProfileForm } from '../../../../../shared/components/forms/profile-form/profile-form.component';
-import { UserForm } from '../../../../../shared/components/forms/user-form/user-form.component';
+import { AccountForm } from '../../../../../shared/components/forms/account-form/account-form.component';
 
 @Component({
   selector: 'app-member-create',
@@ -53,7 +53,7 @@ export class MemberCreateComponent implements OnInit {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      Member: this.fb.group<UserForm>({
+      Member: this.fb.group<AccountForm>({
         email: this.fb.control('joao.marcos@example.com', {
           nonNullable: true,
           validators: [Validators.required, emailValidator],

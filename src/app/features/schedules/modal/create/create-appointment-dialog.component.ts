@@ -10,10 +10,10 @@ import { FaIconComponent } from '../../../../shared/components/icons/fa-icon.com
 import { CreateAppointmentRequest } from '../../contracts/appointments/create-appointment-request.contract';
 import { SelectableItem } from '../../../../shared/components/inputs/auto-complete/auto-complete.component';
 import { cpfValidator } from '../../../../shared/validators/cpf.validator';
-import { ServiceOfferingOption } from '../../../companies/service-offerings/models/service-oferring-options.model';
+import { ServiceOfferingOption } from '../../../companies/service-offerings/models/service-offering.model';
 
 type PickResult =
-  | { mode: 'existing'; customerId: string; serviceOfferingIds: string[] } // 👈 atualiza aqui também
+  | { mode: 'existing'; customerId: string; serviceOfferingIds: string[] } 
   | { mode: 'new'; customerName: string; customerCpf: string; customerPhone: string };
 
 @Component({

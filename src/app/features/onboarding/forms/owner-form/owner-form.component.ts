@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { UserForm, UserFormComponent } from '../../../../shared/components/forms/user-form/user-form.component';
 import { CommonModule } from '@angular/common';
+import { AccountForm, AccountFormComponent } from '../../../../shared/components/forms/account-form/account-form.component';
 
 @Component({
   selector: 'app-owner-form',
@@ -9,10 +9,10 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    UserFormComponent
+    AccountFormComponent
   ],
   templateUrl: './owner-form.component.html'
 })
 export class OwnerFormComponent {
-  @Input({ required: true }) group!: FormGroup<UserForm>;
+  @Input({ required: true }) group!: FormGroup<AccountForm>;
 }

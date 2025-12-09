@@ -11,6 +11,7 @@ import { FaIconComponent } from '../../../shared/components/icons/fa-icon.compon
 import { FieldErrorsComponent } from '../../../shared/components/field-errors/field-errors.component';
 import { extractErrorMessage } from '../../../shared/utils/error.util';
 import { SessionService } from '../services/session.service';
+import { PreLoginResponse } from '../models/pre-login-response.model';
 
 type Step = 'credentials' | 'choose-company';
 
@@ -38,7 +39,6 @@ export class LoginModalComponent {
   form = this.fb.group({
     identify: ['', Validators.required],
     password: ['', Validators.required],
-    companyId: [this.auth.getActiveCompany() ?? '', [Validators.required]]
   });
 
   step: Step = 'credentials';
@@ -49,7 +49,7 @@ export class LoginModalComponent {
 
   onSubmit() {
     if (this.form.invalid || this.loading)
-       return;
+      return;
 
     this.errorMessage = null;
     this.loading = true;
@@ -58,13 +58,12 @@ export class LoginModalComponent {
     const payload = {
       identify: this.form.value.identify!,
       password: this.form.value.password!,
-      companyId: this.form.value.companyId!,
     };
 
-    this.auth.login(payload).pipe(
+    this.auth.prelogin(payload).pipe(
       catchError(err => {
         this.errorMessage = extractErrorMessage(err) ?? 'Falha ao autenticar.';
-        return of<AuthResponse | null>(null);
+        return of<PreLoginResponse | null>(null);
       }),
       finalize(() => {
         this.loading = false;
@@ -74,12 +73,8 @@ export class LoginModalComponent {
       if (!resp)
         return;
 
-      if (resp.accessToken) {
-        this.finish(resp);
-        return;
-      }
-
       const companies = resp.companies ?? [];
+
       if (companies.length === 0) {
         this.errorMessage = 'Nenhuma empresa vinculada à sua conta.';
         return;
@@ -90,57 +85,63 @@ export class LoginModalComponent {
         return;
       }
 
-      this.pendingCompanies = companies.map(c => ({ companyId: c.companyId, name: c.name }));
+      this.pendingCompanies = companies.map(c => ({
+        companyId: c.companyId,
+        name: c.name,
+      }));
+
       this.step = 'choose-company';
     });
   }
 
-  selectCompany(companyId: string) {
-    if (this.loading) return;
+selectCompany(companyId: string) {
+  this.errorMessage = null;
+  this.loading = true;
 
-    this.errorMessage = null;
-    this.loading = true;
+  // 👉 Define a empresa ativa ANTES de chamar a API
+  this.auth.setActiveCompany(companyId);
 
-    const payload = {
-      identify: this.form.value.identify!,
-      password: this.form.value.password!,
-      companyId,
-    };
+  const payload = {
+    identify: this.form.value.identify!,
+    password: this.form.value.password!,
+    // opcional: se o back aceitar, pode manter
+    companyId,
+  };
 
-    this.auth.login(payload).pipe(
-      catchError(err => {
-        this.errorMessage = extractErrorMessage(err) ?? 'Falha ao selecionar empresa.';
-        return of<AuthResponse | null>(null);
-      }),
-      finalize(() => { this.loading = false; })
-    ).subscribe(resp => {
-      if (!resp?.accessToken) {
-        this.errorMessage = 'Não foi possível concluir o login.';
-        return;
-      }
+  this.auth.login(payload).pipe(
+    catchError(err => {
+      this.errorMessage = extractErrorMessage(err) ?? 'Falha ao selecionar empresa.';
+      return of<AuthResponse | null>(null);
+    }),
+    finalize(() => { this.loading = false; })
+  ).subscribe(resp => {
+    if (!resp?.accessToken) {
+      this.errorMessage = 'Não foi possível concluir o login.';
+      return;
+    }
 
-      this.session.markAuthenticated(companyId);
+    // Se tu quiser manter controle local também:
+    // this.auth.setActiveCompany(companyId);
 
-      this.loggedIn.emit(resp);
+    this.session.markAuthenticated(companyId);
+    this.loggedIn.emit(resp);
 
-      this.router.navigate(['/app/dashboard', companyId]);
-      this.close.emit();
-    });
-  }
+    this.router.navigate(['/app/dashboard', companyId]);
+    this.close.emit();
+  });
+}
+
 
   backToCredentials() {
-    if (this.loading) return;
+    if (this.loading)
+      return;
+
     this.step = 'credentials';
     this.errorMessage = '';
   }
 
   navigateToRegister(event: Event) {
     event.preventDefault();
-    this.close.emit();
-  }
-
-  private finish(resp: AuthResponse) {
-    this.loggedIn.emit(resp);
     this.close.emit();
   }
 }

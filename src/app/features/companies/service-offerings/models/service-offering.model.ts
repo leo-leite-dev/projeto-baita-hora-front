@@ -7,3 +7,10 @@ export interface ServiceOffering extends ServiceOfferingBase {
   createdAtUtc: string;
   updatedAtUtc?: string;
 }
+
+export interface ServiceOfferingEdit extends ServiceOfferingBase {
+  price: number;
+  currency: string;
+}
+
+export interface ServiceOfferingOption extends ServiceOfferingBase { }

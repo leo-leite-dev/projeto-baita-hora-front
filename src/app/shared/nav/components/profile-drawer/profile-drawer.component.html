@@ -1,0 +1,29 @@
+<div class="profile-area" [class.collapsed]="!menuExpanded" *ngIf="authUser">
+    <button type="button" class="profile-button d-flex center gap-10" (click)="onToggle()"
+        [title]="!menuExpanded ? authUser.username : ''">
+        <app-fa-icon icon="user-circle" className="avatar" />
+
+        <div class="profile-info d-flex column" *ngIf="menuExpanded">
+            <span class="profile-name d-flex align-center gap-6 fs-14 nowrap">
+                {{ authUser.username }}
+                <app-fa-icon [icon]="roleIcon" size="sm" className="role-icon" />
+            </span>
+
+            <span class="profile-email">
+                {{ roleLabel }}
+            </span>
+        </div>
+    </button>
+
+    <div class="profile-dropdown d-flex column" *ngIf="isOpen">
+        <app-profile-menu-item label="Exibir perfil" [icon]="['fas', 'user']" variant="clean"
+            (clicked)="onProfileDetails()" />
+
+        <app-profile-menu-item label="Configurações" [icon]="['fas', 'gear']" variant="clean"
+            (clicked)="onOpenSettings()" />
+
+        <hr class="profile-divider" />
+
+        <app-profile-menu-item label="Sair" [icon]="['fas', 'sign-out-alt']" variant="clean" (clicked)="onLogout()" />
+    </div>
+</div>

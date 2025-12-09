@@ -7,10 +7,10 @@ import { ServiceOfferingsService } from "../../../service-offerings/services/ser
 import { CompanyRole } from "../../../../../shared/enums/company-role.enum";
 import { PositionForm, PositionFormComponent } from "../../form/position-form.component";
 import { extractErrorMessage } from "../../../../../shared/utils/error.util";
-import { CreatePositionRequest } from "../../contracts/create-position-request.contract";
+import { CreatePositionRequest } from "../../contracts/position-request.contract";
 import { GenericModule } from "../../../../../../shareds/common/GenericModule";
 import { Router } from "@angular/router";
-import { ServiceOfferingOption } from "../../../service-offerings/models/service-oferring-options.model";
+import { ServiceOfferingOption } from "../../../service-offerings/models/service-offering.model";
 
 @Component({
   standalone: true,

@@ -3,7 +3,7 @@ import { ResolveFn, ActivatedRouteSnapshot } from '@angular/router';
 import { catchError, map, of } from 'rxjs';
 import { CompanyRole } from '../../../../shared/enums/company-role.enum';
 import { PositionsService } from '../../positions/services/positions.service';
-import { PositionEditView } from '../models/position-edit-view.model';
+import { PositionEdit } from '../models/position.model';
 
 function isCompanyRoleValue(value: unknown): value is CompanyRole {
   const values = Object.values(CompanyRole) as (string | number)[];
@@ -29,7 +29,7 @@ function toCompanyRole(v: unknown): CompanyRole {
   return CompanyRole.Viewer;
 }
 
-export const PositionResolver: ResolveFn<PositionEditView | null> = (
+export const PositionResolver: ResolveFn<PositionEdit | null> = (
   route: ActivatedRouteSnapshot,
 ) => {
   const service = inject(PositionsService);

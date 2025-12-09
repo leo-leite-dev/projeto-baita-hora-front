@@ -1,5 +1,29 @@
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faTimes, faCalendar, faDollarSign, faMoneyBillWave, faArrowLeft, faPlus, faBell, faClock } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTimes,
+  faCalendar,
+  faDollarSign,
+  faMoneyBillWave,
+  faArrowLeft,
+  faPlus,
+  faBell,
+  faClock,
+  faUserCircle,
+  faCrown,
+  faUserTie,
+  faUserGear,
+  faEye,
+  faQuestionCircle,
+  faSignOutAlt,
+  faUserPen,
+  faGear,
+  faUser,
+  faLifeRing,
+  faCommentDots,
+  faDoorClosed,
+  faUserSecret,
+  faPen,
+} from '@fortawesome/free-solid-svg-icons';
 
 export function registerIcons(library: FaIconLibrary): void {
   library.addIcons(
@@ -10,6 +34,21 @@ export function registerIcons(library: FaIconLibrary): void {
     faArrowLeft,
     faPlus,
     faBell,
-    faClock
+    faClock,
+    faUserCircle,
+    faCrown,
+    faUserTie,
+    faUserGear,
+    faEye,
+    faQuestionCircle,
+    faSignOutAlt,
+    faUserPen,
+    faGear,
+    faUser,
+    faLifeRing,
+    faCommentDots,
+    faDoorClosed,
+    faUserSecret,
+    faPen
   );
 }
